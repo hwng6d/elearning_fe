@@ -1,0 +1,28 @@
+.container {
+  margin: 0 auto;
+
+  .header1 {
+    text-align: center;
+    padding: 32px;
+    font-size: 32px;
+    color: white;
+    background-image: linear-gradient(to right, rgb(43, 0, 255) , rgb(55, 238, 107));
+  }
+  
+  .form {
+    margin: 0 auto;
+    width: 284px;
+
+    &_label {
+      font-size: 15px;
+    }
+
+    &_email, &_password {
+      margin-top: 10px;
+    }
+  }
+  
+  .input {
+    margin: 6px 0px;
+  }
+}

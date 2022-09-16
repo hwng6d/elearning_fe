@@ -1,0 +1,19 @@
+.container {
+  margin: 0 auto;
+
+  .header1 {
+    text-align: center;
+    padding: 32px;
+    font-size: 32px;
+    color: white;
+    background-image: linear-gradient(to right, rgb(200, 255, 0) , rgb(38, 31, 248));
+  }
+  
+  .form {
+    margin: 0 auto;
+  }
+  
+  .input {
+    margin: 6px 0px;
+  }
+}
