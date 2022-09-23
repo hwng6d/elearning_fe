@@ -1,15 +1,27 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { SyncOutlined } from '@ant-design/icons';
-import { Input, Button } from 'antd';
+import { Input, Button, Space } from 'antd';
+import { Context } from '../context';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from '../styles/SignIn.module.scss';
 import { ERRORS_NAME } from '../utils/constant';
 
-const SignUp = () => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const { state: { user }, dispatch } = useContext(Context);
+
+  useEffect(() => {
+    if (user)
+      router.push('/');
+  }, [user])
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
@@ -21,18 +33,27 @@ const SignUp = () => {
         password
       });
 
-      await axios.post(
+      const { data } = await axios.post(
         // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         `/api/auth/login`,
         { email, password }
       );
+
+      dispatch({
+        type: 'LOGIN',
+        payload: data.data
+      });
+
+      window.localStorage.setItem('user', JSON.stringify(data.data));
+
+      router.push('/');
 
       toast.success('Đã đăng nhập !');
       setLoading(false);
     }
     catch (error) {
       const err_message = ERRORS_NAME.find(item => { if (error.response.data.message.includes(item.keyword)) return item });
-      toast.error(err_message ? err_message.vietnamese : error.response.data.message)
+      toast.error(err_message ? err_message.vietnamese : error.response.data.message);
       setLoading(false);
     }
   }
@@ -43,6 +64,7 @@ const SignUp = () => {
         <h1 className={styles.header1}>Đăng nhập</h1>
         <form
           id='signup_form'
+          style={{ width: '380px' }}
           className={styles.form}
           onSubmit={submitFormHandler}
         >
@@ -72,15 +94,35 @@ const SignUp = () => {
           </div>
 
           <div
-            style={{ display: 'flex', justifyContent: 'flex-end' }}
-
+            style={{ display: 'inline-block', width: 'inherit', marginTop: '10px' }}
           >
             <Button
+              style={{ width: 'inherit' }}
               onClick={(e) => submitFormHandler(e)}
               disabled={!email || !password || loading}
             >
               Đăng nhập {loading && <SyncOutlined spin={true} />}
             </Button>
+            <div
+              className='container_bottom'
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}
+            >
+              <div
+                className='container_bottom_left'
+              >
+                <span>Quên mật khẩu</span>
+              </div>
+              <div
+                className='container_bottom_right'
+                style={{ display: 'flex', justifyContent: 'center' }}>
+                <span
+                  style={{ width: 'inherit' }}
+                >
+                  Chưa có tải khoản ? <Link href='/signup'><a>Đăng ký ngay</a></Link>
+                </span>
+              </div>
+            </div>
+
           </div>
         </form>
       </div>
@@ -88,4 +130,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default SignIn

@@ -1,16 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { SyncOutlined } from '@ant-design/icons';
 import { Input, Button } from 'antd';
+import { Context } from '../context';
+import Link from 'next/link';
 import styles from '../styles/SignUp.module.scss';
 import { ERRORS_NAME } from '../utils/constant';
 
 const SignUp = () => {
+  const router = useRouter();
+  const { state: { user }, dispatch } = useContext(Context);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user)
+      router.push('/')
+  }, [user])
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
@@ -48,8 +58,9 @@ const SignUp = () => {
           id='signup_form'
           className={styles.form}
           onSubmit={submitFormHandler}
-          style={{ width: 'fit-content' }}
+          style={{ width: '420px' }}
         >
+          <label>Họ tên</label>
           <Input
             className={styles.input}
             allowClear={true}
@@ -58,6 +69,7 @@ const SignUp = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          <label>Email</label>
           <Input
             className={styles.input}
             allowClear={true}
@@ -66,6 +78,7 @@ const SignUp = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <label>Mật khẩu</label>
           <Input
             className={styles.input}
             allowClear={true}
@@ -76,14 +89,23 @@ const SignUp = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <div
-            style={{ display: 'flex', justifyContent: 'flex-end' }}
+            style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
           >
-            <Button
-              onClick={(e) => submitFormHandler(e)}
-              disabled={!email || !name || !password || loading}
+            <div
+              style={{ gap: '10px', display: 'flex', alignItems: 'center' }}
+              className='container_right'
             >
-              Đăng ký {loading && <SyncOutlined spin={true} />}
-            </Button>
+              <span>
+                Đã có tài khoản ? <Link href='/signin'><a>Đăng nhập</a></Link>
+              </span>
+              <Button
+                style={{ width: '92px' }}
+                onClick={(e) => submitFormHandler(e)}
+                disabled={!email || !name || !password || loading}
+              >
+                Đăng ký {loading && <SyncOutlined spin={true} />}
+              </Button>
+            </div>
           </div>
         </form>
       </div>
