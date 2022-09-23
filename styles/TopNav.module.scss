@@ -12,12 +12,17 @@
 
   &_left {
     display: flex;
-    min-height: 44px;
+    min-height: 40px;
     max-height: 64px;
     margin: 4px 0px;
   }
 
   &_right {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    align-content: center;
+
     #btn_signin, #btn_signup {
       font-size: 16px;
       font-weight: 600;
@@ -54,6 +59,22 @@
       font-weight: 600;
       border-width: 2px;
     }
+
+    // #btn_signout {
+    //   display: flex;
+    //   margin: 8px 4px 4px 16px;
+    //   padding: 8px;
+    //   justify-content: center;
+    //   align-items: center;
+    //   align-content: center;
+    //   cursor: pointer;
+    //   border-radius: 50%;
+    //   border: 2px solid rgb(138, 138, 138);
+    // }
+    // #btn_signout:hover {
+    //   background-color: rgb(255, 217, 221);
+    //   transition: background 200ms ease-in, color 200ms ease-in;
+    // }
   }
 }
 
