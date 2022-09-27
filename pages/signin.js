@@ -64,7 +64,6 @@ const SignIn = () => {
         <h1 className={styles.header1}>Đăng nhập</h1>
         <form
           id='signup_form'
-          style={{ width: '380px' }}
           className={styles.form}
           onSubmit={submitFormHandler}
         >
@@ -110,7 +109,9 @@ const SignIn = () => {
               <div
                 className='container_bottom_left'
               >
-                <span>Quên mật khẩu</span>
+                <Link href='forgot-password'>
+                  <a style={{ color: '#ff3200' }}>Quên mật khẩu</a>
+                </Link>
               </div>
               <div
                 className='container_bottom_right'

@@ -85,7 +85,7 @@ const SignUp = () => {
             id='password'
             type='password'
             placeholder='Nhập mật khẩu'
-            alue={password}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <div
