@@ -1,22 +1,30 @@
 import { useRouter } from 'next/router'
-import { Button, Menu, Dropdown, Space } from 'antd';
-import { HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { useEffect, useState, useContext } from 'react';
+import { Button, Menu, Dropdown, Space, message, Modal } from 'antd';
+import { AppstoreAddOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, useContext } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import styles from '../styles/TopNav.module.scss';
-import { Context } from '../context';
+import styles from '../../styles/components/nav/TopNav.module.scss';
+import { Context } from '../../context/index';
 
 const TopNav = () => {
   const router = useRouter();
   const { state: { user }, dispatch } = useContext(Context);
   const [currItem, setCurrItem] = useState('/');
+  const [dropdownOpened, setDropdownOpened] = useState(false);
+  const [modalOpened, setModalOpened] = useState(false);
 
   const menuItems = (
     <Menu
       items={[
+        displayGreeting(user && user.name),
+        (user && user.role && user.role.includes('Instructor'))
+        && {
+          label: 'Truy cập trang Instructor',
+          icon: <AppstoreAddOutlined />,
+          onClick: () => { router.push('/instructor') }
+        },
         {
           label: 'Thông tin tài khoản',
           icon: <UserOutlined />,
@@ -25,7 +33,7 @@ const TopNav = () => {
         {
           label: 'Đăng xuất',
           icon: <LogoutOutlined />,
-          onClick: signoutHandler
+          onClick: () => setModalOpened(true)
         },
       ]}
     />
@@ -35,14 +43,29 @@ const TopNav = () => {
     ['/', '/signin', '/signup'].includes(router.pathname) && setCurrItem(router.pathname);
   }, [router.pathname]);
 
+  function displayGreeting(name) {
+    return {
+      label: <h4>Xin chào {name}!</h4>,
+      selectable: 'string'
+    }
+  }
+
   async function signoutHandler() {
-    const { data } = await axios.get('/api/auth/logout');
-    window.localStorage.removeItem('user');
-    dispatch({
-      type: 'LOGOUT'
-    });
-    toast(data.message);
-    router.push('/')
+    try {
+      await axios.get('/api/auth/logout');
+      window.localStorage.removeItem('user');
+      dispatch({
+        type: 'LOGOUT'
+      });
+      message.info('Đã đăng xuất');
+      router.push('/');
+      setModalOpened(false);
+    }
+    catch (error) {
+      console.log('error', error);
+      message.error('Có lỗi xảy ra')
+      setModalOpened(false);
+    }
   }
 
   return (
@@ -65,6 +88,18 @@ const TopNav = () => {
 
         <div className={styles.container_right}>
           {
+            user && (
+              (user.role && !user.role.includes('Instructor'))
+              && (
+                <Link href='/user/become-instructor'>
+                  <a className={styles.container_right_label}>
+                    <span>Trở thành Instructor</span>
+                  </a>
+                </Link>
+              )
+            )
+          }
+          {
             (user === null && currItem !== '/signin') && (
               <Button size='large' id={styles.btn_signin}>
                 <Link href='/signin'>
@@ -86,12 +121,12 @@ const TopNav = () => {
             user !== null && (
               <div style={{
                 display: 'flex',
-                width: '124px',
+                width: 'fit-content',
                 textAlign: 'right',
                 border: '2px solid #b0b0b0',
-                padding: '5px 8px',
+                padding: '6px',
                 margin: '2px 6px 0px 6px',
-                borderRadius: '5px'
+                borderRadius: '30%'
               }}
               >
                 <Dropdown
@@ -101,13 +136,22 @@ const TopNav = () => {
                   <a onClick={(e) => e.preventDefault(e)}>
                     <Space>
                       <UserOutlined />
-                      {user?.name}
                     </Space>
                   </a>
                 </Dropdown>
               </div>
             )
           }
+          <Modal
+            title='Đăng xuất'
+            open={modalOpened}
+            cancelText='Hủy'
+            okText='Đồng ý'
+            onOk={signoutHandler}
+            onCancel={() => setModalOpened(false)}
+          >
+            <span style={{ fontSize: '15px' }}>Bạn muốn đăng xuất ?</span>
+          </Modal>
         </div>
       </div>
     </div>)

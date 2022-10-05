@@ -1,0 +1,13 @@
+.container {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+
+  &_content {
+    margin: 12px 12px;
+  }
+}
+
+.h1 {
+  padding: 12px 6px;
+}

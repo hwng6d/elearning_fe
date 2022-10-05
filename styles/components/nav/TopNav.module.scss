@@ -8,13 +8,16 @@
   justify-content: space-between;
   border-top: 12px solid black;
   border-image: linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61)) 1 stretch;
-  box-shadow: 10px 2px 3px rgb(168, 168, 168);
+  // border-image: linear-gradient(to right, #2b506c, #368bcb) 1 stretch;
+  box-shadow: 10px 2px 3px rgb(220, 220, 220);
+  background-color: #ffff;
 
   &_left {
     display: flex;
     min-height: 40px;
     max-height: 64px;
     margin: 4px 0px;
+    align-items: center;
   }
 
   &_right {
@@ -22,6 +25,14 @@
     width: fit-content;
     align-items: center;
     align-content: center;
+
+    &_label {
+      margin: 4px 14px;
+      color: rgb(120, 120, 120);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
     #btn_signin, #btn_signup {
       font-size: 16px;

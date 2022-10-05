@@ -1,8 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { SyncOutlined } from '@ant-design/icons';
-import { Input, Button, Space } from 'antd';
+import { Input, Button, Space, message } from 'antd';
 import { Context } from '../context';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -43,17 +42,17 @@ const SignIn = () => {
         type: 'LOGIN',
         payload: data.data
       });
-
+      
       window.localStorage.setItem('user', JSON.stringify(data.data));
+      
+      router.push('/user');
 
-      router.push('/');
-
-      toast.success('Đã đăng nhập !');
+      message.success('Đã đăng nhập !');
       setLoading(false);
     }
     catch (error) {
       const err_message = ERRORS_NAME.find(item => { if (error.response.data.message.includes(item.keyword)) return item });
-      toast.error(err_message ? err_message.vietnamese : error.response.data.message);
+      message.error(err_message ? err_message.vietnamese : error.response.data.message);
       setLoading(false);
     }
   }
@@ -65,7 +64,6 @@ const SignIn = () => {
         <form
           id='signup_form'
           className={styles.form}
-          onSubmit={submitFormHandler}
         >
           <div className={styles.form_email}>
             <label className={styles.form_label}>Email</label>

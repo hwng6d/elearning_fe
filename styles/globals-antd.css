@@ -1,0 +1,53 @@
+/* when sidebar is triggered */
+.ant-layout .ant-layout-sider.ant-layout-sider-has-trigger .ant-layout-sider-children .ant-menu .ant-menu-item {
+  margin: 0px 0px;
+}
+
+/* when sidebar is collapsed (not triggered): ant-ment-item */
+.ant-layout .ant-layout-sider.ant-layout-sider-collapsed .ant-layout-sider-children .ant-menu .ant-menu-item {
+  margin: 20px 0px 0px 0px;
+}
+
+/* when sidebar is collapsed (not triggered): ant-ment-submenu */
+.ant-layout .ant-layout-sider.ant-layout-sider-collapsed .ant-layout-sider-children .ant-menu .ant-menu-submenu {
+  margin: 20px 0px 0px 0px;
+}
+
+/* when menu item is selected */
+.ant-menu-item-selected {
+  background-color: rgba(0, 0, 0, 0) !important;
+  color: #0887fd !important;
+}
+
+.ant-space.ant-space-horizontal.ant-space-align-center {
+  gap: 8px;
+  width: 22px;
+  height: 22px;
+  justify-content: center;
+}
+
+.ant-dropdown-trigger {
+  color: rgb(29, 29, 29);
+}
+
+.ant-dropdown-menu-title-content h4 {
+  margin: 6px 2px;
+}
+
+.ant-modal-close-x {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+.ant-modal-close-x:hover {
+  margin: 8px;
+  width: 40px !important;
+  height: 40px !important;
+  background-color: bisque;
+  border-radius: 15%;
+  transition: 0.3s;
+}
+
+.disable_add_button .ant-upload.ant-upload-select.ant-upload-select-picture-card{
+    display: none;
+}
