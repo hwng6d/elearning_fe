@@ -1,10 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from 'next/router';
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { Context } from '../context/index';
-import { toast } from 'react-toastify';
 import style from '../styles/ForgotPassword.module.scss';
 
 const ForgotPassword = () => {
@@ -26,7 +25,7 @@ const ForgotPassword = () => {
 
   useEffect(() => {
     if (success) {
-      toast.success('Khôi phục mật khẩu thành công')
+      message.success('Khôi phục mật khẩu thành công')
       router.push('/signin');
     }
   }, [success]);

@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { SyncOutlined } from '@ant-design/icons';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
 import { Context } from '../context';
 import Link from 'next/link';
 import styles from '../styles/SignUp.module.scss';
@@ -39,13 +38,13 @@ const SignUp = () => {
         { name, email, password }
       );
 
-      toast.success('Đăng ký thành công !');
+      message.success('Đăng ký thành công !');
       setLoading(false);
     }
     catch (error) {
       console.log(error);
       const err_message = ERRORS_NAME.find(item => { if (error.response.data.message.includes(item.keyword)) return item });
-      toast.error(err_message ? err_message.vietnamese : error.response.data.message)
+      message.error(err_message ? err_message.vietnamese : error.response.data.message)
       setLoading(false);
     }
   }

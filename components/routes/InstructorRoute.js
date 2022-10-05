@@ -2,10 +2,10 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useRouter } from "next/router";
-import UserNav from '../nav/UserNav';
+import InstructorNav from '../nav/InstructorNav';
 import { SyncOutlined } from '@ant-design/icons';
 
-const UserRoute = ({ user, children, hideSidebar = true }) => {
+const InstructorRoute = ({ children, hideSidebar = true }) => {
   const router = useRouter();
   const [ok, setOk] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -16,13 +16,13 @@ const UserRoute = ({ user, children, hideSidebar = true }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get('/api/auth/current-user');
+      const { data } = await axios.get('/api/instructor/get-current-instructor');
       if (data.success) setOk(true);
     }
     catch (error) {
-      console.log('Error calling current user', error);
+      console.log('Problem with checking role...!', error);
       setOk(false);
-      router.push('/signin');
+      router.push('/');
     }
   }
 
@@ -33,7 +33,7 @@ const UserRoute = ({ user, children, hideSidebar = true }) => {
           ? <SyncOutlined spin={true} />
           : (
             <div>
-              <UserNav
+              <InstructorNav
                 hideSidebar={hideSidebar}
                 collapsed={collapsed}
                 setCollapsed={setCollapsed}
@@ -46,4 +46,4 @@ const UserRoute = ({ user, children, hideSidebar = true }) => {
   )
 }
 
-export default UserRoute;
+export default React.memo(InstructorRoute);
