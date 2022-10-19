@@ -26,7 +26,7 @@ function StripeCallback() {
       style={{ padding: '24px', textAlign: 'center' }}
     >
       <SyncOutlined spin={true} style={{ fontSize: '100px', color: '#ff6f44' }}/>
-      <div style={{ display: 'block', fontSize: '20px' }}>{message}</div>
+      {/* <div style={{ display: 'block', fontSize: '20px' }}>{message}</div> */}
     </div>
   )
 }

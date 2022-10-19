@@ -134,7 +134,7 @@ const TopNav = () => {
                   overlay={menuItems}
                 >
                   <a onClick={(e) => e.preventDefault(e)}>
-                    <Space>
+                    <Space style={{ width: '22px' }}>
                       <UserOutlined />
                     </Space>
                   </a>
