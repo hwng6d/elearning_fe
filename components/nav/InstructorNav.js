@@ -11,36 +11,33 @@ import Link from 'next/link';
 const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
   const router = useRouter();
   const [currSelected, setCurrSelected] = useState('/instructor');
-  const [child, setChild] = useState(<CInstructorIndex />);
+  const [child, setChild] = useState(null);
 
-  const sidebarItems = [
-    {
-      key: '/instructor',
-      icon: React.createElement(UserOutlined),
-      label: 'Bảng điều khiển',
-      onClick: () => selectedHandler(<CInstructorIndex />, '/instructor')
-    },
-    {
-      key: '/instructor/course/create',
-      icon: React.createElement(PlusOutlined),
-      label: 'Tạo khóa học mới',
-      onClick: () => selectedHandler(<CCreate />, '/instructor/course/create')
-    }
-  ];
+  // const sidebarItems = [
+  //   {
+  //     key: '/instructor',
+  //     icon: React.createElement(UserOutlined),
+  //     label: 'Bảng điều khiển',
+  //     onClick: () => selectedHandler(<CInstructorIndex />, '/instructor')
+  //   },
+  //   {
+  //     key: '/instructor/course/create',
+  //     icon: React.createElement(PlusOutlined),
+  //     label: 'Tạo khóa học mới',
+  //     onClick: () => selectedHandler(<CCreate />, '/instructor/course/create')
+  //   }
+  // ];
 
   const selectedHandler = (childComponent, currentSelected) => {
-    setChild(childComponent);
+    // setChild(childComponent);
     setCurrSelected(currentSelected);
   }
 
   useEffect(() => {
-    if (sidebarItems.map(item => item.key).includes(router.pathname)) {
-      setCurrSelected(router.pathname);
-      if (router.pathname === '/instructor')
-        selectedHandler(<CInstructorIndex />, '/instructor');
-      else if (router.pathname === '/instructor/course/create')
-        selectedHandler(<CCreate />, '/instructor/course/create');
-    }
+    if (router.pathname === '/instructor')
+      selectedHandler(<CInstructorIndex />, '/instructor');
+    else if (router.pathname === '/instructor/course/create')
+      selectedHandler(<CCreate />, '/instructor/course/create');
   }, [router.pathname])
 
   return (
@@ -59,20 +56,41 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
         <Menu
           mode="inline"
           theme='light'
-          items={sidebarItems}
+          // items={sidebarItems}
           style={{
             height: '100%',
             borderRight: 0,
           }}
           selectedKeys={[currSelected]}
-        />
+        >
+          <Menu.SubMenu key='group_1' title='Bảng điều khiển' icon={<UserOutlined />}>
+            <Menu.Item
+              key='/instructor'
+              icon={<UserOutlined />}
+              onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
+            >
+              <Link href='/instructor'>
+                <a>Các khóa học</a>
+              </Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.Item
+            key='/instructor/course/create'
+            icon={<PlusOutlined />}
+            onClick={() => selectedHandler(<CCreate />, '/instructor/course/create')}
+          >
+            <Link href='/instructor/course/create'>
+              <a>Tạo khóa học mới</a>
+            </Link>
+          </Menu.Item>
+        </Menu>
       </Sider>
       <Content
         className="site-layout-background"
         style={{ padding: 16, margin: 0, minHeight: 'calc(100vh - 80px)' }}
       >
-        {/* {children} */}
-        {child}
+        {children}
+        {/* {child} */}
       </Content>
     </Layout>
   )

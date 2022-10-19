@@ -1,0 +1,29 @@
+.container {
+  margin: 16px 8px 8px 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(364px, 0px));
+  gap: 3rem;
+  row-gap: 2rem;
+
+  &_card {
+    width: 364px;
+    height: 300px;
+    display: inline-block;
+
+    &_meta {
+      justify-content: space-between;
+    }
+  }
+}
+
+.course {
+
+  &_name {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    min-width: 100%;
+    white-space: nowrap;
+    animation: marquee 4s ease-in-out forwards;
+  }
+}

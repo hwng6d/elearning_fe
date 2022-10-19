@@ -8,8 +8,8 @@ import styles from '../../../styles/components/instructor/course/CourseCreate.mo
 
 function CCreate() {
   const [formValues, setFormValues] = useState({
-    courseName: '',
-    courseDescription: '',
+    name: '',
+    description: '',
     paid: true,
     price: '9.99',
     category: '',
@@ -22,7 +22,6 @@ function CCreate() {
   const [previewOpened, setPreviewOpened] = useState(false);
 
   const inputChangeHandler = (e) => {
-    console.log(e)
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   }
 
@@ -31,6 +30,7 @@ function CCreate() {
       file.preview = await getBase64(file.originFileObj);
     }
 
+    console.log('file: ', file);
     setPreviewImage(file.url || file.preview);
     setPreviewOpened(true);
   }
@@ -43,7 +43,6 @@ function CCreate() {
   const imageUploadHandler = async () => {
     setFormValues({ ...formValues, uploading: true });
     try {
-      console.log(fileList[0]);
       const base64 = await getBase64(fileList[0].originFileObj);
       const { data } = await axios.post('/api/course/upload-image', { image: base64 });
       setImage(data.data);
@@ -53,7 +52,7 @@ function CCreate() {
     catch (error) {
       console.log('error: ', error);
       setFormValues({ ...formValues, uploading: false });
-      message.error('Tải hình lên thất bại, hãy thử lại');
+      message.error(`Tải hình lên thất bại, hãy thử lại.\nChi tiết: ${error.message}`);
     }
   }
 
@@ -67,7 +66,7 @@ function CCreate() {
       setFormValues({ ...formValues, uploading: false });
       message.success('Xóa hình đã tải thành công');
     }
-    catch(error) {
+    catch (error) {
       console.log('error: ', error);
       setFormValues({ ...formValues, uploading: false });
       message.error('Xóa hình đã tải thất bại, hãy thử lại');
@@ -79,26 +78,27 @@ function CCreate() {
     console.table(formValues);
     console.table(image);
 
-    setFormValues({...formValues, loading: true});
+    setFormValues({ ...formValues, loading: true });
     try {
       const { data } = await axios.post('/api/course', {
         ...formValues,
         image
       });
-      setFormValues({...formValues, loading: false});
+      setFormValues({ ...formValues, loading: false });
       message.success('Tạo khóa học thành công, hãy đến những bước tiếp theo!');
+      // window.location.href = '/instructor'
     }
-    catch(error) {
+    catch (error) {
       console.log(error);
-      setFormValues({...formValues, loading: false});
-      message.success('Tạo thất bại, vui lòng thử lại nhé!');
+      setFormValues({ ...formValues, loading: false });
+      message.error('Tạo thất bại, vui lòng thử lại nhé!');
     }
   }
 
-  useEffect(() => {
-    if (formValues.loading || formValues.uploading)
-      message.loading();
-  }, [formValues.loading, formValues.uploading])
+  // useEffect(() => {
+  //   if (formValues.loading || formValues.uploading)
+  //     message.loading();
+  // }, [formValues.loading, formValues.uploading])
 
   return (
     <div
@@ -137,15 +137,15 @@ function CCreate() {
         >
           <Form.Item label='Tên khóa học'>
             <Input
-              name='courseName'
+              name='name'
               allowClear={true}
-              value={formValues.courseName}
+              value={formValues.name}
               onChange={(e) => inputChangeHandler(e)}
             />
           </Form.Item>
           <Form.Item label='Mô tả'>
             <Input.TextArea
-              name='courseDescription'
+              name='description'
               allowClear={true}
               onChange={(e) => inputChangeHandler(e)}
             />
@@ -161,7 +161,11 @@ function CCreate() {
           <Form.Item label='Loại khóa học' name='paid'>
             <Select
               value={formValues.paid}
-              onChange={(value) => setFormValues({ ...formValues, paid: value })}
+              onChange={(value) => setFormValues({
+                ...formValues,
+                paid: value,
+                price: !value && 0
+              })}
             >
               <Select.Option value={true}>Có phí</Select.Option>
               <Select.Option value={false}>Miễn phí</Select.Option>
@@ -183,6 +187,7 @@ function CCreate() {
               <Upload
                 className={`custom-upload-horizontal-image ${fileList.length && "disable_add_button"}`}
                 listType='picture-card'
+                accept='image/*'
                 onChange={chooseImageHandler}
                 onPreview={previewHandler}
                 fileList={fileList}
@@ -214,7 +219,7 @@ function CCreate() {
               }
             </Space>
             <Modal
-              title='Xem trước'
+              title={<b>Xem trước</b>}
               open={previewOpened}
               footer={null}
               centered={true}
