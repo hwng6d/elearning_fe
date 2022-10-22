@@ -1,0 +1,71 @@
+.container {
+  // border: 1px solid black;
+  cursor: pointer;
+
+  &_header {
+    border-bottom: 1px solid #d9d9d9;
+  }
+
+  &_body {
+    padding: 12px 0px;
+    height: 136px;
+    display: grid;
+
+    &_coursename {
+      margin-bottom: 8px !important;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 20px;
+      height: 42px;
+      white-space: break-spaces;
+      overflow: hidden;
+      color: black;
+    }
+
+    &_courseinstructor {
+      margin-bottom: 8px !important;
+      display: block;
+      font-size: 14px;
+      line-height: 18px;
+      color: black;
+    }
+
+    &_courseprice {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 18px;
+      margin-bottom: 0px;
+      color: black;
+    }
+  }
+}
+
+.popover_container {
+  padding: 16px 24px;
+
+  &_coursename {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 24px;
+    overflow: hidden;
+  }
+
+  &_coursedate {
+    margin-top: 8px !important;
+  }
+
+  &_courselessons, &_coursecategory, &_coursecommitment {
+    margin-top: 6px !important;
+  }
+
+  &_addtocart {
+    width: 100%;
+    border: none;
+    background-image: linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61));
+
+    &:hover {
+      transition: 0.5s;
+      background-image: linear-gradient(to left, rgb(255, 105, 105), rgb(255, 155, 61));
+    }
+  }
+}

@@ -10,6 +10,7 @@ import ModalEditCourse from '../../../../components/forms/ModalEditCourse';
 import { getBase64 } from '../../../../utils/getBase64';
 import styles from '../../../../styles/components/instructor/course/view/[slug].module.scss';
 import ModalEditLesson from '../../../../components/forms/ModalEditLesson';
+import loadVideo from '../../../../utils/loadVideo';
 
 function CourseView() {
   const router = useRouter();
@@ -33,18 +34,21 @@ function CourseView() {
   // #endregion
 
   // #region | create lesson component
-  const [newLesson, setNewLesson] = useState({ title: '', content: '', video_link: {}, free_preview: false });
+  const [newLesson, setNewLesson] = useState({ title: '', content: '', video_link: {}, duration: 0, free_preview: false });
   const [videosUpload, setVideosUpload] = useState([]);
   const [progressUploadVideo, setProgressUploadVideo] = useState(0);
-  const [validateMessage, setValidateMessage] = useState('');
   // #endregion
 
   // #region | edit course component
   const [courseBeingEdited, setCourseBeingEdited] = useState({
     name: '',
+    summary: '',
     category: '',
     paid: '',
     price: '',
+    goal: [],
+    requirements: [],
+    languages: [],
     published: false,
   });
   // #endregion
@@ -54,6 +58,7 @@ function CourseView() {
     _id: '',
     title: '',
     content: '',
+    duration: 0,
     video_link: {},
     free_preview: false,
   })
@@ -148,6 +153,8 @@ function CourseView() {
         return;
       }
 
+      const videoInfo = await loadVideo(file);
+
       // set video file for uploading to s3
       const videoData = new FormData();
       videoData.append("video", file);
@@ -162,9 +169,10 @@ function CourseView() {
             setProgressUploadVideo(30);
           }
         }
-      )
+      );
+
       setProgressUploadVideo(100);
-      setNewLesson({ ...newLesson, video_link: videoResponse.data });
+      setNewLesson({ ...newLesson, duration: Math.round(videoInfo.duration), video_link: videoResponse.data });
       setValidateMessage(<div></div>);
     }
     catch (error) {
@@ -196,7 +204,7 @@ function CourseView() {
       );
       message.success('Thêm bài học thành công !');
       setCourse(lessonResponse.data);
-      setNewLesson({ title: '', content: '', video_link: {}, free_preview: false });
+      setNewLesson({ title: '', content: '', duration: 0, video_link: {}, free_preview: false });
       setVideosUpload([]);
       setValidateMessage(<div></div>);
       setProgressUploadVideo(0);
@@ -210,7 +218,7 @@ function CourseView() {
 
   // #region | edit course component
   const editCourseHandler = async () => {
-    console.table(courseBeingEdited);
+    console.log(courseBeingEdited);
     try {
       const { data } = await axios.put(`/api/course/${course._id}`, courseBeingEdited);
       setCourse(data.data);
@@ -229,7 +237,11 @@ function CourseView() {
       category: course?.category,
       paid: course?.paid,
       price: course?.price,
-      description: course?.description
+      description: course?.description,
+      summary: course?.summary,
+      goal: course?.goal,
+      requirements: course?.requirements,
+      languages: course?.languages,
     })
   }
   // #endregion
@@ -270,6 +282,10 @@ function CourseView() {
       price: course?.price,
       description: course?.description,
       published: course?.published,
+      summary: course?.summary,
+      requirements: course?.requirements,
+      goal: course?.goal,
+      languages: course?.languages,
     })
   }, [course])
 
@@ -341,6 +357,19 @@ function CourseView() {
         <div
           className={styles.container_detail}
         >
+          {/* Tóm tắt section */}
+          <div
+            className={styles.container_detail_summary}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <h2 className={styles.h2}>Tóm tắt</h2>
+            </div>
+            <div
+              className={styles.container_detail_summary_detail}
+            >
+              {course?.summary}
+            </div>
+          </div>
           {/* Mô tả section */}
           <div
             className={styles.container_detail_description}
@@ -412,7 +441,7 @@ function CourseView() {
                       title='Tùy chọn'
                       placement='left'
                       content={
-                        <Space direction='vertical' size='small' style={{ alignItems: 'flex-start' }}>
+                        <Space direction='vertical' size='small' style={{ alignItems: 'flex-start', padding: '12px' }}>
                           <Space
                             className={styles.container_detail_lessons_detail_item_popup_row}
                             direction='horizontal'
@@ -424,6 +453,7 @@ function CourseView() {
                                 _id: item._id,
                                 title: item.title,
                                 content: item.content,
+                                duration: item?.duration,
                                 video_link: item.video_link,
                                 free_preview: item.free_preview,
                               });
@@ -520,8 +550,6 @@ function CourseView() {
           videoRemoveHandler={videoRemoveHandler}
           uploadVideoHandler={uploadVideoHandler}
           addLessonHandler={addLessonHandler}
-          validateMessage={validateMessage}
-          setValidateMessage={setValidateMessage}
         />
 
         <ModalEditCourse

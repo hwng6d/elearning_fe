@@ -2,6 +2,7 @@ import { Button, Input, Modal, Space, InputNumber, Select, Tooltip, Form, Switch
 import React, { useState, useEffect } from 'react';
 import { ToTopOutlined, UploadOutlined } from '@ant-design/icons'
 import styles from '../../styles/components/forms/ModalEditCourse.module.scss';
+import InputList from '../inputlist/InputList';
 
 const ModalAddLesson = ({
   course,
@@ -58,12 +59,49 @@ const ModalAddLesson = ({
                   onChange={(e) => inputChangeHandler(e)}
                 />
               </Form.Item>
+              <Form.Item label='Tóm tắt' className={styles.form_item}>
+                <Input.TextArea
+                  name='summary'
+                  showCount={true}
+                  maxLength={200}
+                  allowClear={true}
+                  value={courseBeingEdited.summary}
+                  onChange={(e) => inputChangeHandler(e)}
+                />
+              </Form.Item>
               <Form.Item label='Tag' className={styles.form_item}>
                 <Input
                   name='category'
                   allowClear={true}
                   value={courseBeingEdited.category}
                   onChange={(e) => inputChangeHandler(e)}
+                />
+              </Form.Item>
+              <Form.Item label='Yêu cầu kiến thức' className={styles.form_item}>
+                <InputList
+                  type='textbox'
+                  value='requirements'
+                  maxLength={5}
+                  formValues={courseBeingEdited}
+                  setFormValues={setCourseBeingEdited}
+                />
+              </Form.Item>
+              <Form.Item label='Học viên đạt được sau khóa học' className={styles.form_item}>
+                <InputList
+                  type='textbox'
+                  value='goal'
+                  maxLength={5}
+                  formValues={courseBeingEdited}
+                  setFormValues={setCourseBeingEdited}
+                />
+              </Form.Item>
+              <Form.Item label='Ngôn ngữ' className={styles.form_item}>
+                <InputList
+                  type='textbox'
+                  value='languages'
+                  maxLength={2}
+                  formValues={courseBeingEdited}
+                  setFormValues={setCourseBeingEdited}
                 />
               </Form.Item>
               <Form.Item label='Loại khóa học' name='paid' className={styles.form_item}>

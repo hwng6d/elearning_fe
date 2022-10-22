@@ -121,12 +121,14 @@ const TopNav = () => {
             user !== null && (
               <div style={{
                 display: 'flex',
-                width: 'fit-content',
+                width: '64px',
+                height: '40px',
                 textAlign: 'right',
-                border: '2px solid #b0b0b0',
                 padding: '6px',
-                margin: '2px 6px 0px 6px',
-                borderRadius: '30%'
+                margin: '2px 8px 0px 6px',
+                backgroundImage: 'linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61))',
+                alignItems: "center",
+                justifyContent: 'center',
               }}
               >
                 <Dropdown
@@ -135,7 +137,7 @@ const TopNav = () => {
                 >
                   <a onClick={(e) => e.preventDefault(e)}>
                     <Space style={{ width: '22px' }}>
-                      <UserOutlined />
+                      <UserOutlined style={{ color: 'white', fontSize: '22px' }}/>
                     </Space>
                   </a>
                 </Dropdown>
