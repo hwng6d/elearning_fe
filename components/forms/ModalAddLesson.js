@@ -15,9 +15,8 @@ const ModalAddLesson = ({
   videoRemoveHandler,
   uploadVideoHandler,
   addLessonHandler,
-  validateMessage,
-  setValidateMessage,
 }) => {
+  const [validateMessage, setValidateMessage] = useState('');
 
   return (
     <Modal

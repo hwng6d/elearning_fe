@@ -3,6 +3,7 @@ import { Button, Modal, Input, Space, Tooltip, Upload, Progress, Switch, message
 import { CheckOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Plyr from 'plyr-react';
+import loadVideo from '../../utils/loadVideo';
 import styles from '../../styles/components/forms/modalEditLesson.module.scss'
 
 const ModalEditLesson = ({
@@ -11,7 +12,6 @@ const ModalEditLesson = ({
 	setModalEditLesson,
 	lessonBeingEdited,  // title, content, video_link
 	setLessonBeingEdited,
-	// closeEditLessonHandler,
 	editLessonHandler,
 }) => {
 	const [validateMessage, setValidateMessage] = useState('');
@@ -43,6 +43,8 @@ const ModalEditLesson = ({
 				return;
 			}
 
+			const videoInfo = await loadVideo(file);
+
 			// set video file for uploading to s3
 			const videoData = new FormData();
 			videoData.append("video", file);
@@ -66,7 +68,7 @@ const ModalEditLesson = ({
 			);
 
 			setProgressUploadVideo(100);
-			setLessonBeingEdited({ ...lessonBeingEdited, video_link: videoResponse.data });
+			setLessonBeingEdited({ ...lessonBeingEdited, duration: Math.round(videoInfo.duration), video_link: videoResponse.data });
 			setValidateMessage(<div></div>);
 		}
 		catch (error) {

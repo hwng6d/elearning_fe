@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Breadcrumb, Form, Input, InputNumber, Select, Button, Tag, Upload, Space, Modal, Image, message } from 'antd';
 import { SettingOutlined, HomeOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { getBase64 } from '../../../utils/getBase64';
+import InputList from '../../inputlist/InputList';
 import styles from '../../../styles/components/instructor/course/CourseCreate.module.scss';
 
 function CCreate() {
+  const router = useRouter();
   const [formValues, setFormValues] = useState({
     name: '',
+    summary: '',
+    goal: [],
     description: '',
     paid: true,
     price: '9.99',
     category: '',
+    requirements: [],
+    languages: ['Tiếng Việt'],
+    goal: [],
     uploading: false,
     loading: false,
   });
@@ -75,7 +83,7 @@ function CCreate() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.table(formValues);
+    console.log('formValues: ', formValues);
     console.table(image);
 
     setFormValues({ ...formValues, loading: true });
@@ -87,6 +95,7 @@ function CCreate() {
       setFormValues({ ...formValues, loading: false });
       message.success('Tạo khóa học thành công, hãy đến những bước tiếp theo!');
       // window.location.href = '/instructor'
+      router.push('/instructor');
     }
     catch (error) {
       console.log(error);
@@ -94,11 +103,6 @@ function CCreate() {
       message.error('Tạo thất bại, vui lòng thử lại nhé!');
     }
   }
-
-  // useEffect(() => {
-  //   if (formValues.loading || formValues.uploading)
-  //     message.loading();
-  // }, [formValues.loading, formValues.uploading])
 
   return (
     <div
@@ -130,7 +134,7 @@ function CCreate() {
         <h1>Điền thông tin khóa học mới</h1>
         <Form
           labelAlign='left'
-          labelCol={{ span: 3 }}
+          labelCol={{ span: 4 }}
           wrapperCol={{ span: 8 }}
           layout='horizontal'
           initialValues={formValues}
@@ -138,11 +142,24 @@ function CCreate() {
           <Form.Item label='Tên khóa học'>
             <Input
               name='name'
+              minLength={3}
+              maxLength={320}
+              showCount={true}
               allowClear={true}
               value={formValues.name}
               onChange={(e) => inputChangeHandler(e)}
             />
           </Form.Item>
+          <Form.Item label='Tóm tắt'>
+            <Input.TextArea
+              name='summary'
+              showCount={true}
+              maxLength={200}
+              allowClear={true}
+              onChange={(e) => inputChangeHandler(e)}
+            />
+          </Form.Item>
+          {/* goal input */}
           <Form.Item label='Mô tả'>
             <Input.TextArea
               name='description'
@@ -233,6 +250,33 @@ function CCreate() {
                 preview={false}
               />
             </Modal>
+          </Form.Item>
+          <Form.Item  label='Yêu cầu trước khóa học'>
+            <InputList
+              maxLength={5}
+              value='requirements'
+              type='textbox'
+              formValues={formValues}
+              setFormValues={setFormValues}
+            />
+          </Form.Item>
+          <Form.Item  label='Ngôn ngữ'>
+            <InputList
+              maxLength={2}
+              value='languages'
+              type='select'
+              formValues={formValues}
+              setFormValues={setFormValues}
+            />
+          </Form.Item>
+          <Form.Item  label='Đầu ra'>
+            <InputList
+              maxLength={2}
+              value='goal'
+              type='textbox'
+              formValues={formValues}
+              setFormValues={setFormValues}
+            />
           </Form.Item>
           <Button
             type='primary'
