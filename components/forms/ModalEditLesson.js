@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Modal, Input, Space, Tooltip, Upload, Progress, Switch, message } from 'antd';
 import { CheckOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -8,12 +8,18 @@ import styles from '../../styles/components/forms/modalEditLesson.module.scss'
 
 const ModalEditLesson = ({
 	course,
+	getCourseBySlug,
 	modalEditLesson,  // open, which
-	setModalEditLesson,
-	lessonBeingEdited,  // title, content, video_link
-	setLessonBeingEdited,
-	editLessonHandler,
+	setModalEditLesson
 }) => {
+	const [lessonBeingEdited, setLessonBeingEdited] = useState({
+		_id: '',
+		title: '',
+		content: '',
+		duration: 0,
+		video_link: {},
+		free_preview: false,
+	})
 	const [validateMessage, setValidateMessage] = useState('');
 	const [videosUpload, setVideosUpload] = useState([]);
 	const [progressUploadVideo, setProgressUploadVideo] = useState(0);
@@ -76,11 +82,42 @@ const ModalEditLesson = ({
 		}
 	}
 
+	const editLessonHandler = async () => {
+		console.log('lessonBeingEdited: ')
+		console.log(lessonBeingEdited);
+
+		try {
+			await axios.put(
+				`/api/course/${course._id}/lesson/${lessonBeingEdited._id}/update`,
+				{ lesson: lessonBeingEdited, instructorId: course.instructor._id }
+			);
+			getCourseBySlug();
+			setModalEditLesson({ ...modalEditLesson, opened: false });
+			message.success('Cập nhật thành công!');
+		}
+		catch (error) {
+			setModalEditLesson({ ...modalEditLesson, opened: false });
+			message.error(`Xảy ra lỗi khi cập nhật bài học, vui lòng thử lại\nChi tiết: ${error.message}`)
+		}
+	}
+
+	useEffect(() => {
+		setLessonBeingEdited({
+			...lessonBeingEdited,
+			_id: modalEditLesson.which._id,
+			title: modalEditLesson.which.title,
+			content: modalEditLesson.which.content,
+			duration: modalEditLesson?.which?.duration,
+			video_link: modalEditLesson.which.video_link,
+			free_preview: modalEditLesson.which.free_preview,
+		});
+	}, [modalEditLesson.opened])
+
 	return (
 		<Modal
 			className={styles.container}
 			width={640}
-			title={<p>Chỉnh sửa bài học <b>{modalEditLesson.which}</b></p>}
+			title={<p>Chỉnh sửa bài học <b>{modalEditLesson.which.title}</b></p>}
 			open={modalEditLesson.opened}
 			centered={true}
 			maskClosable={false}
@@ -183,7 +220,7 @@ const ModalEditLesson = ({
 								type: 'video',
 								sources: [
 									{
-										src: lessonBeingEdited.video_link.Location,
+										src: lessonBeingEdited?.video_link?.Location,
 										provider: 'html5'
 									}
 								]

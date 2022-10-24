@@ -64,6 +64,26 @@
   margin-top: 0px;
 }
 
-/* .ant-popover-inner-content {
-  padding: 0px !important;
-} */
+.ant-menu.ant-menu-dark.menu_freepreview {
+  background-color: black;
+}
+
+.ant-menu.ant-menu-dark.menu_freepreview .ant-menu-item {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 8px 12px;
+  height: fit-content;
+}
+
+.ant-menu.ant-menu-dark.menu_freepreview .ant-menu-item.ant-menu-item-selected {
+  background-color: #3e4143 !important;
+}
+
+.ant-modal.modal_freepreview .ant-modal-close {
+  margin: 4px 4px 0px 0px;
+  color: white;
+}
+
+.ant-modal.modal_freepreview .ant-modal-close-x:hover {
+  background-color: black;
+}

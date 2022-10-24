@@ -10,10 +10,10 @@
   justify-content: space-between;
   font-weight: 600;
   font-size: 15px;
-  width: 132px;
-  height: 132px;
+  width: 144px;
+  height: 144px;
   border: 1px solid #d1d7dc;
-  padding: 24px 0px 16px 24px;
+  padding: 24px 8px 16px 24px;
 }
 
 .container {
@@ -146,17 +146,35 @@
             }
           }
         }
-      }      
-
-      &_courseinfocard {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(132px, 0px));
-        gap: 28px;
       }
+      
+      &_bottom {
+        display: flex;
 
-      &_buttonpreview {
-        margin-top: 12px;
+        &_left {
+          width: 65%;
+
+          &_courseinfocard {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(144px, 0px));
+            gap: 32px;
+          }
+
+          &_buttonpreview {
+            margin-top: 24px;
+          }
+        }
+
+        &_right {
+          width: 35%;
+          display: flex;
+          justify-content: center;
+
+          &_courserequirements {
+            width: 85%;
+          }
+        }
       }
 
       &_courseoutline {

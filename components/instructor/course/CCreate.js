@@ -17,7 +17,7 @@ function CCreate() {
     description: '',
     paid: true,
     price: '9.99',
-    category: '',
+    category: [],
     requirements: [],
     languages: ['Tiếng Việt'],
     goal: [],
@@ -95,7 +95,7 @@ function CCreate() {
       setFormValues({ ...formValues, loading: false });
       message.success('Tạo khóa học thành công, hãy đến những bước tiếp theo!');
       // window.location.href = '/instructor'
-      router.push('/instructor');
+      router.push(`/instructor/course/view/${data.data.slug}`);
     }
     catch (error) {
       console.log(error);
@@ -168,11 +168,12 @@ function CCreate() {
             />
           </Form.Item>
           <Form.Item label='Tag (gắn thẻ)'>
-            <Input
-              allowClear={true}
-              name="category"
-              value={formValues.category}
-              onChange={(e) => inputChangeHandler(e)}
+            <InputList
+              maxLength={5}
+              value='category'
+              type='textbox'
+              formValues={formValues}
+              setFormValues={setFormValues}
             />
           </Form.Item>
           <Form.Item label='Loại khóa học' name='paid'>
