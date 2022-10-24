@@ -119,29 +119,27 @@ const TopNav = () => {
           }
           {
             user !== null && (
-              <div style={{
-                display: 'flex',
-                width: '64px',
-                height: '40px',
-                textAlign: 'right',
-                padding: '6px',
-                margin: '2px 8px 0px 6px',
-                backgroundImage: 'linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61))',
-                alignItems: "center",
-                justifyContent: 'center',
-              }}
+              <Dropdown
+                overlayStyle={{ border: '1px solid #727272' }}
+                overlay={menuItems}
               >
-                <Dropdown
-                  overlayStyle={{ border: '1px solid #727272' }}
-                  overlay={menuItems}
+                <div style={{
+                  display: 'flex',
+                  width: '64px',
+                  height: '40px',
+                  padding: '6px',
+                  margin: '2px 8px 0px 6px',
+                  backgroundImage: 'linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61))',
+                  alignItems: "center",
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
                 >
                   <a onClick={(e) => e.preventDefault(e)}>
-                    <Space style={{ width: '22px' }}>
-                      <UserOutlined style={{ color: 'white', fontSize: '22px' }}/>
-                    </Space>
+                    <UserOutlined style={{ color: 'white', fontSize: '22px' }} />
                   </a>
-                </Dropdown>
-              </div>
+                </div>
+              </Dropdown>
             )
           }
           <Modal

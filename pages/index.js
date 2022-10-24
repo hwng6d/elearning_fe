@@ -45,16 +45,16 @@ export default function Home({ courses }) {
         <Carousel autoplay={true} effect='fade'>
           <Image
             alt='carousel_1'
-            width='1280'
+            width='1280px'
             height='312px'
             src='/carousel_1.svg'
           />
-          {/* <Image
+          <Image
             alt='carousel_2'
-            width='1300'
-            height='396px'
+            width='1280px'
+            height='312px'
             src='/carousel_2.svg'
-          /> */}
+          />
         </Carousel>
       </div>
       <div

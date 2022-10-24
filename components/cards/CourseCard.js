@@ -75,8 +75,8 @@ const CourseCard = ({
             width='288px'
             height='162px'
             alt='course-cover'
+            objectFit="cover"
             src={course.image.Location}
-            style={{ objectFit: 'cover' }}
           />
         </div>
         {/* body */}

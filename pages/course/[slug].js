@@ -1,15 +1,17 @@
-import { Space, Tag, List, Button, BackTop } from "antd";
+import { Space, Tag, List, Button, BackTop, Tooltip } from "antd";
 import axios from "axios";
 import { useState } from "react";
-import { CheckOutlined, DownOutlined, GlobalOutlined, HeartFilled, PlaySquareOutlined, ReadOutlined, WifiOutlined } from "@ant-design/icons";
+import { CheckOutlined, CompressOutlined, DownOutlined, GlobalOutlined, HeartFilled, PlayCircleFilled, PlaySquareOutlined, ReadOutlined, WifiOutlined } from "@ant-design/icons";
 import Plyr from "plyr-react";
 import ReactMarkdown from 'react-markdown';
 import Image from "next/image";
 import styles from '../../styles/course/[slug].module.scss';
+import ModalFreePreview from "../../components/forms/ModalFreePreview";
 
 
 const SingleCourseView = ({ course }) => {
   const [isDesSeeMore, setIsDesSeeMore] = useState(false);
+  const [isFreePreview, setIsFreePreview] = useState({ opened: false, which: {} });
   const [hide, setHide] = useState(false);
 
   let totalDuration = 0;
@@ -30,7 +32,9 @@ const SingleCourseView = ({ course }) => {
           <div
             className={styles.container_general_wrapper_left}
           >
-            <Tag color="orange">{course.category}</Tag>
+            <Space size='small' className={styles.container_general_wrapper_left_tag}>
+              {course?.category?.map((item, index) => <Tag key={index} color="orange">{item}</Tag>)}
+            </Space>
             <h1
               className={styles.container_general_wrapper_left_coursename}
             >{course.name}</h1>
@@ -54,13 +58,14 @@ const SingleCourseView = ({ course }) => {
           >
             <div
               className={styles.container_general_wrapper_right_image}
+              onClick={() => setIsFreePreview({ ...isFreePreview, opened: true, which: {} })}
             >
               <div
                 className={styles.container_general_wrapper_right_image_detail}
               >
                 <Image
                   src={course.image.Location}
-                  style={{ objectFit: 'cover' }}
+                  objectFit='cover'
                   width='320px'
                   height='180px'
                 />
@@ -132,44 +137,80 @@ const SingleCourseView = ({ course }) => {
               </Button>
             </div>
           </div>
-
-
-
           <div
-            className={styles.container_body_wrapper_courseinfocard}
+            className={styles.container_body_wrapper_bottom}
           >
             <div
-              className={styles.courseinfocard_item}
+              className={styles.container_body_wrapper_bottom_left}
             >
-              <PlaySquareOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-              {totalDuration} s
+              <div
+                className={styles.container_body_wrapper_bottom_left_courseinfocard}
+              >
+                <div
+                  className={styles.courseinfocard_item}
+                >
+                  <PlaySquareOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
+                  {totalDuration} s
+                </div>
+                <div
+                  className={styles.courseinfocard_item}
+                >
+                  <ReadOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
+                  {course.lessons.length} bài học
+                </div>
+                <div
+                  className={styles.courseinfocard_item}
+                >
+                  <GlobalOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
+                  {course.languages.length} ngôn ngữ
+                </div>
+                <div
+                  className={styles.courseinfocard_item}
+                >
+                  <WifiOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
+                  Truy cập mọi lúc
+                </div>
+              </div>
+              <div
+                className={styles.container_body_wrapper_bottom_left_buttonpreview}
+              >
+                <Button
+                  type="primary"
+                  onClick={() => setIsFreePreview({ ...isFreePreview, opened: true, which: '' })}
+                  style={{ height: 'fit-content', width: '672px', backgroundColor: '#000000', border: 'none', padding: '8px 0px' }}
+                ><b>Xem preview</b></Button>
+              </div>
             </div>
             <div
-              className={styles.courseinfocard_item}
+              className={styles.container_body_wrapper_bottom_right}
             >
-              <ReadOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-              {course.lessons.length} bài học
+              <div
+                className={styles.container_body_wrapper_bottom_right_courserequirements}
+              >
+                <List
+                  header={
+                    <Space
+                      size='middle'
+                      split={<HeartFilled />}
+                      style={{ padding: '0px 24px' }}
+                    >
+                      <h2 className={styles.h2}>Yêu cầu trước khóa học</h2>
+                    </Space>
+                  }
+                  dataSource={course.requirements}
+                  style={{ border: '1px solid #d1d7dc', marginTop: '12px' }}
+                  renderItem={(item) => (
+                    <List.Item
+                      style={{ fontSize: '14px', backgroundColor: '#fbfdff', padding: '12px 20px', cursor: 'pointer' }}
+                    >
+                      <Space size='large'>
+                        <CompressOutlined style={{ color: 'grey' }} />{item}
+                      </Space>
+                    </List.Item>
+                  )}
+                />
+              </div>
             </div>
-            <div
-              className={styles.courseinfocard_item}
-            >
-              <GlobalOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-              {course.languages.length} ngôn ngữ
-            </div>
-            <div
-              className={styles.courseinfocard_item}
-            >
-              <WifiOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-              Truy cập mọi lúc
-            </div>
-          </div>
-          <div
-            className={styles.container_body_wrapper_buttonpreview}
-          >
-            <Button
-              type="primary"
-              style={{ height: 'fit-content', width: '612px', backgroundColor: '#000000', border: 'none', padding: '8px 0px' }}
-            ><b>Xem preview</b></Button>
           </div>
           <div
             className={styles.container_body_wrapper_courseoutline}
@@ -194,6 +235,14 @@ const SingleCourseView = ({ course }) => {
               style={{ border: '1px solid #d1d7dc', borderRadius: '8px', marginTop: '12px' }}
               renderItem={(item) => (
                 <List.Item
+                  extra={item.free_preview && (
+                    <Tooltip title='Xem preview bài học này'>
+                      <PlayCircleFilled
+                        onClick={() => setIsFreePreview({ ...isFreePreview, opened: true, which: item })}
+                        style={{ fontSize: '16px' }}
+                      />
+                    </Tooltip>
+                  )}
                   style={{ fontSize: '15px', backgroundColor: '#f7f9fa', padding: '12px 20px', cursor: 'pointer' }}
                 >
                   <Space size='large'>
@@ -234,6 +283,13 @@ const SingleCourseView = ({ course }) => {
           </div>
         </div>
       </div>
+
+      <ModalFreePreview
+        isFreePreview={isFreePreview}
+        setIsFreePreview={setIsFreePreview}
+        course={course}
+      />
+
       <button onClick={() => setHide(!hide)}>Ẩn/hiện</button>
       {hide && <pre>{JSON.stringify(course, null, 4)}</pre>}
     </div>

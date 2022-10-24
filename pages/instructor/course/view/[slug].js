@@ -10,13 +10,13 @@ import ModalEditCourse from '../../../../components/forms/ModalEditCourse';
 import { getBase64 } from '../../../../utils/getBase64';
 import styles from '../../../../styles/components/instructor/course/view/[slug].module.scss';
 import ModalEditLesson from '../../../../components/forms/ModalEditLesson';
-import loadVideo from '../../../../utils/loadVideo';
 
 function CourseView() {
   const router = useRouter();
   const { slug } = router.query;
 
   // #region ***** STATES *****
+
   // #region | current component
   const [course, setCourse] = useState({});
   const [hide, setHide] = useState(false);
@@ -33,43 +33,17 @@ function CourseView() {
   const [modalEditLesson, setModalEditLesson] = useState({ opened: false, which: '' });
   // #endregion
 
-  // #region | create lesson component
-  const [newLesson, setNewLesson] = useState({ title: '', content: '', video_link: {}, duration: 0, free_preview: false });
-  const [videosUpload, setVideosUpload] = useState([]);
-  const [progressUploadVideo, setProgressUploadVideo] = useState(0);
-  // #endregion
-
-  // #region | edit course component
-  const [courseBeingEdited, setCourseBeingEdited] = useState({
-    name: '',
-    summary: '',
-    category: '',
-    paid: '',
-    price: '',
-    goal: [],
-    requirements: [],
-    languages: [],
-    published: false,
-  });
-  // #endregion
-
-  // #region | edit lesson component
-  const [lessonBeingEdited, setLessonBeingEdited] = useState({
-    _id: '',
-    title: '',
-    content: '',
-    duration: 0,
-    video_link: {},
-    free_preview: false,
-  })
   // #endregion
 
   // #region ***** FUNCTIONS *****
+  
   // #region | current component
   const getCourseBySlug = async () => {
     const { data } = await axios.get(`/api/course/${slug}`);
     setCourse(data.data);
   }
+
+  const seeDesMoreHandler = (isSeeMore) => setIsDesSeeMore(isSeeMore);
 
   const updateImageHandler = async (e) => {
     setPreviewImgObj({ ...previewImgObj, uploadLoading: true });
@@ -131,163 +105,11 @@ function CourseView() {
   }
   // #endregion
 
-  // #region | create lesson component
-  const seeMoreHandler = (isSeeMore) => setIsDesSeeMore(isSeeMore);
-
-  const videoChangeHandler = async ({ file, fileList, event }) => {
-    setVideosUpload(fileList);
-    setValidateMessage(<div></div>);
-  }
-
-  const videoRemoveHandler = () => {
-    setProgressUploadVideo(0);
-    setVideosUpload([])
-  }
-
-  const uploadVideoHandler = async () => {
-    try {
-      setValidateMessage(<p style={{ color: '#4e96ff', padding: '4px 0px' }}>Đang tải lên video...</p>);
-      const file = videosUpload[0]?.originFileObj;
-      if (!file) {
-        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng chọn video</p>);
-        return;
-      }
-
-      const videoInfo = await loadVideo(file);
-
-      // set video file for uploading to s3
-      const videoData = new FormData();
-      videoData.append("video", file);
-
-      // send request to BE to upload video
-      const { data: videoResponse } = await axios.post(
-        `/api/course/upload-video/${course.instructor._id}`,
-        videoData,
-        {
-          onUploadProgress: (e) => {
-            console.log('e onUploadProgress: ', e);
-            setProgressUploadVideo(30);
-          }
-        }
-      );
-
-      setProgressUploadVideo(100);
-      setNewLesson({ ...newLesson, duration: Math.round(videoInfo.duration), video_link: videoResponse.data });
-      setValidateMessage(<div></div>);
-    }
-    catch (error) {
-      message.error(`Xảy ra lỗi khi tải lên video, vui lòng thử lại\nChi tiết: ${error.message}`)
-    }
-  }
-
-  const addLessonHandler = async () => {
-    console.table(newLesson);
-    try {
-      // validate
-      if (!newLesson.title) {
-        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng nhập tiêu đề</p>);
-        return;
-      }
-      if (!videosUpload.length) {
-        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng chọn video</p>);
-        return;
-      }
-      if (!Object.keys(newLesson.video_link).length) {
-        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng tải lên video</p>);
-        return;
-      }
-
-      // send request to BE to add new lesson
-      const { data: lessonResponse } = await axios.post(
-        `/api/course/${course._id}/lesson`,
-        { ...newLesson, instructorId: course.instructor._id }
-      );
-      message.success('Thêm bài học thành công !');
-      setCourse(lessonResponse.data);
-      setNewLesson({ title: '', content: '', duration: 0, video_link: {}, free_preview: false });
-      setVideosUpload([]);
-      setValidateMessage(<div></div>);
-      setProgressUploadVideo(0);
-      setModalAddLessonOpened(false);
-    }
-    catch (error) {
-      message.error(`Xảy ra lỗi khi tải lên video, vui lòng thử lại\nChi tiết: ${error.message}`)
-    }
-  }
-  // #endregion
-
-  // #region | edit course component
-  const editCourseHandler = async () => {
-    console.log(courseBeingEdited);
-    try {
-      const { data } = await axios.put(`/api/course/${course._id}`, courseBeingEdited);
-      setCourse(data.data);
-      message.success(`Cập nhật khóa học ${data.data.name} thành công`);
-      setModalEditCourse({ ...modalEditCourse, opened: false, which: '' })
-    }
-    catch (error) {
-      message.error(`Xảy ra lỗi cập nhật khóa học, vui lòng thử lại\nChi tiết: ${error.message}`)
-    }
-  }
-
-  const closeEditCourseHandler = () => {
-    setModalEditCourse({ ...modalEditCourse, opened: false })
-    setCourseBeingEdited({
-      name: course?.name,
-      category: course?.category,
-      paid: course?.paid,
-      price: course?.price,
-      description: course?.description,
-      summary: course?.summary,
-      goal: course?.goal,
-      requirements: course?.requirements,
-      languages: course?.languages,
-    })
-  }
-  // #endregion
-
-  // #region | edit lesson component
-  const editLessonHandler = async () => {
-    console.log('lessonBeingEdited: ')
-    console.log(lessonBeingEdited);
-
-    try {
-      await axios.put(
-        `/api/course/${course._id}/lesson/${lessonBeingEdited._id}/update`,
-        { lesson: lessonBeingEdited, instructorId: course.instructor._id }
-      );
-      getCourseBySlug();
-      setModalEditLesson({ ...modalEditLesson, opened: false });
-      message.success('Cập nhật thành công!');
-    }
-    catch (error) {
-      setModalEditLesson({ ...modalEditLesson, opened: false });
-      message.error(`Xảy ra lỗi khi cập nhật bài học, vui lòng thử lại\nChi tiết: ${error.message}`)
-    }
-  }
-
-
-  // #endregion
   // #endregion
 
   useEffect(() => {
     getCourseBySlug();
   }, [slug]);
-
-  useEffect(() => {
-    setCourseBeingEdited({
-      name: course?.name,
-      category: course?.category,
-      paid: course?.paid,
-      price: course?.price,
-      description: course?.description,
-      published: course?.published,
-      summary: course?.summary,
-      requirements: course?.requirements,
-      goal: course?.goal,
-      languages: course?.languages,
-    })
-  }, [course])
 
   return (
     <InstructorRoute hideSidebar={false}>
@@ -363,6 +185,13 @@ function CourseView() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <h2 className={styles.h2}>Tóm tắt</h2>
+              <Tooltip title='Chỉnh sửa'>
+                <EditOutlined
+                  className={styles.btn_edit_small}
+                  style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
+                  onClick={() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'summary' })}
+                />
+              </Tooltip>
             </div>
             <div
               className={styles.container_detail_summary_detail}
@@ -398,7 +227,7 @@ function CourseView() {
                     <hr style={{ borderTop: '1px dashed grey' }} />
                     <label
                       style={{ fontSize: '16px', cursor: 'pointer', color: 'blueviolet' }}
-                      onClick={() => seeMoreHandler(!isDesSeeMore)}
+                      onClick={() => seeDesMoreHandler(!isDesSeeMore)}
                     >...{isDesSeeMore ? 'Rút gọn' : 'Xem thêm'}</label>
                   </div>
                 )
@@ -441,23 +270,12 @@ function CourseView() {
                       title='Tùy chọn'
                       placement='left'
                       content={
-                        <Space direction='vertical' size='small' style={{ alignItems: 'flex-start', padding: '12px' }}>
+                        <Space direction='vertical' size='small' style={{ alignItems: 'flex-start' }}>
                           <Space
                             className={styles.container_detail_lessons_detail_item_popup_row}
                             direction='horizontal'
                             size='middle'
-                            onClick={() => {
-                              setModalEditLesson({ ...modalEditLesson, opened: true, which: item.title });
-                              setLessonBeingEdited({
-                                ...lessonBeingEdited,
-                                _id: item._id,
-                                title: item.title,
-                                content: item.content,
-                                duration: item?.duration,
-                                video_link: item.video_link,
-                                free_preview: item.free_preview,
-                              });
-                            }}
+                            onClick={() => setModalEditLesson({ ...modalEditLesson, opened: true, which: item })}
                           >
                             <EditOutlined style={{ fontSize: '16px' }} />
                             Chỉnh sửa
@@ -539,36 +357,25 @@ function CourseView() {
           />
         </Modal>
 
-        <ModalAddLesson
-          modalAddLessonOpened={modalAddLessonOpened}
-          setModalAddLessonOpened={setModalAddLessonOpened}
-          videoChangeHandler={videoChangeHandler}
-          newLesson={newLesson}
-          setNewLesson={setNewLesson}
-          videosUpload={videosUpload}
-          progressUploadVideo={progressUploadVideo}
-          videoRemoveHandler={videoRemoveHandler}
-          uploadVideoHandler={uploadVideoHandler}
-          addLessonHandler={addLessonHandler}
-        />
-
         <ModalEditCourse
           course={course}
+          setCourse={setCourse}
           modalEditCourse={modalEditCourse}
-          closeEditCourseHandler={closeEditCourseHandler}
           setModalEditCourse={setModalEditCourse}
-          courseBeingEdited={courseBeingEdited}
-          setCourseBeingEdited={setCourseBeingEdited}
-          editCourseHandler={editCourseHandler}
+        />
+
+        <ModalAddLesson
+          course={course}
+          setCourse={setCourse}
+          modalAddLessonOpened={modalAddLessonOpened}
+          setModalAddLessonOpened={setModalAddLessonOpened}
         />
 
         <ModalEditLesson
           course={course}
+          getCourseBySlug={getCourseBySlug} //setCourse
           modalEditLesson={modalEditLesson}
           setModalEditLesson={setModalEditLesson}
-          lessonBeingEdited={lessonBeingEdited}
-          setLessonBeingEdited={setLessonBeingEdited}
-          editLessonHandler={editLessonHandler}
         />
 
         <button style={{ opacity: '0.3' }} onClick={() => setHide(!hide)}>{hide ? 'Ẩn' : 'Hiện'}</button>

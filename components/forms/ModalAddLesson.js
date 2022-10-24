@@ -1,22 +1,110 @@
-import { Button, Input, Modal, Space, Upload, Progress, Tooltip, Switch } from 'antd';
+import { Button, Input, Modal, Space, Upload, Progress, Tooltip, Switch, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { CheckOutlined, ToTopOutlined, UploadOutlined } from '@ant-design/icons';
 import Plyr from 'plyr-react';
+import loadVideo from '../../utils/loadVideo';
+import axios from 'axios';
 import styles from '../../styles/components/forms/ModalAddLesson.module.scss';
 
 const ModalAddLesson = ({
+  course,
+  setCourse,
   modalAddLessonOpened,
   setModalAddLessonOpened,
-  videoChangeHandler,
-  newLesson,
-  setNewLesson,
-  videosUpload,
-  progressUploadVideo,
-  videoRemoveHandler,
-  uploadVideoHandler,
-  addLessonHandler,
 }) => {
+  // const [newLesson, setNewLesson] = useState({ title: '', content: '', video_link: {}, duration: 0, free_preview: false });
+  const [newLesson, setNewLesson] = useState({ title: '', content: '', duration: 0, free_preview: false });
+  const [videoLink, setVideoLink] = useState({});
   const [validateMessage, setValidateMessage] = useState('');
+  const [progressUploadVideo, setProgressUploadVideo] = useState(0);
+  const [videosUpload, setVideosUpload] = useState([]);
+
+  const videoChangeHandler = async ({ file, fileList, event }) => {
+    setVideosUpload(fileList);
+    setValidateMessage(<div></div>);
+  }
+
+  const videoRemoveHandler = () => {
+    setProgressUploadVideo(0);
+    setVideosUpload([])
+  }
+
+  const uploadVideoHandler = async () => {
+    try {
+      setValidateMessage(<p style={{ color: '#4e96ff', padding: '4px 0px' }}>Đang tải lên video...</p>);
+      const file = videosUpload[0]?.originFileObj;
+      if (!file) {
+        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng chọn video</p>);
+        return;
+      }
+
+      const videoInfo = await loadVideo(file);
+
+      // set video file for uploading to s3
+      const videoData = new FormData();
+      videoData.append("video", file);
+
+      // send request to BE to upload video
+      const { data: videoResponse } = await axios.post(
+        `/api/course/upload-video/${course.instructor._id}`,
+        videoData,
+        {
+          onUploadProgress: (e) => {
+            console.log('e onUploadProgress: ', e);
+            setProgressUploadVideo(30);
+          }
+        }
+      );
+
+      setProgressUploadVideo(100);
+      // setNewLesson({ ...newLesson, duration: Math.round(videoInfo.duration), video_link: videoResponse.data });
+      setNewLesson({ ...newLesson, duration: Math.round(videoInfo.duration) });
+      setVideoLink(videoResponse.data);
+      setValidateMessage(<div></div>);
+    }
+    catch (error) {
+      message.error(`Xảy ra lỗi khi tải lên video, vui lòng thử lại\nChi tiết: ${error.message}`)
+    }
+  }
+
+  const addLessonHandler = async () => {
+    console.log('newLesson: ', newLesson);
+    try {
+      // validate
+      if (!newLesson.title) {
+        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng nhập tiêu đề</p>);
+        return;
+      }
+      if (!videosUpload.length) {
+        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng chọn video</p>);
+        return;
+      }
+      if (!Object.keys(videoLink).length) {
+        setValidateMessage(<p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng tải lên video</p>);
+        return;
+      }
+
+      // send request to BE to add new lesson
+      const { data: lessonResponse } = await axios.post(
+        `/api/course/${course._id}/lesson`,
+        { ...newLesson, instructorId: course.instructor._id, video_link: videoLink }
+      );
+
+      // notify and set everything to be original
+      message.success('Thêm bài học thành công !');
+      setCourse(lessonResponse.data);
+      // setNewLesson({ title: '', content: '', duration: 0, video_link: {}, free_preview: false });
+      setNewLesson({ title: '', content: '', duration: 0, free_preview: false });
+      setVideoLink({})
+      setVideosUpload([]);
+      setValidateMessage(<div></div>);
+      setProgressUploadVideo(0);
+      setModalAddLessonOpened(false);
+    }
+    catch (error) {
+      message.error(`Xảy ra lỗi khi tải lên video, vui lòng thử lại\nChi tiết: ${error.message}`)
+    }
+  }
 
   return (
     <Modal
@@ -28,16 +116,16 @@ const ModalAddLesson = ({
       onCancel={() => setModalAddLessonOpened(false)}
       footer={(
         <Tooltip
-          title={(!newLesson.title || !Object.keys(newLesson.video_link).length) ? 'Tiêu đề và video là bắt buộc' : 'Hoàn tất'}
+          title={(!newLesson.title || !Object.keys(videoLink).length) ? 'Tiêu đề và video là bắt buộc' : 'Hoàn tất'}
         >
           <Button
             type='primary'
-            disabled={!newLesson.title || !Object.keys(newLesson.video_link).length}
+            disabled={!newLesson.title || !Object.keys(videoLink).length}
             onClick={addLessonHandler}>Hoàn tất</Button>
         </Tooltip>
       )}
     >
-      <form
+      <div
         className={styles.form}
       >
         <div
@@ -51,6 +139,7 @@ const ModalAddLesson = ({
               placeholder='Nhập tiêu đề'
               value={newLesson.title}
               onChange={(e) => {
+                e.preventDefault();
                 setNewLesson({ ...newLesson, title: e.target.value });
                 setValidateMessage(!e.target.value && <p style={{ color: 'red', padding: '4px 0px' }}>Vui lòng nhập tiêu đề</p>)
               }}
@@ -69,7 +158,10 @@ const ModalAddLesson = ({
               placeholder='Nhập tóm tắt nội dung'
               style={{ height: '128px' }}
               value={newLesson.content}
-              onChange={(e) => setNewLesson({ ...newLesson, content: e.target.value })}
+              onChange={(e) => {
+                e.preventDefault();
+                setNewLesson({ ...newLesson, content: e.target.value })
+              }}
             />
           </Space>
         </div>
@@ -125,7 +217,7 @@ const ModalAddLesson = ({
                   type: 'video',
                   sources: [
                     {
-                      src: newLesson.video_link.Location,
+                      src: videoLink.Location,
                       provider: 'html5'
                     }
                   ]
@@ -137,7 +229,7 @@ const ModalAddLesson = ({
         {validateMessage && (
           <p style={{ color: 'red', padding: '4px 0px' }}>{validateMessage}</p>
         )}
-      </form>
+      </div>
     </Modal>
   )
 }
