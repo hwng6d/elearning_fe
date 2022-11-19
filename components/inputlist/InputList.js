@@ -8,6 +8,8 @@ const InputList = ({
   type,
   formValues,
   setFormValues,
+  scopeStyle,
+  cellStyle,
 }) => {
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -49,7 +51,15 @@ const InputList = ({
             e.preventDefault();
             handleClose(tag);
           }}
-          style={{ padding: '4px 16px', fontSize: '14px', margin: '4px' }}
+          style={{
+            ...cellStyle,
+            display: 'flex',
+            padding: '4px 16px',
+            fontSize: '14px',
+            marginBottom: '12px',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
         >
           {tag}
         </Tag>
@@ -58,7 +68,7 @@ const InputList = ({
   });
 
   return (
-    <>
+    <div style={{...scopeStyle}}>
       <div>
         {tagChild}
       </div>
@@ -67,7 +77,7 @@ const InputList = ({
           ref={inputRef}
           type="text"
           size="small"
-          style={{ width: 78, padding: '4px 8px', fontSize: '14px' }}
+          style={{...cellStyle, padding: '4px 8px', fontSize: '14px'}}
           value={inputValue}
           onChange={handleInputChange}
           onBlur={handleInputConfirm}
@@ -75,11 +85,14 @@ const InputList = ({
         />
       )}
       {!inputVisible && formValues[`${value}`]?.length < maxLength && (
-        <Tag onClick={showInput} className="site-tag-plus" style={{ padding: '4px 16px', fontSize: '14px' }}>
+        <Tag
+          onClick={showInput} className="site-tag-plus"
+          style={{...cellStyle, padding: '4px 16px', fontSize: '14px'}}
+        >
           <PlusOutlined /> Thêm
         </Tag>
       )}
-    </>
+    </div>
   );
 };
 

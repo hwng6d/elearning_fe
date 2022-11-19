@@ -29,7 +29,7 @@ const ModalAddLesson = ({
   const editCourseHandler = async () => {
     console.log(courseBeingEdited);
     try {
-      const { data } = await axios.put(`/api/course/${course._id}`, courseBeingEdited);
+      const { data } = await axios.put(`/api/course/ins/${course._id}`, courseBeingEdited);
       setCourse(data.data);
       message.success(`Cập nhật khóa học ${data.data.name} thành công`);
       setModalEditCourse({ ...modalEditCourse, opened: false, which: '' })

@@ -1,0 +1,14 @@
+.container {
+
+  &_list {
+    margin-top: 12px;
+
+    &_item {
+      padding: 8px 0px;
+
+      &_image {
+        cursor: pointer;
+      }
+    }
+  }
+}

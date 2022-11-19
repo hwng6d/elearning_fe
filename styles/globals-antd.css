@@ -64,6 +64,7 @@
   margin-top: 0px;
 }
 
+/* antd custom free review modal */
 .ant-menu.ant-menu-dark.menu_freepreview {
   background-color: black;
 }
@@ -86,4 +87,105 @@
 
 .ant-modal.modal_freepreview .ant-modal-close-x:hover {
   background-color: black;
+}
+
+/* antd custom course content menu  */
+.container_sider_lessonlist .ant-menu.ant-menu-root.ant-menu-vertical.ant-menu-light .ant-menu-item.ant-menu-item-selected {
+  background-color: #d1d7dc !important;
+  color: black !important;
+}
+
+.container_sider_lessonlist .ant-menu.ant-menu-root.ant-menu-vertical.ant-menu-light .ant-menu-item.ant-menu-item-active {
+  background-color: #dbe0e3 !important;
+  color: black !important;
+}
+
+/* antd custom tabs in learning route */
+.container_content_bodysection_tabs_wrapper .ant-tabs .ant-tabs-tab {
+  background-color: #eeeeee !important;
+}
+
+.container_content_bodysection_tabs_wrapper .ant-tabs .ant-tabs-tab.ant-tabs-tab-active {
+  background-color: #ffff !important;
+}
+
+.container_content_bodysection_tabs_wrapper .ant-tabs .ant-tabs-tab.ant-tabs-tab-active p {
+  font-size: 16px;
+  font-weight: 700 !important;
+  color: #505052 !important;
+}
+
+/* antd custom steps of createing course page */
+.container_content_steps .ant-steps-item.ant-steps-item-wait::before {
+  background-color: #ff6246 !important;
+}
+.container_content_steps .ant-steps-item.ant-steps-item-wait .ant-steps-item-container .ant-steps-item-icon {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-finish::before {
+  background-color: #ff6246 !important;
+}
+.container_content_steps .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: #ff6246;
+}
+.container_content_steps .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-icon {
+  color: #ff6246;
+  font-size: 18px;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-process.ant-steps-item-active::before {
+  background-color: #ff6246 !important;
+}
+.container_content_steps .ant-steps-item.ant-steps-item-process.ant-steps-item-active .ant-steps-item-container .ant-steps-item-icon {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: #ff6246;
+  background-color: #ff6246;
+}
+
+/* custom table */
+.ant-table .ant-table-content .ant-table-thead .ant-table-cell {
+  text-align: left !important;
+}
+
+.ant-table .ant-table-content .ant-table-thead .ant-table-cell {
+  padding: 10px 12px !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .ant-table-row .ant-table-cell {
+  padding: 10px 28px !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .section_row .ant-table-cell {
+  background-color: #fff7e8 !important;
+}
+.ant-table .ant-table-content .ant-table-tbody .section_row .ant-table-cell:hover {
+  background-color: #ffebc3 !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .lesson_row .ant-table-cell {
+  background-color: #e0ffe5 !important;
+}
+.ant-table .ant-table-content .ant-table-tbody .lesson_row .ant-table-cell:hover {
+  background-color: #aaffb6 !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .quiz_row .ant-table-cell {
+  background-color: #d0f4ff !important;
+}
+.ant-table .ant-table-content .ant-table-tbody .quiz_row .ant-table-cell:hover {
+  background-color: #8ce4ff !important;
 }

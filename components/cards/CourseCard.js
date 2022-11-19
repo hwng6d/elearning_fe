@@ -91,7 +91,7 @@ const CourseCard = ({
           <p
             className={styles.container_body_courseinstructor}
           >
-            Instructor {course.instructor.name}
+            Instructor {course?.instructor?.name}
           </p>
           <p
             className={styles.container_body_courseprice}

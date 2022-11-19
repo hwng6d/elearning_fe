@@ -5,30 +5,31 @@ import { useRouter } from "next/router";
 import InstructorNav from '../nav/InstructorNav';
 import { SyncOutlined } from '@ant-design/icons';
 
-const InstructorRoute = ({ children, hideSidebar = true }) => {
+const InstructorRoute = ({ children, hideSidebar = true, ok }) => {
   const router = useRouter();
-  const [ok, setOk] = useState(false);
+  // const [ok, setOk] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  // const fetchUser = async () => {
+  //   try {
+  //     const { data } = await axios.get('/api/instructor/get-current-instructor');
+  //     if (data.success) setOk(true);
+  //   }
+  //   catch (error) {
+  //     console.log('Problem with checking role...!', error);
+  //     setOk(false);
+  //     router.push('/');
+  //   }
+  // }
 
-  const fetchUser = async () => {
-    try {
-      const { data } = await axios.get('/api/instructor/get-current-instructor');
-      if (data.success) setOk(true);
-    }
-    catch (error) {
-      console.log('Problem with checking role...!', error);
-      setOk(false);
-      router.push('/');
-    }
-  }
+  // useEffect(() => {
+  //   fetchUser();
+  //   console.log('useEffect');
+  // }, [children]);
 
   return (
     <div>
-      {
+      {/* {
         !ok
           ? <SyncOutlined spin={true} />
           : (
@@ -41,7 +42,14 @@ const InstructorRoute = ({ children, hideSidebar = true }) => {
               />
             </div>
           )
-      }
+      } */}
+
+      <InstructorNav
+        hideSidebar={hideSidebar}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        children={children}
+      />
     </div>
   )
 }

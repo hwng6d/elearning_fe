@@ -41,7 +41,10 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
   }, [router.pathname])
 
   return (
-    <Layout className={styles.site_layout} style={{ marginTop: '1px' }}>
+    <Layout
+      className={styles.site_layout}
+      style={{ marginTop: '1px' }}
+    >
       <Sider
         hidden={hideSidebar}
         className={styles.site_layout_background}
@@ -57,13 +60,18 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
           mode="inline"
           theme='light'
           // items={sidebarItems}
+          defaultOpenKeys={['group_1']}
+          selectedKeys={[currSelected]}
           style={{
             height: '100%',
             borderRight: 0,
           }}
-          selectedKeys={[currSelected]}
         >
-          <Menu.SubMenu key='group_1' title='Bảng điều khiển' icon={<UserOutlined />}>
+          <Menu.SubMenu
+            key='group_1'
+            title='Bảng điều khiển'
+            icon={<UserOutlined />}
+          >
             <Menu.Item
               key='/instructor'
               icon={<UserOutlined />}

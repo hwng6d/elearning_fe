@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@stripe/stripe-js": "^1.42.0",
     "antd": "^4.23.0",
     "axios": "^0.27.2",
     "dayjs": "^1.11.5",
@@ -21,7 +22,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.3",
-    "sass": "^1.54.9"
+    "sass": "^1.56.1"
   },
   "devDependencies": {
     "eslint": "8.23.0",

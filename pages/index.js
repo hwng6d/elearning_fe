@@ -70,7 +70,7 @@ export default function Home({ courses }) {
         >
           {
             courses.map((course, index) => (
-              <Link href={`/course/${course.slug}`}>
+              <Link key={index} href={`/course/${course.slug}`}>
                 <a>
                   <CourseCard
                     course={course}
