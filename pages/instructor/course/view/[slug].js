@@ -2,14 +2,16 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Popover, Space, Tooltip, Avatar, message, Modal, Upload, Button, Image, List, Popconfirm, BackTop } from 'antd';
-import { EditOutlined, DeleteOutlined, EllipsisOutlined, PlusCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import InstructorRoute from '../../../../components/routes/InstructorRoute';
 import ReactMarkdown from 'react-markdown';
-import ModalAddLesson from '../../../../components/forms/ModalAddLesson';
+// import ModalAddLesson from '../../../../components/forms/ModalAddLesson';
+// import ModalEditLesson from '../../../../components/forms/ModalEditLesson';
 import ModalEditCourse from '../../../../components/forms/ModalEditCourse';
 import { getBase64 } from '../../../../utils/getBase64';
+import ModalAddSection from '../../../../components/forms/ModalAddSection';
+import TableSection from '../../../../components/tables/TableSection';
 import styles from '../../../../styles/components/instructor/course/view/[slug].module.scss';
-import ModalEditLesson from '../../../../components/forms/ModalEditLesson';
 
 function CourseView() {
   const router = useRouter();
@@ -31,15 +33,17 @@ function CourseView() {
   const [modalAddLessonOpened, setModalAddLessonOpened] = useState(false);
   const [modalEditCourse, setModalEditCourse] = useState({ opened: false, which: '' });
   const [modalEditLesson, setModalEditLesson] = useState({ opened: false, which: '' });
+
+  const [modalAddSection, setModalAddSection] = useState({ opened: false, sectionId: '' });
   // #endregion
 
   // #endregion
 
   // #region ***** FUNCTIONS *****
-  
+
   // #region | current component
   const getCourseBySlug = async () => {
-    const { data } = await axios.get(`/api/course/${slug}`);
+    const { data } = await axios.get(`/api/course/ins/${slug}`);
     setCourse(data.data);
   }
 
@@ -52,13 +56,13 @@ function CourseView() {
 
       // delete current image if have
       course.image &&
-        await axios.post('/api/course/remove-image', { image: course.image });
+        await axios.post('/api/course/ins/remove-image', { image: course.image });
 
       // upload to s3
-      const { data: uploadImgReponse } = await axios.post('/api/course/upload-image', { image: base64 });
+      const { data: uploadImgReponse } = await axios.post('/api/course/ins/upload-image', { image: base64 });
 
       // update image of course
-      const { data: updateCourseReponse } = await axios.put(`/api/course/${course._id}`, { image: uploadImgReponse.data });
+      const { data: updateCourseReponse } = await axios.put(`/api/course/ins/${course._id}`, { image: uploadImgReponse.data });
 
       // set stuffs...
       message.success(`Cập nhật thành công khóa học ${updateCourseReponse.data.name}`);
@@ -73,7 +77,6 @@ function CourseView() {
   }
 
   const previewImageHandler = async (file) => {
-    console.log('file: ', file);
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
@@ -82,18 +85,15 @@ function CourseView() {
 
   const deleteLessonHandler = async (lessonId, video_link) => {
     try {
-      console.log('lessonId: ', lessonId);
-      console.log('video_link: ', video_link);
-
       // xóa video của bài học
       await axios.post(
-        `/api/course/delete-video/${course.instructor._id}`,
+        `/api/course/ins/delete-video/${course.instructor._id}`,
         { video_link, instructorId: course.instructor._id }
       );
 
       // xóa bài học
       await axios.put(
-        `/api/course/${course._id}/lesson/${lessonId}/delete`,
+        `/api/course/ins/${course._id}/lesson/${lessonId}/delete`,
         { instructorId: course.instructor._id }
       );
       getCourseBySlug();
@@ -242,18 +242,30 @@ function CourseView() {
               <h2 className={styles.h2}>Các bài học</h2>
               |
               <p style={{ fontSize: '18px' }}>{course?.lessons?.length} bài học</p>
-              <Tooltip title='Thêm'>
+              {/* <Tooltip title='Thêm'>
                 <PlusCircleOutlined
                   className={`${styles['btn_edit_small']} ${styles['btn_edit_small_lessons']}`}
                   style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
                   onClick={() => setModalAddLessonOpened(!modalAddLessonOpened)}
+                />
+              </Tooltip> */}
+              <Tooltip title='Thêm chương'>
+                <PlusCircleOutlined
+                  className={`${styles['btn_edit_small']} ${styles['btn_edit_small_lessons']}`}
+                  style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
+                  onClick={() => setModalAddSection({...modalAddSection, opened: true})}
                 />
               </Tooltip>
             </div>
             <div
               className={styles.container_detail_lessons_detail}
             >
-              <List
+              <TableSection
+                course={course}
+                setCourse={setCourse}
+              />
+
+              {/* <List
                 itemLayout='horizontal'
                 dataSource={course && course.lessons}
                 renderItem={(item, index) => (
@@ -304,7 +316,7 @@ function CourseView() {
                     </Popover>
                   </List.Item>
                 )}
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -364,19 +376,26 @@ function CourseView() {
           setModalEditCourse={setModalEditCourse}
         />
 
-        <ModalAddLesson
+        {/* <ModalAddLesson
           course={course}
           setCourse={setCourse}
           modalAddLessonOpened={modalAddLessonOpened}
           setModalAddLessonOpened={setModalAddLessonOpened}
+        /> */}
+
+        <ModalAddSection
+          course={course}
+          setCourse={setCourse}
+          modalAddSection={modalAddSection}
+          setModalAddSection={setModalAddSection}
         />
 
-        <ModalEditLesson
+        {/* <ModalEditLesson
           course={course}
           getCourseBySlug={getCourseBySlug} //setCourse
           modalEditLesson={modalEditLesson}
           setModalEditLesson={setModalEditLesson}
-        />
+        /> */}
 
         <button style={{ opacity: '0.3' }} onClick={() => setHide(!hide)}>{hide ? 'Ẩn' : 'Hiện'}</button>
         {hide && <pre>{JSON.stringify(course, null, 4)}</pre>}

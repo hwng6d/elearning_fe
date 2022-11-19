@@ -57,7 +57,7 @@ const ModalEditLesson = ({
 
 			// send request to BE to upload video
 			const { data: videoResponse } = await axios.post(
-				`/api/course/upload-video/${course.instructor._id}`,
+				`/api/course/ins/upload-video/${course.instructor._id}`,
 				videoData,
 				{
 					onUploadProgress: (e) => {
@@ -69,7 +69,7 @@ const ModalEditLesson = ({
 
 			// delete old video if user upload new
 			await axios.post(
-				`/api/course/delete-video/${course.instructor._id}`,
+				`/api/course/ins/delete-video/${course.instructor._id}`,
 				{ video_link: lessonBeingEdited.video_link }
 			);
 
@@ -88,7 +88,7 @@ const ModalEditLesson = ({
 
 		try {
 			await axios.put(
-				`/api/course/${course._id}/lesson/${lessonBeingEdited._id}/update`,
+				`/api/course/ins/${course._id}/lesson/${lessonBeingEdited._id}/update`,
 				{ lesson: lessonBeingEdited, instructorId: course.instructor._id }
 			);
 			getCourseBySlug();

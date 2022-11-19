@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Breadcrumb, Form, Input, InputNumber, Select, Button, Tag, Upload, Space, Modal, Image, message } from 'antd';
-import { SettingOutlined, HomeOutlined, UploadOutlined } from '@ant-design/icons';
+import { Breadcrumb, Form, Input, InputNumber, Select, Button, Tag, Upload, Space, Modal, Image, Steps, message, Tooltip } from 'antd';
+import { HomeOutlined, UploadOutlined, LeftCircleFilled, RightCircleFilled, LeftCircleOutlined } from '@ant-design/icons';
+import Head from 'next/head';
 import axios from 'axios';
 import { getBase64 } from '../../../utils/getBase64';
 import InputList from '../../inputlist/InputList';
 import styles from '../../../styles/components/instructor/course/CourseCreate.module.scss';
 
 function CCreate() {
+  // router
   const router = useRouter();
+
+  // states
+  const [currStep, setCurrStep] = useState(0);
   const [formValues, setFormValues] = useState({
     name: '',
     summary: '',
@@ -29,6 +34,17 @@ function CCreate() {
   const [previewImage, setPreviewImage] = useState('');
   const [previewOpened, setPreviewOpened] = useState(false);
 
+  // variables
+  const stepsName = [
+    'Điền thông tin khóa học',
+    'Tên của khóa học',
+    'Tóm tắt về khóa học',
+    'Học viên nhận được gì sau khóa học ?',
+    'Gắn thẻ',
+    'Mô tả chi tiết về khóa học'
+  ];
+
+  // functions
   const inputChangeHandler = (e) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   }
@@ -38,7 +54,6 @@ function CCreate() {
       file.preview = await getBase64(file.originFileObj);
     }
 
-    console.log('file: ', file);
     setPreviewImage(file.url || file.preview);
     setPreviewOpened(true);
   }
@@ -52,7 +67,7 @@ function CCreate() {
     setFormValues({ ...formValues, uploading: true });
     try {
       const base64 = await getBase64(fileList[0].originFileObj);
-      const { data } = await axios.post('/api/course/upload-image', { image: base64 });
+      const { data } = await axios.post('/api/course/ins/upload-image', { image: base64 });
       setImage(data.data);
       setFormValues({ ...formValues, uploading: false });
       message.success('Tải ảnh lên thành công');
@@ -67,7 +82,7 @@ function CCreate() {
   const removeImageUploadHandler = async () => {
     setFormValues({ ...formValues, uploading: true });
     try {
-      await axios.post('/api/course/remove-image', { image });
+      await axios.post('/api/course/ins/remove-image', { image });
       setImage(null);
       setPreviewImage(null);
       setFileList([]);
@@ -88,7 +103,7 @@ function CCreate() {
 
     setFormValues({ ...formValues, loading: true });
     try {
-      const { data } = await axios.post('/api/course', {
+      const { data } = await axios.post('/api/course/ins', {
         ...formValues,
         image
       });
@@ -104,10 +119,22 @@ function CCreate() {
     }
   }
 
+  useEffect(() => {
+    console.log('formValues change: ', formValues);
+  }, [formValues])
+
   return (
     <div
       className={styles.container}
     >
+      <Head>
+        <link
+          href='https://fonts.googleapis.com/css2?family=Lobster&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet" />
+      </Head>
       <Breadcrumb
         className={styles.container_breadcrumb}
       >
@@ -115,7 +142,6 @@ function CCreate() {
           <Link href='/'>
             <a><HomeOutlined /></a>
           </Link>
-
         </Breadcrumb.Item>
         <Breadcrumb.Item >
           <Link href='/instructor'>
@@ -131,13 +157,155 @@ function CCreate() {
       <div
         className={styles.container_content}
       >
-        <h1>Điền thông tin khóa học mới</h1>
+        <Steps
+          className={`${styles.container_content_steps} container_content_steps`}
+          type='navigation'
+          current={currStep}
+          onChange={(value) => setCurrStep(value)}
+          style={{ marginTop: '40px' }}
+        >
+          <Steps.Step />
+          <Steps.Step />
+          <Steps.Step />
+          <Steps.Step />
+          <Steps.Step />
+          <Steps.Step />
+        </Steps>
+        <div
+          className={styles.container_content_inputs}
+        >
+          {
+            currStep === 0 && (
+              <div
+                className={styles.container_content_inputs_intro}
+              >
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <p
+                  style={{ marginTop: '40px', fontSize: '20px' }}
+                >
+                  Việc tạo khóa học mới, bạn - Instructor sẽ phải tuân thủ quy định của <b>nextgoal</b> và quy định của pháp luật <b>Việt Nam</b>
+                </p>
+              </div>
+            )
+          }
+          {
+            currStep === 1 && (
+              <div
+                className={styles.container_content_inputs_coursename}
+              >
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <p
+                  className={styles.p}
+                  style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
+                >(Bạn có thể thay đổi lại tên của khóa học sau)</p>
+                <Input
+                  value={formValues.name}
+                  showCount={true}
+                  maxLength={200}
+                  allowClear={true}
+                  onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
+                  style={{ marginTop: '32px', height: '40px' }}
+                />
+              </div>
+            )
+          }
+          {
+            currStep === 2 && (
+              <div
+                className={styles.container_content_inputs_coursesummary}
+              >
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <p
+                  className={styles.p}
+                  style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
+                >(Bạn có thể thay đổi lại tóm tắt sau)</p>
+                <Input.TextArea
+                  value={formValues.summary}
+                  showCount={true}
+                  maxLength={200}
+                  allowClear={true}
+                  onChange={(e) => setFormValues({ ...formValues, summary: e.target.value })}
+                  style={{ marginTop: '32px', height: '40px' }}
+                />
+              </div>
+            )
+          }
+          {
+            currStep === 3 && (
+              <div
+                className={styles.container_content_inputs_coursegoal}
+              >
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <p
+                  className={styles.p}
+                  style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
+                >(Bạn có thể thay đổi lại những nội dung sẽ đạt được này sau)</p>
+                <InputList
+                  maxLength={5}
+                  value='goal'
+                  type='textbox'
+                  formValues={formValues}
+                  setFormValues={setFormValues}
+                  scopeStyle={{ marginTop: '32px' }}
+                  cellStyle={{ width: '720px' }}
+                />
+              </div>
+            )
+          }
+          {
+            currStep === 4 && (
+              <div
+                className={styles.container_content_inputs_coursetags}
+              >
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <p
+                  className={styles.p}
+                  style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
+                >(Bạn có thể thay đổi lại những nội dung gắn thẻ này sau)</p>
+                <InputList
+                  maxLength={5}
+                  value='category'
+                  type='textbox'
+                  formValues={formValues}
+                  setFormValues={setFormValues}
+                  scopeStyle={{ marginTop: '32px' }}
+                  cellStyle={{ width: '128px' }}
+                />
+              </div>
+            )
+          }
+          {
+            currStep === 5 && (
+              <div
+                className={styles.container_content_inputs_coursedescription}
+              >
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <p
+                  className={styles.p}
+                  style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
+                >(Bạn có thể thay đổi lại mô tả này sau)</p>
+                <p
+                  className={styles.p}
+                  style={{ marginTop: '8px', fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
+                >(Có thể sử dụng định dạng siêu văn bản như ví dụ bên dưới)</p>
+                <Input.TextArea
+                  value={formValues.description}
+                  allowClear={true}
+                  onChange={(e) => setFormValues({ ...formValues, description: e.target.value })}
+                  style={{ marginTop: '32px', height: '320px' }}
+                />
+              </div>
+            )
+          }
+        </div>
+
         <Form
           labelAlign='left'
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 8 }}
           layout='horizontal'
           initialValues={formValues}
+          style={{ marginTop: '256px', opacity: '0.2' }}
         >
           <Form.Item label='Tên khóa học'>
             <Input
@@ -252,7 +420,7 @@ function CCreate() {
               />
             </Modal>
           </Form.Item>
-          <Form.Item  label='Yêu cầu trước khóa học'>
+          <Form.Item label='Yêu cầu trước khóa học'>
             <InputList
               maxLength={5}
               value='requirements'
@@ -261,7 +429,7 @@ function CCreate() {
               setFormValues={setFormValues}
             />
           </Form.Item>
-          <Form.Item  label='Ngôn ngữ'>
+          <Form.Item label='Ngôn ngữ'>
             <InputList
               maxLength={2}
               value='languages'
@@ -270,7 +438,7 @@ function CCreate() {
               setFormValues={setFormValues}
             />
           </Form.Item>
-          <Form.Item  label='Đầu ra'>
+          <Form.Item label='Đầu ra'>
             <InputList
               maxLength={2}
               value='goal'
@@ -289,4 +457,62 @@ function CCreate() {
   )
 }
 
-export default CCreate
+export default React.memo(CCreate);
+
+const HeaderComponent = ({ stepsName, currStep, setCurrStep, submitHandler }) => {
+
+  return (
+    <Space
+      direction='horizontal'
+      size={128}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '84px' }}
+    >
+      {
+        currStep === 0 && (
+          <LeftCircleOutlined
+            className={styles.buttonstep_icon}
+          />
+        )
+      }
+      {
+        currStep > 0 && (
+          <LeftCircleFilled
+            className={styles.buttonstep_icon}
+            onClick={() => setCurrStep(currStep - 1)}
+          />
+        )
+      }
+      <h1
+        className={styles.h1}
+        style={{ fontSize: '40px', fontFamily: 'Lobster, cursive' }}
+      >
+        {stepsName[currStep]}
+      </h1>
+      {
+        currStep < 5 && (
+          <RightCircleFilled
+            className={styles.buttonstep_icon}
+            onClick={() => setCurrStep(currStep + 1)}
+          />
+        )
+      }
+      {
+        currStep === 5 && (
+          <Button
+            type='primary'
+            style={{
+              fontWeight: 600,
+              fontSize: '15px',
+              border: 'none',
+              borderRadius: '12px',
+              backgroundImage: 'linear-gradient(to left, rgb(255, 105, 105), rgb(255, 155, 61))'
+            }}
+            onClick={submitHandler}
+          >
+            Hoàn tất
+          </Button>
+        )
+      }
+    </Space>
+  )
+}

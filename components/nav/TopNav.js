@@ -9,12 +9,18 @@ import styles from '../../styles/components/nav/TopNav.module.scss';
 import { Context } from '../../context/index';
 
 const TopNav = () => {
+  // router
   const router = useRouter();
-  const { state: { user }, dispatch } = useContext(Context);
-  const [currItem, setCurrItem] = useState('/');
-  const [dropdownOpened, setDropdownOpened] = useState(false);
-  const [modalOpened, setModalOpened] = useState(false);
 
+  // global context
+  const { state: { user }, dispatch } = useContext(Context);
+
+  // states
+  const [currItem, setCurrItem] = useState('/');
+  const [modalOpened, setModalOpened] = useState(false);
+  const [course, setCourse] = useState({}); // this states only used when in learning route
+
+  // variables
   const menuItems = (
     <Menu
       items={[
@@ -39,10 +45,7 @@ const TopNav = () => {
     />
   );
 
-  useEffect(() => {
-    ['/', '/signin', '/signup'].includes(router.pathname) && setCurrItem(router.pathname);
-  }, [router.pathname]);
-
+  // functions
   function displayGreeting(name) {
     return {
       label: <h4>Xin chào {name}!</h4>,
@@ -68,6 +71,31 @@ const TopNav = () => {
     }
   }
 
+  async function getCourseInfo() {
+    try {
+      if (router.pathname === '/user/courses/[slug]/lesson/[lessonId]') {
+        const { data } = await axios.get(`/api/course/public/${router.query.slug}`);
+        setCourse(data.data);
+      } else {
+        setCourse({});
+      }
+    }
+    catch (error) {
+      message.error(`Có lỗi xảy ra. Chi tiết: ${error.message}`);
+    }
+  }
+
+  useEffect(() => {
+    ['/', '/signin', '/signup'].includes(router.pathname) && setCurrItem(router.pathname);
+  }, [router.pathname]);
+
+  useEffect(() => {
+    console.log('router.pathname: ', router.pathname);  // /user/courses/[slug]/lesson/[lessonId]
+    console.log(router.query);  // {slug: 'reactjs-zero-hero', lessonId: '860ba22b-30a3-4056-bb7d-8ddf891af2da'}
+
+    getCourseInfo();
+  }, [router.query])
+
   return (
     <div>
       {/* <Menu
@@ -81,9 +109,25 @@ const TopNav = () => {
 
       <div className={styles.container}>
         <div className={styles.container_left}>
-          <Link href='/'>
-            <a className={styles.anchor}><Image src={'/logo.png'} width='138px' height='42px' /></a>
-          </Link>
+          <Space
+            direction='horizontal'
+            size='large'
+            split={Object.keys(course || {}).length ? '|' : null}
+          >
+            <Link href='/'>
+              <a className={styles.anchor}><Image src={'/logo.png'} width='138px' height='42px' /></a>
+            </Link>
+            {
+              course && (
+                <div
+                  style={{ fontSize: '20px', fontWeight: '700', marginTop: '4px', color: '#3a3d40' }}
+                >
+                  {course?.name}
+                </div>
+              )
+            }
+          </Space>
+
         </div>
 
         <div className={styles.container_right}>

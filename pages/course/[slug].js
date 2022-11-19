@@ -1,26 +1,118 @@
-import { Space, Tag, List, Button, BackTop, Tooltip } from "antd";
+import { useState, useContext, useEffect } from "react";
+import { useRouter } from "next/router";
+import { Context } from "../../context";
+import Link from "next/link";
+import { Space, Tag, List, Button, BackTop, Tooltip, Popconfirm, message, Spin } from "antd";
 import axios from "axios";
-import { useState } from "react";
 import { CheckOutlined, CompressOutlined, DownOutlined, GlobalOutlined, HeartFilled, PlayCircleFilled, PlaySquareOutlined, ReadOutlined, WifiOutlined } from "@ant-design/icons";
-import Plyr from "plyr-react";
 import ReactMarkdown from 'react-markdown';
 import Image from "next/image";
-import styles from '../../styles/course/[slug].module.scss';
 import ModalFreePreview from "../../components/forms/ModalFreePreview";
+import { setDelay } from "../../utils/setDelay";
+import { loadStripe } from "@stripe/stripe-js";
+import styles from '../../styles/course/[slug].module.scss';
 
 
 const SingleCourseView = ({ course }) => {
+  // router
+  const router = useRouter();
+
+  // global context
+  const { state: { user }, dispatch } = useContext(Context);
+
+  // states
   const [isDesSeeMore, setIsDesSeeMore] = useState(false);
   const [isFreePreview, setIsFreePreview] = useState({ opened: false, which: {} });
+  const [enrolled, setEnrolled] = useState({});
+  const [msg, setMsg] = useState('');
   const [hide, setHide] = useState(false);
 
+  // calculate total of all videos duration
   let totalDuration = 0;
   course.lessons.forEach(lesson => totalDuration += lesson.duration);
+
+  const paidEnrollmentHandler = async () => {
+    try {
+      if (!user) {
+        router.push('/signin');
+        return;
+      }
+
+      if (enrolled?.success) {
+        message.info('Bạn đã tham gia khóa học này');
+        return;
+      }
+
+      if (user._id === course.instructor._id) {
+        message.info('Bạn hiện là Instructor của khóa học này');
+        return;
+      }
+
+      setMsg('Đang thực hiện...');
+      await setDelay(3000);
+      const { data } = await axios.post(`/api/user/enrollment/paid/${course._id}`);
+      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+      stripe.redirectToCheckout({ sessionId: data.data.id });
+    }
+    catch (error) {
+      message.error(`Có lỗi xảy ra, hãy thử lại\nChi tiết: ${error.message}`);
+    }
+  }
+
+  const freeEnrollmentHandler = async () => {
+    console.log('free enrollment triggered!')
+
+    try {
+      if (!user)
+        router.push('/signin')
+
+      if (enrolled?.success) {
+        message.info('Bạn đã tham gia khóa học này');
+        return;
+      }
+
+      if (user._id === course.instructor._id) {
+        message.info('Bạn hiện là Instructor của khóa học này');
+        return;
+      }
+
+      setMsg('Đang thực hiện...');
+      await setDelay(3000);
+      const { data } = await axios.post(`/api/user/enrollment/free/${course._id}`);
+      dispatch({
+        type: 'LOGIN',
+        payload: data.data
+      });
+      window.localStorage.setItem('user', JSON.stringify(data.data));
+      setMsg('Đã xong');
+      await setDelay(2000);
+      setMsg('');
+      message.success('Tham gia khóa học thành công !')
+    }
+    catch (error) {
+      message.error(`Có lỗi xảy ra, hãy thử lại\nChi tiết: ${error.message}`);
+    }
+  }
+
+  const checkEnrolled = async () => {
+    const { data } = await axios.post(`/api/user/check-enrollment/${course._id}`);
+    console.log('public checkEnrolled: ', data);
+    setEnrolled({ ...enrolled, data: data.data });
+  }
+
+  useEffect(() => {
+    if (user) checkEnrolled();
+  }, [user]);
 
   return (
     <div
       className={styles.container}
     >
+      <Spin
+        spinning={msg}
+        size='large'
+        style={{ position: 'absolute', marginTop: '-48px', marginLeft: '50%' }}
+      />
       <BackTop />
       <div
         className={styles.container_general}
@@ -129,12 +221,49 @@ const SingleCourseView = ({ course }) => {
             <div
               className={styles.container_body_wrapper_top_right}
             >
-              <Button
-                className={styles.container_body_wrapper_top_right_buttonrollin}
-                type='primary'
-              >
-                {course.paid ? 'Mua ngay' : 'Học miễn phí'}
-              </Button>
+              {
+                !enrolled?.data && (
+                  <Popconfirm
+                    disabled={false}
+                    title={
+                      course.paid
+                        ? <div>
+                          <p>Bạn muốn thực hiện lệnh mua khóa học này ?</p>
+                          {msg && <p style={{ color: 'green' }}>{msg}</p>}
+                        </div>
+                        : <div>
+                          <p>Bạn muốn tham gia khóa học miễn phí này ?</p>
+                          {msg && <p style={{ color: 'green' }}>{msg}</p>}
+                        </div>
+                    }
+                    onConfirm={course.paid ? paidEnrollmentHandler : freeEnrollmentHandler}
+                    okText='Đồng ý'
+                    cancelText='Hủy'
+                  >
+                    <Button
+                      className={styles.container_body_wrapper_top_right_buttonrollin}
+                      type='primary'
+                    >
+                      {
+                        course.paid
+                          ? 'Mua ngay'
+                          : 'Học miễn phí'
+                      }
+                    </Button>
+                  </Popconfirm>
+                )
+              }
+              {
+                enrolled?.data && (
+                  <Button
+                    className={styles.container_body_wrapper_top_right_buttonrollin}
+                    type='primary'
+                    onClick={() => router.push(`/user/courses/${course.slug}`)}
+                  >
+                    Vào học
+                  </Button>
+                )
+              }
             </div>
           </div>
           <div
@@ -220,6 +349,23 @@ const SingleCourseView = ({ course }) => {
             >
               Nội dung khóa học:
             </h2>
+            {
+              Object.keys(enrolled?.data || {}).length
+                ? <Space style={{ color: 'green', fontWeight: '600', fontSize: '16px', marginTop: '4px' }}>
+                  <CheckOutlined />
+                  <p>Bạn đã tham gia khóa học này, hãy đến
+                    <Link href={`/user/courses/${course.slug}`}>
+                      <a><span
+                        style={{
+                          borderBottom: '2px dotted green',
+                          textDecoration: 'none',
+                          color: 'green'
+                        }}> địa chỉ</span></a>
+                    </Link> dành cho học viên đã đăng ký cho khóa học
+                  </p>
+                </Space>
+                : null
+            }
             <List
               dataSource={course.lessons}
               header={
@@ -297,7 +443,12 @@ const SingleCourseView = ({ course }) => {
 }
 
 export async function getServerSideProps(context) {
-  const { query } = context;
+  const { req, res, query } = context;
+
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=1'
+  )
 
   const { data } = await axios.get(`${process.env.API_URL}/course/public/${query.slug}`);
 
