@@ -1,5 +1,5 @@
 import UserRoute from '../../components/routes/UserRoute';
-import CUserIndex from '../../components/user/CUserIndex';
+import CUserIndex from '../../components/pages/user/CUserIndex';
 
 const UserIndex = () => {
   return (

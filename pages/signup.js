@@ -95,7 +95,7 @@ const SignUp = () => {
               className='container_right'
             >
               <span>
-                Đã có tài khoản ? <Link href='/signin'><a>Đăng nhập</a></Link>
+                Đã có tài khoản ? <Link href='/signin'>Đăng nhập</Link>
               </span>
               <Button
                 style={{ width: '92px' }}
@@ -109,7 +109,7 @@ const SignUp = () => {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default SignUp

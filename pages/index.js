@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, Card, Carousel, message } from 'antd';
@@ -32,12 +31,6 @@ export default function Home({ courses }) {
     <div
       style={{ padding: '8px' }}
     >
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <div
         className={styles.carousel}
         style={{ width: '1280px', height: '35%' }}
@@ -45,14 +38,14 @@ export default function Home({ courses }) {
         <Carousel autoplay={true} effect='fade'>
           <Image
             alt='carousel_1'
-            width='1280px'
-            height='312px'
+            width={1280}
+            height={312}
             src='/carousel_1.svg'
           />
           <Image
             alt='carousel_2'
-            width='1280px'
-            height='312px'
+            width={1280}
+            height={312}
             src='/carousel_2.svg'
           />
         </Carousel>
@@ -70,22 +63,22 @@ export default function Home({ courses }) {
         >
           {
             courses.map((course, index) => (
-              <Link key={index} href={`/course/${course.slug}`}>
-                <a>
-                  <CourseCard
-                    course={course}
-                    index={index}
-                    loading={loading.courses}
-                  />
-                </a>
-              </Link>
+              (<Link key={index} href={`/course/${course.slug}`}>
+
+                <CourseCard
+                  course={course}
+                  index={index}
+                  loading={loading.courses}
+                />
+
+              </Link>)
 
             ))
           }
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps() {

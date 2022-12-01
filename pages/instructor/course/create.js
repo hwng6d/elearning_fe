@@ -1,5 +1,5 @@
 import InstructorRoute from '../../../components/routes/InstructorRoute';
-import CCreate from '../../../components/instructor/course/CCreate';
+import CCreate from '../../../components/pages/instructor/course/CCreate';
 
 function CourseCreate() {
   return (

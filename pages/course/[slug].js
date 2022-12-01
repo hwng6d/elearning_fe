@@ -158,8 +158,8 @@ const SingleCourseView = ({ course }) => {
                 <Image
                   src={course.image.Location}
                   objectFit='cover'
-                  width='320px'
-                  height='180px'
+                  width={320}
+                  height={180}
                 />
               </div>
               <div
@@ -167,8 +167,8 @@ const SingleCourseView = ({ course }) => {
               >
                 <Image
                   src='/play_button.svg'
-                  width='52px'
-                  height='52px'
+                  width={52}
+                  height={52}
                 />
               </div>
               <p
@@ -355,12 +355,12 @@ const SingleCourseView = ({ course }) => {
                   <CheckOutlined />
                   <p>Bạn đã tham gia khóa học này, hãy đến
                     <Link href={`/user/courses/${course.slug}`}>
-                      <a><span
+                      <span
                         style={{
                           borderBottom: '2px dotted green',
                           textDecoration: 'none',
                           color: 'green'
-                        }}> địa chỉ</span></a>
+                        }}> địa chỉ</span>
                     </Link> dành cho học viên đã đăng ký cho khóa học
                   </p>
                 </Space>
@@ -439,7 +439,7 @@ const SingleCourseView = ({ course }) => {
       <button onClick={() => setHide(!hide)}>Ẩn/hiện</button>
       {hide && <pre>{JSON.stringify(course, null, 4)}</pre>}
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps(context) {

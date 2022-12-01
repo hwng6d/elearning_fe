@@ -56,7 +56,7 @@ function CourseView() {
 
       // delete current image if have
       course.image &&
-        await axios.post('/api/course/ins/remove-image', { image: course.image });
+        (await axios.post('/api/course/ins/remove-image', { image: course.image }));
 
       // upload to s3
       const { data: uploadImgReponse } = await axios.post('/api/course/ins/upload-image', { image: base64 });

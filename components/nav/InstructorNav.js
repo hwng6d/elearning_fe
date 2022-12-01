@@ -4,8 +4,8 @@ import { Layout, Menu } from "antd";
 const { Content, Sider } = Layout;
 import { UnorderedListOutlined, UserOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from '../../styles/components/nav/InstructorNav.module.scss';
-import CCreate from '../instructor/course/CCreate';
-import CInstructorIndex from '../instructor/CInstructorIndex';
+import CCreate from '../pages/instructor/course/CCreate';
+import CInstructorIndex from '../pages/instructor/CInstructorIndex';
 import Link from 'next/link';
 
 const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
@@ -78,7 +78,7 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
               onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
             >
               <Link href='/instructor'>
-                <a>Các khóa học</a>
+                Các khóa học
               </Link>
             </Menu.Item>
           </Menu.SubMenu>
@@ -88,7 +88,7 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
             onClick={() => selectedHandler(<CCreate />, '/instructor/course/create')}
           >
             <Link href='/instructor/course/create'>
-              <a>Tạo khóa học mới</a>
+              Tạo khóa học mới
             </Link>
           </Menu.Item>
         </Menu>
@@ -101,7 +101,7 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
         {/* {child} */}
       </Content>
     </Layout>
-  )
+  );
 }
 
 export default React.memo(InstructorNav);

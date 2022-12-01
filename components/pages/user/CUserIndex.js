@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Button, Spin } from 'antd';
+import { Button, Spin, message} from 'antd';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { SettingOutlined, SyncOutlined } from '@ant-design/icons';
-import { Context } from '../../context/index';
+import { Context } from '../../../context/index';
 import axios from 'axios';
-import CourseListHorizontal from '../list/CourseListHorizontal';
+import CourseListHorizontal from '../../list/CourseListHorizontal';
 
 function CUserIndex() {
   const { state: { user } } = useContext(Context);

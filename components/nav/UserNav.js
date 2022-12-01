@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Layout, Menu } from "antd";
 import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
 const { Content, Sider } = Layout;
-import CUserIndex from '../user/CUserIndex';
+import CUserIndex from '../pages/user/CUserIndex';
 import styles from '../../styles/components/nav/UserNav.module.scss';
 
 const UserNav = ({ user, hideSidebar, collapsed, setCollapsed, children }) => {
@@ -80,7 +80,7 @@ const UserNav = ({ user, hideSidebar, collapsed, setCollapsed, children }) => {
             onClick={() => selectedHandler(<CUserIndex />, '/user')}
           >
             <Link href='/user'>
-              <a>Bảng điều khiển</a>
+              Bảng điều khiển
             </Link>
           </Menu.Item>
         </Menu>
@@ -92,7 +92,7 @@ const UserNav = ({ user, hideSidebar, collapsed, setCollapsed, children }) => {
         {children}
       </Content>
     </Layout>
-  )
+  );
 }
 
 export default UserNav

@@ -72,11 +72,11 @@ const CourseCard = ({
           style={{ height: '163px', border: '1px solid #d9d9d9' }}
         >
           <Image
-            width='288px'
-            height='162px'
+            width={288}
+            height={162}
             alt='course-cover'
-            objectFit="cover"
             src={course.image.Location}
+            style={{ objectFit: 'cover' }}
           />
         </div>
         {/* body */}

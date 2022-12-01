@@ -24,7 +24,7 @@ const CourseListHorizontal = ({ courses }) => {
         dataSource={courses}
         renderItem={(course) => (
           <List.Item
-            key={course._id}
+            key={course?._id}
             className={styles.container_list_item}
           >
             <Space
@@ -37,8 +37,8 @@ const CourseListHorizontal = ({ courses }) => {
               >
                 <Image
                   src={course?.courseId?.image?.Location}
-                  width='224px'
-                  height='126px'
+                  width={224}
+                  height={126}
                   objectFit='cover'
                 />
               </div>
@@ -53,9 +53,9 @@ const CourseListHorizontal = ({ courses }) => {
                     onClick={() => router.push(`/user/courses/${course?.courseId?.slug}`)}
                     style={{ fontSize: '20px', cursor: 'pointer' }}
                   >
-                    {course.courseId.name}
+                    {course?.courseId?.name}
                   </h2>
-                  <p>Instructor: {course.courseId.instructor.name}</p>
+                  <p>Instructor: {course?.courseId?.instructor?.name}</p>
                   <p>...% hoàn thành</p>
                   <p>
                     <Space size='middle'>
