@@ -1,0 +1,66 @@
+.tabs {
+
+  &_review {
+    padding: 8px 24px;
+
+    &_overview {
+
+      &_body {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        margin-top: 20px;
+        padding: 0px 72px;
+        align-items: center;
+        justify-content: flex-start !important;
+        // width: 80%;
+
+        &_average {
+          max-width: 20%;
+          min-width: 15%;
+          justify-content: center;
+          align-items: center;
+          gap: 16px;
+        }
+
+        &_progressbar {
+          width: 45%;
+        }
+
+        &_statistic {
+          min-width: 35%
+        }
+      }
+    }
+
+    &_content {
+      margin-top: 16px;
+
+      &_body {
+
+        &_search {
+          display: flex;
+          margin-top: 12px;
+          padding: 0px 12px;
+          gap: 12px;
+          max-width: 1024px;
+
+          &_left, &_right {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+        }
+
+        &_list {
+          margin-top: 16px;
+          padding: 0px 34px;
+
+          &_item {
+            align-items: flex-start;
+          }
+        }
+      }
+    }
+  }
+}

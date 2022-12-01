@@ -107,8 +107,8 @@ const SignIn = () => {
               <div
                 className='container_bottom_left'
               >
-                <Link href='forgot-password'>
-                  <a style={{ color: '#ff3200' }}>Quên mật khẩu</a>
+                <Link href='forgot-password' style={{ color: '#ff3200' }}>
+                  Quên mật khẩu
                 </Link>
               </div>
               <div
@@ -117,7 +117,7 @@ const SignIn = () => {
                 <span
                   style={{ width: 'inherit' }}
                 >
-                  Chưa có tải khoản ? <Link href='/signup'><a>Đăng ký ngay</a></Link>
+                  Chưa có tải khoản ? <Link href='/signup'>Đăng ký ngay</Link>
                 </span>
               </div>
             </div>
@@ -126,7 +126,7 @@ const SignIn = () => {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default SignIn

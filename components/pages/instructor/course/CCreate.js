@@ -5,9 +5,9 @@ import { Breadcrumb, Form, Input, InputNumber, Select, Button, Tag, Upload, Spac
 import { HomeOutlined, UploadOutlined, LeftCircleFilled, RightCircleFilled, LeftCircleOutlined } from '@ant-design/icons';
 import Head from 'next/head';
 import axios from 'axios';
-import { getBase64 } from '../../../utils/getBase64';
-import InputList from '../../inputlist/InputList';
-import styles from '../../../styles/components/instructor/course/CourseCreate.module.scss';
+import { getBase64 } from '../../../../utils/getBase64';
+import InputList from '../../../inputs/inputlist/InputList';
+import styles from '../../../../styles/components/instructor/course/CourseCreate.module.scss';
 
 function CCreate() {
   // router
@@ -140,17 +140,17 @@ function CCreate() {
       >
         <Breadcrumb.Item>
           <Link href='/'>
-            <a><HomeOutlined /></a>
+            <HomeOutlined />
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item >
           <Link href='/instructor'>
-            <a>Instructor</a>
+            Instructor
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link href='#'>
-            <a>Tạo khóa học mới</a>
+            Tạo khóa học mới
           </Link>
         </Breadcrumb.Item>
       </Breadcrumb>
@@ -454,7 +454,7 @@ function CCreate() {
         </Form>
       </div>
     </div>
-  )
+  );
 }
 
 export default React.memo(CCreate);

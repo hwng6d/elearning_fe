@@ -2,7 +2,7 @@ import { Button, Input, Modal, Space, InputNumber, Select, Form, Switch, message
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../../styles/components/forms/ModalEditCourse.module.scss';
-import InputList from '../inputlist/InputList';
+import InputList from '../inputs/inputlist/InputList';
 
 const ModalAddLesson = ({
   course,

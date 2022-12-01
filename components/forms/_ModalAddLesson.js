@@ -206,7 +206,14 @@ const _ModalAddLesson = ({
         // send request to BE to edit lesson
         const { data: lessonResponse } = await axios.put(
           `/api/course/ins/${course._id}/lesson/${modalEditLesson.lessonId}/update`,
-          { lesson: newLesson, instructorId: user._id }
+          {
+            lesson: newLesson,
+            instructorId: user._id,
+            sameIndexAcceptable:
+              (newLesson.index === originAtEdit.index && newLesson.section === originAtEdit.section)
+                ? true
+                : false
+          }
         );
 
         // notify and set everything to be original
@@ -216,11 +223,15 @@ const _ModalAddLesson = ({
         setVideosUpload([]);
         setValidateMessage('');
         setProgressUploadVideo(0);
+        setOriginAtEdit({ ...originAtEdit, section: -1, index: -1 });
         setModalEditLesson({ ...modalEditLesson, opened: false, sectionId: '', lessonId: '' });
       }
     }
     catch (error) {
-      message.error(`Xảy ra lỗi khi thêm bài học, vui lòng thử lại.\nChi tiết: ${error.message}`)
+      if (error?.response?.data?.message === `Index is taken, please choose another one`)
+        message.error('Số thứ tự đã tồn tại trong chương này, vui lòng thử lại');
+      else
+        message.error(`Xảy ra lỗi khi thêm bài học, vui lòng thử lại.\nChi tiết: ${error.message}`)
     }
   }
 
@@ -264,8 +275,8 @@ const _ModalAddLesson = ({
         <div
           className={styles.form_section}
         >
-          <Space
-            direction='vertical'
+          <div
+            className={styles.d_flex_col}
           >
             <label><b>Chương *</b></label>
             <Select
@@ -274,17 +285,17 @@ const _ModalAddLesson = ({
               defaultValue={
                 newLesson.section
               }
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginTop: '8px' }}
               onChange={(value) => onSectionChange(value)}
             />
-          </Space>
+          </div>
         </div>
         <div
           className={styles.form_lessonIndex}
           style={{ marginTop: '12px' }}
         >
-          <Space
-            direction='vertical'
+          <div
+            className={styles.d_flex_col}
           >
             <label><b>Số thứ tự bài *</b></label>
             <InputNumber
@@ -294,16 +305,16 @@ const _ModalAddLesson = ({
               onChange={(value) => {
                 setNewLesson({ ...newLesson, index: value });
               }}
-              style={{ width: '100%', fontSize: '16px' }}
+              style={{ width: '100%', fontSize: '16px', marginTop: '8px' }}
             />
-          </Space>
+          </div>
         </div>
         <div
           className={styles.form_title}
           style={{ marginTop: '12px' }}
         >
-          <Space
-            direction='vertical'
+          <div
+            className={styles.d_flex_col}
           >
             <label><b>Tiêu đề *</b></label>
             <Input
@@ -314,27 +325,28 @@ const _ModalAddLesson = ({
                 setNewLesson({ ...newLesson, title: e.target.value });
                 setValidateMessage(!e.target.value && <span style={{ color: 'red', padding: '4px 0px' }}>Vui lòng nhập tiêu đề</span>)
               }}
+              style={{ width: '100%', marginTop: '8px' }}
             />
-          </Space>
+          </div>
         </div>
         <div
           className={styles.form_content}
           style={{ marginTop: '12px' }}
         >
-          <Space
-            direction='vertical'
+          <div
+            className={styles.d_flex_col}
           >
             <label><b>Tóm tắt nội dung</b></label>
             <Input.TextArea
               placeholder='Nhập tóm tắt nội dung'
-              style={{ height: '128px' }}
               value={newLesson.content}
               onChange={(e) => {
                 e.preventDefault();
                 setNewLesson({ ...newLesson, content: e.target.value })
               }}
+              style={{ height: '128px', width: '100%', marginTop: '8px' }}
             />
-          </Space>
+          </div>
         </div>
         <div
           className={styles.form_freepreview}

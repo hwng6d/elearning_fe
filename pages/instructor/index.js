@@ -1,6 +1,6 @@
 import React from 'react';
 import InstructorRoute from '../../components/routes/InstructorRoute';
-import CInstructorIndex from '../../components/instructor/CInstructorIndex';
+import CInstructorIndex from '../../components/pages/instructor/CInstructorIndex';
 
 function InstructorIndex() {
   return (

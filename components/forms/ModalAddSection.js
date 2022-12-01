@@ -111,8 +111,8 @@ const ModalAddSection = ({
         <div
           className={styles.form_sectionindex}
         >
-          <Space
-            direction='vertical'
+          <div
+            className={styles.d_fle_col}
           >
             <label><b>Số thứ tự chương *</b></label>
             <InputNumber
@@ -122,9 +122,9 @@ const ModalAddSection = ({
               onChange={(value) => {
                 setNewSection({ ...newSection, index: value });
               }}
-              style={{ width: '100%', fontSize: '16px' }}
+              style={{ width: '100%', fontSize: '16px', marginTop: '8px' }}
             />
-          </Space>
+          </div>
         </div>
         <div
           className={styles.form_sectionname}

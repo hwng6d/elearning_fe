@@ -114,8 +114,8 @@ const TopNav = () => {
             size='large'
             split={Object.keys(course || {}).length ? '|' : null}
           >
-            <Link href='/'>
-              <a className={styles.anchor}><Image src={'/logo.png'} width='138px' height='42px' /></a>
+            <Link href='/' className={styles.anchor}>
+              <Image src={'/logo.png'} width={138} height={42} />
             </Link>
             {
               course && (
@@ -135,11 +135,11 @@ const TopNav = () => {
             user && (
               (user.role && !user.role.includes('Instructor'))
               && (
-                <Link href='/user/become-instructor'>
-                  <a className={styles.container_right_label}>
-                    <span>Trở thành Instructor</span>
-                  </a>
-                </Link>
+                (<Link href='/user/become-instructor' className={styles.container_right_label}>
+
+                  <span>Trở thành Instructor</span>
+
+                </Link>)
               )
             )
           }
@@ -147,7 +147,7 @@ const TopNav = () => {
             (user === null && currItem !== '/signin') && (
               <Button size='large' id={styles.btn_signin}>
                 <Link href='/signin'>
-                  <a>Đăng nhập</a>
+                  Đăng nhập
                 </Link>
               </Button>
             )
@@ -156,7 +156,7 @@ const TopNav = () => {
             (user === null && currItem !== '/signup') && (
               <Button size='large' id={styles.btn_signup}>
                 <Link href='/signup'>
-                  <a>Đăng ký</a>
+                  Đăng ký
                 </Link>
               </Button>
             )
@@ -198,7 +198,8 @@ const TopNav = () => {
           </Modal>
         </div>
       </div>
-    </div>)
+    </div>
+  );
 }
 
 export default TopNav
