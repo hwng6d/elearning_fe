@@ -1,17 +1,49 @@
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h1 {
+  font-weight: 600;
+  font-size: 24px;
+}
+
 .container {
-  margin: 16px 8px 8px 8px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(364px, 0px));
-  gap: 3rem;
-  row-gap: 2rem;
+  padding: 12px 36px;
 
-  &_card {
-    width: 364px;
-    height: 300px;
-    display: inline-block;
+  &_wrapper {
+    margin: 16px 8px 8px 8px;
+    display: flex;
+    margin: 24px auto;
 
-    &_meta {
-      justify-content: space-between;
+    &_courses {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
+      gap: 52px;
+    }
+
+    &_card {
+      width: 288px;
+      height: 300px;
+      display: inline-block;
+
+      &_meta {
+        justify-content: space-between;
+      }
     }
   }
 }

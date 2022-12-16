@@ -10,6 +10,7 @@ import styles from '../../../../styles/components/routes/learning/tabs/TabQA.mod
 import axios from 'axios';
 import { setDelay } from '../../../../utils/setDelay'
 import { EllipsisOutlined, EnterOutlined, LeftOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 
 const TabQA = ({ course, currentLesson, activeTab }) => {
   // states
@@ -92,42 +93,42 @@ const TabQA = ({ course, currentLesson, activeTab }) => {
                 >
                   <p><b>Bộ lọc</b></p>
                   <div className={styles.d_flex_row}>
-                  <SelectBar
-                    field='lessonId'
-                    value={search}
-                    setValue={setSearch}
-                    options={[
-                      {
-                        value: 'all',
-                        label: 'Tất cả bài học'
-                      },
-                      {
-                        value: currentLesson._id,
-                        label: 'Bài học hiện tại'
-                      }
-                    ]}
-                    styles={{ width: '50%', height: '40px' }}
-                  />
-                  <SelectBar
-                    field='other'
-                    value={search}
-                    setValue={setSearch}
-                    options={[
-                      {
-                        value: 'all',
-                        label: 'Tất cả'
-                      },
-                      {
-                        value: 'currentuser_asked',
-                        label: 'Những Q&A đã hỏi'
-                      },
-                      {
-                        value: 'without_reply',
-                        label: 'Những Q&A chưa có trả lời'
-                      }
-                    ]}
-                    styles={{ width: '50%', height: '40px' }}
-                  />
+                    <SelectBar
+                      field='lessonId'
+                      value={search}
+                      setValue={setSearch}
+                      options={[
+                        {
+                          value: 'all',
+                          label: 'Tất cả bài học'
+                        },
+                        {
+                          value: currentLesson._id,
+                          label: 'Bài học hiện tại'
+                        }
+                      ]}
+                      styles={{ width: '50%', height: '40px' }}
+                    />
+                    <SelectBar
+                      field='other'
+                      value={search}
+                      setValue={setSearch}
+                      options={[
+                        {
+                          value: 'all',
+                          label: 'Tất cả'
+                        },
+                        {
+                          value: 'currentuser_asked',
+                          label: 'Những Q&A đã hỏi'
+                        },
+                        {
+                          value: 'without_reply',
+                          label: 'Những Q&A chưa có trả lời'
+                        }
+                      ]}
+                      styles={{ width: '50%', height: '40px' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -150,45 +151,51 @@ const TabQA = ({ course, currentLesson, activeTab }) => {
                     itemLayout='vertical'
                     dataSource={listQA}
                     split={true}
-                    renderItem={(qa) => (
-                      <List.Item
-                        className={styles.tabs_qa_body_create_list_item}
-                        key={qa._id}
-                        onClick={() => onDetailQAClick(qa)}
-                      >
-                        <Space
-                          className={styles.create_list_item_detail}
-                          size='large'
-                          direction='horizontal'
+                    renderItem={(qa) => {
+                      const lessonInfo = qa?.course?.lessons.find(_ => _?._id === qa?.lessonId);
+                      const sectionInfo = qa?.course?.sections?.find(_ => _._id === lessonInfo?.section);
+
+                      return (
+                        <List.Item
+                          className={styles.tabs_qa_body_create_list_item}
+                          key={qa._id}
+                          onClick={() => onDetailQAClick(qa)}
                         >
                           <Space
-                            className={styles.create_list_item_detail_left}
+                            className={styles.create_list_item_detail}
+                            size='large'
+                            direction='horizontal'
                           >
-                            <div style={{ width: '44px', height: '44px' }}>
-                              <Image
-                                src={'/user_default.svg'}
-                                width={64}
-                                height={64}
-                                alt='avatar'
-                                style={{ width: 'inherit', height: 'inherit', objectFit: 'cover' }}
-                              />
-                            </div>
-                          </Space>
-                          <Space
-                            className={styles.create_list_item_detail_right}
-                            direction='vertical'
-                            size={0}
-                          >
-                            <h3 style={{ fontSize: '18px', fontWeight: '600' }}>{qa?.title}</h3>
-                            <p style={{ marginTop: '8px' }}>{qa.content.slice(0, 150)} ...</p>
-                            <Space direction='horizontal' size='middle' style={{ marginTop: '8px' }}>
-                              <p style={{ color: '#401b9c', textDecoration: 'underline' }}>{qa?.user?.name}</p>
-                              <p><i>{dayjs(qa?.updatedAt).format('DD/MM/YYYY')}</i></p>
+                            <Space
+                              className={styles.create_list_item_detail_left}
+                            >
+                              <div style={{ width: '44px', height: '44px' }}>
+                                <Image
+                                  src={'/user_default.svg'}
+                                  width={64}
+                                  height={64}
+                                  alt='avatar'
+                                  style={{ width: 'inherit', height: 'inherit', objectFit: 'cover' }}
+                                />
+                              </div>
+                            </Space>
+                            <Space
+                              className={styles.create_list_item_detail_right}
+                              direction='vertical'
+                              size={0}
+                            >
+                              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>{qa?.title}</h3>
+                              <p style={{ marginTop: '8px' }}>{qa.content.slice(0, 150)} ...</p>
+                              <Space direction='horizontal' size='middle' style={{ marginTop: '8px' }}>
+                                <p style={{ color: '#401b9c', textDecoration: 'underline' }}>{qa?.user?.name}</p>
+                                <p><b>Chương {sectionInfo?.index} - {sectionInfo?.name} | Bài học {lessonInfo?.index} - {lessonInfo?.title}</b></p>
+                                <p><i>{dayjs(qa?.updatedAt).format('DD/MM/YYYY')}</i></p>
+                              </Space>
                             </Space>
                           </Space>
-                        </Space>
-                      </List.Item>
-                    )}
+                        </List.Item>
+                      )
+                    }}
                   />
                 </div>
               </div>
@@ -252,8 +259,6 @@ const QADetail = ({
 
   const onReplySubmit = async () => {
     try {
-      console.log('newReply', newReply);
-
       if (newReply.content.length) {
         await axios.post(
           `/api/qa/course/${course?._id}/lesson/${qa?.lessonId}`,
@@ -289,7 +294,7 @@ const QADetail = ({
   }
 
   const onCancelReplyQAEditingClick = (reply) => {
-    setIsReplyQAEditing({...isReplyQAEditing, state: false, replyQAId: ''});
+    setIsReplyQAEditing({ ...isReplyQAEditing, state: false, replyQAId: '' });
     setReplyQAEditing(reply.content);
   }
 
@@ -306,7 +311,7 @@ const QADetail = ({
       );
 
       getQAReplies();
-      setIsReplyQAEditing({...isReplyQAEditing, state: false, replyQAId: ''});
+      setIsReplyQAEditing({ ...isReplyQAEditing, state: false, replyQAId: '' });
     }
     catch (error) {
       message.error(`Xảy ra lỗi khi chỉnh sửa phản hồi Q&A. Chi tiết: ${error.message}`)
@@ -420,7 +425,7 @@ const QADetail = ({
                     )
                 }
                 {
-                  user._id === qa?.userId && (
+                  user?._id === qa?.userId && (
                     <Tooltip
                       title={
                         <div className={styles.d_flex_col} style={{ gap: '4px' }}>
@@ -447,7 +452,11 @@ const QADetail = ({
               </div>
               <Space direction='horizontal' size='middle' style={{ marginTop: '8px' }}>
                 <p style={{ color: '#401b9c', textDecoration: 'underline' }}>{qa?.user?.name}</p>
-                <p><b>Chương {sectionInfo?.index} - {sectionInfo?.name} | Bài học {lessonInfo?.index} - {lessonInfo?.title}</b></p>
+                <Link href={`/user/courses/${course?.slug}/lesson/${lessonInfo?._id}`}>
+                  <p style={{ color: 'black', fontWeight: '600', cursor: 'pointer' }}>
+                    Chương {sectionInfo?.index} - {sectionInfo?.name} | Bài học {lessonInfo?.index} - {lessonInfo?.title}
+                  </p>
+                </Link>
                 <p><i>{dayjs(qa?.updatedAt).format('DD/MM/YYYY')}</i></p>
               </Space>
               {
@@ -536,7 +545,20 @@ const QADetail = ({
                           <p style={{ color: '#401b9c', fontSize: '16px' }}>{reply?.user?.name}</p>
                           <p><i>{dayjs(reply?.updatedAt).format('DD/MM/YYYY')}</i></p>
                           {
-                            user._id === reply?.userId && (
+                            reply?.userId === course?.instructor?._id && (
+                              <div
+                                style={{
+                                  padding: '2px 12px',
+                                  backgroundColor: 'blueviolet',
+                                  color: 'white',
+                                  fontSize: '12px',
+                                  borderRadius: '8px'
+                                }}
+                              >Instructor</div>
+                            )
+                          }
+                          {
+                            user?._id === reply?.userId && (
                               <Tooltip
                                 title={
                                   <div className={styles.d_flex_col} style={{ gap: '4px' }}>

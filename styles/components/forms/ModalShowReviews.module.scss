@@ -1,0 +1,55 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.container {
+  align-items: flex-start;
+
+  &_left {
+    width: 30%;
+
+    &_overall {
+      margin-top: 12px;
+    }
+
+    &_search {
+      margin-top: 20px;
+    }
+  }
+
+  &_right {
+    width: 70%;
+    padding: 0px 16px;
+
+    &_reviewlist {
+      margin-top: 32px;
+      padding: 0px 32px;
+
+      &_item {
+        border-top: 1px solid #d1d7dc;
+
+        &_info {
+          margin-top: 20px;
+        }
+
+        &_content {
+          margin-top: 8px;
+          padding-right: 24px;
+
+        }
+      }
+    }
+  }
+}

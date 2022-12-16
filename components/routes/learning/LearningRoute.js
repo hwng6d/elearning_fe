@@ -44,17 +44,17 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
       {
         label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Tổng quan</p>,
         key: 'tab_overview',
-        children: <TabOverview course={course} currentLesson={currentLesson} activeTab={activeTab}/>
+        children: <TabOverview course={course} currentLesson={currentLesson} activeTab={activeTab} />
       },
       {
         label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Q&A</p>,
         key: 'tab_qa',
-        children: <TabQA course={course} currentLesson={currentLesson} activeTab={activeTab}/>
+        children: <TabQA course={course} currentLesson={currentLesson} activeTab={activeTab} />
       },
       {
         label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Review</p>,
         key: 'tab_review',
-        children: <TabReview course={course} currentLesson={currentLesson} activeTab={activeTab}/>
+        children: <TabReview course={course} currentLesson={currentLesson} activeTab={activeTab} />
       }
     ]
   }, [course]);
@@ -97,16 +97,27 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
     setOpenKeys(deleteUndefined)
   }
 
+  const getABCDAnswer = (index) => {
+    let result = '';
+    ['A', 'B', 'C', 'D'].forEach((letter, _index) => { if (_index + 1 === index) result = letter });
+    return result;
+  }
+
   const onDoQuizClick = (event, lessonId, quizId) => {
     event.stopPropagation();
 
-    if (!user.courses.find(_ => _.courseId === course._id).completedLessons.includes(lessonId)) {
-      message.error('Hãy hoàn thành việc học trước khi làm bài quiz');
-      return;
-    }
+    if (user._id === course.instructor._id) {
+      const quiz = course?.quizzes?.find(quiz => quiz?._id === quizId);
+      setIsQuizScreen({ ...quizId, opened: true, quiz });
+    } else {
+      if (!user.courses.find(_ => _.courseId === course._id).completedLessons.includes(lessonId)) {
+        message.error('Hãy hoàn thành việc học trước khi làm bài quiz');
+        return;
+      }
 
-    const quiz = course?.quizzes?.find(quiz => quiz?._id === quizId);
-    setIsQuizScreen({ ...quizId, opened: true, quiz });
+      const quiz = course?.quizzes?.find(quiz => quiz?._id === quizId);
+      setIsQuizScreen({ ...quizId, opened: true, quiz });
+    }
   }
 
   const onSubmitQuizClick = async (event, quizId) => {
@@ -193,7 +204,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
 
       return (
         <Menu.SubMenu
-          className={`${styles.container_sider_lessonlist_itemsection} container_sider_lessonlist_itemsection`}
+          className={`${styles.container_sider_lessonlist_itemsection} container_learninglist`}
           key={section?._id}
           title={
             <Space size={8} direction="vertical" style={{ lineHeight: '28px' }}>
@@ -210,7 +221,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
           {
             course?.lessons?.map(lesson => {
               if (lesson?.section?._id === section?._id) {
-                const isCompleted = user?.courses?.find(item => item.courseId === course._id).completedLessons.includes(lesson._id);
+                const isCompleted = user?.courses?.find(item => item?.courseId === course._id)?.completedLessons?.includes(lesson._id);
                 const isQuiz = course?.quizzes?.findIndex(quiz => quiz.lesson === lesson._id);
                 const quiz = isQuiz < 0 ? undefined : course?.quizzes[isQuiz];
                 const completeIconStyles = {
@@ -229,29 +240,33 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       className={styles.container_sider_lessonlist_itemlesson_wrapper}
                       direction='horizontal'
                     >
-                      <Tooltip
-                        title={
-                          currentLesson._id !== lesson._id
-                            ? 'Hiện đang không ở bài học này'
-                            : isCompleted
-                              ? 'Đánh dấu chưa học'
-                              : 'Đánh dấu đã học'
-                        }
-                      >
-                        <div
-                          onClick={(event) => completionHandler(event, isCompleted, lesson._id)}
-                        >
-                          {
-                            isCompleted
-                              ? <CheckSquareFilled
-                                style={completeIconStyles}
-                              />
-                              : <BorderOutlined
-                                style={completeIconStyles}
-                              />
-                          }
-                        </div>
-                      </Tooltip>
+                      {
+                        user._id !== course.instructor._id && (
+                          <Tooltip
+                            title={
+                              currentLesson._id !== lesson._id
+                                ? 'Hiện đang không ở bài học này'
+                                : isCompleted
+                                  ? 'Đánh dấu chưa học'
+                                  : 'Đánh dấu đã học'
+                            }
+                          >
+                            <div
+                              onClick={(event) => completionHandler(event, isCompleted, lesson._id)}
+                            >
+                              {
+                                isCompleted
+                                  ? <CheckSquareFilled
+                                    style={completeIconStyles}
+                                  />
+                                  : <BorderOutlined
+                                    style={completeIconStyles}
+                                  />
+                              }
+                            </div>
+                          </Tooltip>
+                        )
+                      }
                       <div
                         style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
                       >
@@ -265,7 +280,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                           </div>
                           {
                             quiz && (
-                              <Tooltip title='Làm bài quiz'>
+                              <Tooltip title={`${user._id === course?.instructor._id ? 'Xem quiz' : 'Làm bài quiz'}`}>
                                 <div
                                   className={styles.container_sider_lessonlist_itemlesson_infoquiz}
                                   style={{ gap: '12px' }}
@@ -273,7 +288,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                                 >
                                   <TrophyFilled style={{}} />
                                   <p>
-                                    Let's quiz
+                                    {`${user._id === course?.instructor._id ? 'Xem quiz' : `Let's quiz`}`}
                                   </p>
                                   {
                                     user?.courses?.find(_ => _.courseId === course._id)?.completedQuizzes?.includes(quiz._id) && (
@@ -316,7 +331,6 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
         >
           <p>Nội dung khóa học</p>
           <CloseOutlined
-            onClick={() => onCloseSidebarClick()}
             style={{ fontSize: '16px' }}
           />
         </div>
@@ -388,7 +402,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                     <p style={{ marginTop: '12px' }}><b>Các lựa chọn:</b></p>
                     <Radio.Group
                       value={quizAnswered}
-                      disabled={quizResult.status === true}
+                      disabled={quizResult.status === true || user._id === course?.instructor?._id}
                       onChange={(e) => setQuizAnswered(e.target.value)}
                       style={{ marginTop: '12px', padding: '0px 8px', display: 'grid', gap: '20px' }}
                     >
@@ -400,17 +414,29 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                         )
                       })}
                     </Radio.Group>
-                    <div
-                      className={styles.container_content_videosection_quiz_body_submit}
-                      style={{ marginTop: '16px' }}
-                    >
-                      <Button
-                        className={styles.quiz_body_submit_button}
-                        type='primary'
-                        disabled={quizResult.status === true}
-                        onClick={(e) => onSubmitQuizClick(e, isQuizScreen.quiz._id)}
-                      >Nộp bài</Button>
-                    </div>
+                    {
+                      user._id === course.instructor._id && (
+                        <div>
+                          <p style={{ marginTop: '12px' }}><b>Đáp án:</b></p>
+                          <p>
+                            {getABCDAnswer(course?.quizzes?.find(_ => _.lesson === lessonId)?.correctAnswer?.find(_ => _.value === true)?.index)}
+                          </p>
+                        </div>
+                      )
+                    }
+                    {
+                      user._id !== course.instructor._id && <div
+                        className={styles.container_content_videosection_quiz_body_submit}
+                        style={{ marginTop: '16px' }}
+                      >
+                        <Button
+                          className={styles.quiz_body_submit_button}
+                          type='primary'
+                          disabled={quizResult.status === true}
+                          onClick={(e) => onSubmitQuizClick(e, isQuizScreen.quiz._id)}
+                        >Nộp bài</Button>
+                      </div>
+                    }
                     <div
                       className={styles.container_content_videosection_quiz_body_resultmessage}
                     >
@@ -475,15 +501,6 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
               onChange={tabChangeHandler}
               type='card'
             />
-          </div>
-
-          <div
-            style={{ marginTop: '32px', opacity: '0.3' }}
-          >
-            <button onClick={() => setHide({ ...hide, courses: !hide.courses })}>{hide.courses ? 'Ẩn courses' : 'Hiện courses'}</button>
-            <button onClick={() => setHide({ ...hide, lesson: !hide.lesson })}>{hide.lesson ? 'Ẩn lesson' : 'Hiện lesson'}</button>
-            {hide.courses && <pre>{JSON.stringify(course, null, 4)}</pre>}
-            {hide.lesson && <pre>{JSON.stringify(currentLesson, null, 4)}</pre>}
           </div>
         </div>
 

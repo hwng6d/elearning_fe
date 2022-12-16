@@ -8,13 +8,13 @@ import SearchBar from '../../../inputs/search/SearchBar';
 import styles from '../../../../styles/components/routes/learning/tabs/TabReview.module.scss';
 import ModalAddReview from '../../../forms/ModalAddReview';
 import SelectBar from '../../../inputs/search/SelectBar';
+import { DashOutlined } from '@ant-design/icons';
 
 const TabReview = ({ course, currentLesson, activeTab }) => {
   // global context
   const { state: { user } } = useContext(Context);
 
   // states
-  const [hide, setHide] = useState(false);
   const [listReview, setListReview] = useState({ total: [], list: [] });
   const [newReview, setNewReview] = useState({ content: '', star: 0 });
   const [modalAddReview, setModalAddReview] = useState({ opened: false, courseId: course?._id })
@@ -22,16 +22,16 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
   const [search, setSearch] = useState({ content: '', star: 0 });
 
   // variables
-  
+
 
   // functions
-  const calculateAverage = (array) => array.reduce( ( p, c ) => p + c, 0 ) / array.length;
+  const calculateAverage = (array) => array.reduce((p, c) => p + c, 0) / array.length;
 
   const getReviewsOfCourse = async () => {
     try {
       const { data } = await axios.get(`/api/review/public/course/${course?._id}`);
 
-      setListReview({...listReview, total: data.data.total, list: data.data.list});
+      setListReview({ ...listReview, total: data.data.total, list: data.data.list });
     }
     catch (error) {
       message.error(`Lấy danh sách review của khóa học lỗi. Chi tiết: ${error.message}`);
@@ -40,7 +40,7 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
 
   const fetchUserReview = () => {
     if (listReview.list.findIndex(review => review?.userId === user._id) >= 0) {
-      setModalEditReview({...modalEditReview, review: listReview.list[listReview.list.findIndex(review => review?.userId === user._id)]});
+      setModalEditReview({ ...modalEditReview, review: listReview.list[listReview.list.findIndex(review => review?.userId === user._id)] });
     }
   }
 
@@ -52,7 +52,7 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
         `/api/review/public/course/${course?._id}?${queryString}`
       );
 
-      setListReview({...listReview, total: data.data.total, list: data.data.list});
+      setListReview({ ...listReview, total: data.data.total, list: data.data.list });
     }
     catch (error) {
       message.error(`Lọc dữ liệu lỗi. Chi tiết: ${error.message}`);
@@ -83,13 +83,25 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
           <Space className={styles.tabs_review_overview_body_average} direction='vertical' size={16}>
             <p
               style={{ fontSize: '76px', color: '#b4690e', fontWeight: '700', lineHeight: '64px' }}
-            >{(Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)}</p>
-            <Rate
-              allowHalf={true}
-              value={(Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)}
-              disabled={true}
-              style={{ fontSize: '18px' }}
-            />
+            >
+              {
+                isNaN((Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1))
+                  ? <DashOutlined />
+                  : (Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)
+              }
+            </p>
+            {
+              !isNaN((Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1))
+                ? (
+                  <Rate
+                    allowHalf={true}
+                    value={(Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)}
+                    disabled={true}
+                    style={{ fontSize: '18px' }}
+                  />
+                )
+                : <p style={{ fontSize: '15px', color: '#b4690e', fontWeight: '700' }}>Chưa có đánh giá</p>
+            }
           </Space>
           <Space className={styles.tabs_review_overview_body_progressbar} direction='vertical'>
             {
@@ -114,7 +126,7 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
                   <div
                     key={number}
                     style={{ display: 'flex', flexDirection: 'row', gap: '16px', alignItems: 'flex-end', fontSize: '15px' }}
-                    onClick={() => setSearch({...search, star: number})}
+                    onClick={() => setSearch({ ...search, star: number })}
                   >
                     <Rate
                       key={number}
@@ -122,7 +134,11 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
                       style={{ fontSize: '18px' }}
                     />
                     <p>
-                      {((listReview?.total?.filter(_ => _.star === number).length) / (listReview?.total?.length) * 100).toFixed(1)} %
+                      {
+                        listReview?.total?.length
+                          ? `${((listReview?.total?.filter(_ => _.star === number).length) / (listReview?.total?.length) * 100).toFixed(1)} %`
+                          : '---'
+                      }
                     </p>
                   </div>
                 )
@@ -137,22 +153,24 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
         <Space direction="horizontal" style={{ alignItems: 'flex-end' }} size='middle'>
           <h2 className={styles.h2} style={{ marginTop: '16px' }}>Các đánh giá</h2>
           {
-            listReview?.total?.findIndex(review => review.userId === user?._id) < 0
-            ? (
-              <p
-                style={{ color: '#1e4dac', lineHeight: '24px', cursor: 'pointer' }}
-                onClick={() => setModalAddReview({ ...modalAddReview, opened: true, courseId: course?._id })}
-              >
-                <b>Thêm review</b>
-              </p>
-            )
-            : (
-              <p
-                style={{ color: '#1e4dac', lineHeight: '24px', cursor: 'pointer' }}
-                onClick={() => setModalEditReview({ ...modalEditReview, opened: true, courseId: course?._id })}
-              >
-                <b>Sửa review của bạn</b>
-              </p>
+            user._id !== course.instructor._id && (
+              listReview?.total?.findIndex(review => review.userId === user?._id) < 0
+              ? (
+                <p
+                  style={{ color: '#1e4dac', lineHeight: '24px', cursor: 'pointer' }}
+                  onClick={() => setModalAddReview({ ...modalAddReview, opened: true, courseId: course?._id })}
+                >
+                  <b>Thêm review</b>
+                </p>
+              )
+              : (
+                <p
+                  style={{ color: '#1e4dac', lineHeight: '24px', cursor: 'pointer' }}
+                  onClick={() => setModalEditReview({ ...modalEditReview, opened: true, courseId: course?._id })}
+                >
+                  <b>Sửa review của bạn</b>
+                </p>
+              )
             )
           }
         </Space>
@@ -265,13 +283,6 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
           />
         )
       }
-
-      <div
-        style={{ marginTop: '32px', opacity: '0.3' }}
-      >
-        <button onClick={() => setHide(!hide)}>{hide.courses ? 'Ẩn reviews' : 'Hiện reviews'}</button>
-        {hide && <pre>{JSON.stringify(listReview.list, null, 4)}</pre>}
-      </div>
     </div>
   )
 }

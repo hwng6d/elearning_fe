@@ -10,10 +10,12 @@ const ModalAddLesson = ({
   modalEditCourse,
   setModalEditCourse,
 }) => {
+  // states
   const [courseBeingEdited, setCourseBeingEdited] = useState({
     name: '',
+    category: '',
     summary: '',
-    category: [],
+    tags: [],
     paid: '',
     price: '',
     goal: [],
@@ -21,7 +23,9 @@ const ModalAddLesson = ({
     languages: [],
     published: false,
   });
+  const [categoryOptions, setCategoryOptions] = useState([]);
 
+  // functions
   const inputChangeHandler = (e) => {
     setCourseBeingEdited({ ...courseBeingEdited, [e.target.name]: e.target.value });
   }
@@ -39,10 +43,11 @@ const ModalAddLesson = ({
     }
   }
 
-  useEffect(() => {
+  const fetchCourseData = async () => {
     setCourseBeingEdited({
       name: course?.name,
       category: course?.category,
+      tags: course?.tags,
       paid: course?.paid,
       price: course?.price,
       description: course?.description,
@@ -51,8 +56,16 @@ const ModalAddLesson = ({
       requirements: course?.requirements,
       goal: course?.goal,
       languages: course?.languages,
-    })
-  }, [modalEditCourse.opened])
+    });
+    const { data } = await axios.get(
+      `/api/category/ins`
+    );
+    setCategoryOptions(data.data);
+  }
+
+  useEffect(() => {
+    fetchCourseData();
+  }, [modalEditCourse.opened]);
 
   return (
     <Modal
@@ -89,10 +102,28 @@ const ModalAddLesson = ({
                   onChange={(e) => inputChangeHandler(e)}
                 />
               </Form.Item>
+              <Form.Item label='Phân loại của khóa học' className={styles.form_item}>
+                {/* <Input
+                  name='category'
+                  allowClear={true}
+                  value={courseBeingEdited.name}
+                  onChange={(e) => inputChangeHandler(e)}
+                /> */}
+                <Select
+                  value={courseBeingEdited.category}
+                  options={categoryOptions?.map(cate => {
+                    return {
+                      value: cate._id,
+                      label: cate.name
+                    }
+                  })}
+                  onChange={(value) => setCourseBeingEdited({...courseBeingEdited, category: value})}
+                />
+              </Form.Item>
               <Form.Item label='Tag' className={styles.form_item}>
                 <InputList
                   maxLength={5}
-                  value='category'
+                  value='tags'
                   type='textbox'
                   formValues={courseBeingEdited}
                   setFormValues={setCourseBeingEdited}
@@ -129,33 +160,39 @@ const ModalAddLesson = ({
                   setFormValues={setCourseBeingEdited}
                 />
               </Form.Item>
-              <Form.Item label='Loại khóa học' name='paid' className={styles.form_item}>
-                <Select
-                  value={courseBeingEdited.paid}
-                  onChange={(value) =>
-                    setCourseBeingEdited({
-                      ...courseBeingEdited,
-                      paid: value,
-                      price: !value ? 0 : course.price
-                    })
-                  }
-                >
-                  <Select.Option value={true}>Có phí</Select.Option>
-                  <Select.Option value={false}>Miễn phí</Select.Option>
-                </Select>
-              </Form.Item>
-              {courseBeingEdited.paid && (
-                <Form.Item label='Giá' name='price' className={styles.form_item}>
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    value={courseBeingEdited.price}
-                    min={0}
-                    max={99.99}
-                    onChange={(value) => setCourseBeingEdited({ ...courseBeingEdited, price: value })}
-                  />
+              <div
+                className={styles.d_flex_row}
+                style={{ width: '100%' }}
+              >
+                <Form.Item label='Loại khóa học' name='paid' className={styles.form_item} style={{ width: '40%' }}>
+                  <Select
+                    value={courseBeingEdited.paid}
+                    onChange={(value) =>
+                      setCourseBeingEdited({
+                        ...courseBeingEdited,
+                        paid: value,
+                        price: !value ? 0 : course.price
+                      })
+                    }
+                  >
+                    <Select.Option value={true}>Có phí</Select.Option>
+                    <Select.Option value={false}>Miễn phí</Select.Option>
+                  </Select>
                 </Form.Item>
-              )}
-              <Form.Item label='Xuất bản khóa học này ?' className={styles.form_item}>
+                {courseBeingEdited.paid && (
+                  <Form.Item label='Giá' name='price' className={styles.form_item} style={{ width: '15%' }}>
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      value={courseBeingEdited.price}
+                      min={0}
+                      max={99.99}
+                      onChange={(value) => setCourseBeingEdited({ ...courseBeingEdited, price: value })}
+                    />
+                  </Form.Item>
+                )}
+              </div>
+
+              {/* <Form.Item label='Xuất bản khóa học này ?' className={styles.form_item}>
                 {
                   course.lessons.length < 5
                     ? <p><i>(Khóa học này chưa đủ điều điện để xuất bản)</i></p>
@@ -164,7 +201,7 @@ const ModalAddLesson = ({
                       onChange={(value) => setCourseBeingEdited({ ...courseBeingEdited, published: value })}
                     />
                 }
-              </Form.Item>
+              </Form.Item> */}
             </div>
           )
         }

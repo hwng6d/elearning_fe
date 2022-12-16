@@ -1,9 +1,25 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
 .container {
-  // border: 1px solid black;
   cursor: pointer;
 
   &_header {
     border-bottom: 1px solid #d9d9d9;
+    box-sizing: border-box;
   }
 
   &_body {
@@ -41,21 +57,25 @@
 }
 
 .popover_container {
-  padding: 16px;
+  padding: 12px 20px;
+  height: fit-content;
 
   &_coursename {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 600;
-    line-height: 24px;
+    line-height: 28px;
     overflow: hidden;
+    color: #ff4a4a;
   }
 
   &_coursedate {
-    margin-top: 8px !important;
+    margin-top: 12px !important;
+    color: #1d5f54;
+    font-weight: 500;
   }
 
-  &_courselessons, &_coursecategory, &_coursecommitment {
-    margin-top: 6px !important;
+  &_courselessons, &_coursetags, &_coursecommitment, &_courseduration {
+    margin-top: 8px !important;
   }
 
   &_addtocart {

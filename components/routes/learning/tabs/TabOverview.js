@@ -14,8 +14,8 @@ const TabOverview = ({ course, currentLesson, activeTab }) => {
   const [isDesSeeMore, setIsDesSeeMore] = useState(false);
 
   return (
-    <Space
-      className={styles.tabs_overview}
+    <div
+      className={`${styles.tabs_overview}`}
     >
       <div
         className={styles.tabs_overview}
@@ -155,7 +155,7 @@ const TabOverview = ({ course, currentLesson, activeTab }) => {
           </Space>
         </Space>
       </div>
-    </Space>
+    </div>
   );
 }
 

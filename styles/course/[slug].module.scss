@@ -1,3 +1,19 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
 .h2 {
   font-weight: 700;
   font-size: 24px;
@@ -36,10 +52,12 @@
         color: white;
 
         &_coursename {
+          width: 640px;
           margin: 4px 0px !important;
           font-size: 28px;
           font-weight: 700;
           color: white;
+          word-spacing: 2px;
         }
 
         &_coursesummary {
@@ -132,7 +150,7 @@
           justify-content: center;
   
           &_buttonrollin {
-            margin-top: 24px;
+            margin: 24px;
             background-image: linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61));
             box-shadow: 1px 1px 5px;
             border: none;
@@ -179,15 +197,104 @@
 
       &_courseoutline {
         margin-top: 16px;
+
+        &_list {
+          margin-top: 16px;
+          border: 1px solid #d1d7dc;
+          border-bottom: none;
+
+          &_section {
+            background-color: #f7f7f7;
+            border-bottom: 0px solid #d1d7dc;
+
+            .courseoutline_list_section_lesson {
+              cursor: auto;
+              width: inherit;
+              background-color: #ffff;
+              margin: 0px !important;
+              height: 56px !important;
+              border-bottom: 1px solid #d1d7dc;
+
+              &_wrapper {
+                justify-content: space-between;
+
+              }
+            }
+          }
+        }
       }
 
       &_coursedescription {
-        margin-top: 12px;
+        margin-top: 16px;
 
         &_detail {
           margin-top: 8px;
           padding: 16px 20px;
           border: 1px dashed #7c7c7c;
+        }
+      }
+
+      &_coursereview {
+        margin-top: 16px;
+
+        &_detail {
+          margin-top: 8px;
+
+          &_overall {
+
+            .coursereview_detail_overall_average {
+              width: 15%;
+              align-items: center;
+            }
+
+            .coursereview_detail_overall_progressbarstatistic {
+              width: 85%;
+            }
+          }
+
+          &_content {
+            margin-top: 12px;
+            padding: 0px 12px;
+
+            .coursereview_detail_content_mostrecent {
+              margin-top: 16px;
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(512px, 0px));
+              gap: 2rem;
+              row-gap: 2rem;
+
+              &_item {
+                border-top: 1px solid #d1d7dc;
+                padding: 12px 0px;
+                display: grid;
+                // width: 288px;
+
+                &_info {
+
+                }
+
+                &_content {
+                  padding: 0px 8px;
+                  margin-top: 8px;
+                  width: 448px;
+
+                }
+              }
+            }
+
+            .coursereview_detail_content_button {
+              margin: 8px 0px;
+              padding: 4px 16px;
+              border: 1px solid black;
+              width: 112px;
+              cursor: pointer;
+
+              &:hover {
+                background-color: #e7ebed !important;
+                transition: 0.4s;
+              }
+            }
+          }
         }
       }
 

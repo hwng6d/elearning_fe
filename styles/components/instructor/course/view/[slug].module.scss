@@ -1,3 +1,19 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
 .container {
   margin: 24px;
 
@@ -27,8 +43,46 @@
 
     &_description,
     &_lessons,
-    &_summary {
+    &_summary,
+    &_publish,
+    &_coursepage {
       margin-top: 16px;
+    }
+
+    &_coursepage {
+      font-weight: 600;
+      font-size: 14px;
+      color: blueviolet;
+      width: fit-content;
+    }
+
+    &_publish {
+
+      &_buttons {
+
+        &_publish, &_undopublish {
+          margin-top: 4px;
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          padding: 4px 16px 4px 12px;
+          font-size: 15px;
+          color: white;
+          font-weight: 600;
+          border: 2px solid #650593;
+          color: #650593
+
+        }
+      }
+
+      &_detail {
+        display: flex;
+        gap: 12px;
+        font-size: 16px;
+        margin: 8px 8px;
+      }
     }
 
     &_summary {

@@ -78,33 +78,40 @@
   background-color: black;
 }
 
-/* antd custom course content menu  */
-.container_sider_lessonlist_itemsection .ant-menu-item.ant-menu-item-selected {
+/* antd custom course content menu: LearningRoute  */
+.container_learninglist .ant-menu-item.ant-menu-item-selected {
   background-color: #d1d7dc !important;
   color: black !important;
 }
-.container_sider_lessonlist_itemsection .ant-menu-item.ant-menu-item-selected::after {
+.container_learninglist .ant-menu-item.ant-menu-item-selected::after {
   border: none !important;
 }
 
-.container_sider_lessonlist_itemsection .ant-menu-item.ant-menu-item-active {
+.container_learninglist .ant-menu-item.ant-menu-item-active {
   background-color: #d1d7dc !important;
   color: black !important;
 }
 
-.container_sider_lessonlist_itemsection.ant-menu-submenu .ant-menu-submenu-title {
+.container_learninglist.ant-menu-submenu .ant-menu-submenu-title {
   height: 100% !important;
   margin: 0 !important;
   padding: 8px 34px 8px 24px !important;
 }
-.container_sider_lessonlist_itemsection.ant-menu-submenu .ant-menu-submenu-title, .ant-menu-submenu-arrow {
+.container_learninglist.ant-menu-submenu .ant-menu-submenu-title, .ant-menu-submenu-arrow {
   color: black !important;
 }
-.container_sider_lessonlist_itemsection.ant-menu-submenu-open .ant-menu-submenu-title, .ant-menu-submenu-arrow {
+.container_learninglist.ant-menu-submenu-open .ant-menu-submenu-title, .ant-menu-submenu-arrow {
   color: black !important;
 }
-.container_sider_lessonlist_itemsection.ant-menu-submenu-active .ant-menu-submenu-title, .ant-menu-submenu-arrow {
+.container_learninglist.ant-menu-submenu-active .ant-menu-submenu-title, .ant-menu-submenu-arrow {
   color: black !important;
+}
+/* antd custom course content menu: SingleCourseView  */
+.container_learninglist.public_view .ant-menu.ant-menu-sub .ant-menu-item.ant-menu-item-active {
+  background-color: #ffff !important;
+}
+.container_learninglist.public_view .ant-menu-submenu-title {
+  border-bottom: 1px solid #d1d7dc;
 }
 
 /* antd custom tabs in learning route */

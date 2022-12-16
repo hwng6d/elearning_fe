@@ -16,28 +16,39 @@ const UserSingleCourseView = () => {
   // functions
   const checkEnrollement = async () => {
     try {
-      // get course info to get course._id
-      const { data: { data: dataCourse } } = await axios.get(`/api/course/public/${slug}`);
+      if (router.isReady) {
+        // get course info to get course._id
+        const { data: { data: dataCourse } } = await axios.get(`/api/course/public/${slug}`);
 
-      // check enrollment
-      const { data: dataEnrolled } = await axios.post(`/api/user/check-enrollment/${dataCourse._id}`);
-      if (dataEnrolled.success) {
-        const currentUserCourse = user.courses.find(item => item.courseId === dataCourse._id);
-        const completedLessonsLength = currentUserCourse.completedLessons.length;
-        if (completedLessonsLength <= 0) {
-          const { data: dataLesson } = await axios.get(`/api/user/enrolled-courses/${slug}`);
-          const firstLessonId = dataLesson.data.lessons[0]._id;
+        // accessible if current user is instructor of course
+        console.log('dataCourse: ', dataCourse);
+        if (user._id === dataCourse.instructor._id) {
           router.replace(
-            `/user/courses/${slug}/lesson/${firstLessonId}`
+            `/user/courses/${slug}/lesson/${dataCourse.lessons[0]._id}`
           );
         } else {
-          router.replace(
-            `/user/courses/${slug}/lesson/${currentUserCourse.completedLessons[completedLessonsLength - 1]}`
-          );
+          // check enrollment
+          const { data: dataEnrolled } = await axios.post(`/api/user/check-enrollment/${dataCourse._id}`);
+          if (dataEnrolled.success) {
+            const currentUserCourse = user.courses.find(item => item.courseId === dataCourse._id);
+            const completedLessonsLength = currentUserCourse.completedLessons.length;
+            if (completedLessonsLength <= 0) {
+              // get first lesson of course
+              const { data: dataLesson } = await axios.get(`/api/user/enrolled-courses/${slug}`);
+              const firstLessonId = dataLesson.data.lessons[0]._id;
+              router.replace(
+                `/user/courses/${slug}/lesson/${firstLessonId}`
+              );
+            } else {
+              router.replace(
+                `/user/courses/${slug}/lesson/${currentUserCourse.completedLessons[completedLessonsLength - 1]}`
+              );
+            }
+          } else {
+            console.log('success FALSE triggered');
+            router.push(`/course/${slug}`);
+          }
         }
-      } else {
-        console.log('success FALSE triggered');
-        router.push(`/course/${slug}`);
       }
     }
     catch (error) {
@@ -47,7 +58,7 @@ const UserSingleCourseView = () => {
 
   useEffect(() => {
     checkEnrollement();
-  }, [router.isReady])
+  }, [slug])
 
   return (
     <div

@@ -9,28 +9,24 @@ import styles from '../styles/SignUp.module.scss';
 import { ERRORS_NAME } from '../utils/constant';
 
 const SignUp = () => {
-  const router = useRouter();
+  // global context
   const { state: { user }, dispatch } = useContext(Context);
+  
+  // router
+  const router = useRouter();
+
+  // states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (user)
-      router.push('/')
-  }, [user])
-
+  // functions
   const submitFormHandler = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      console.table({
-        name,
-        email,
-        password
-      });
 
       await axios.post(
         // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -39,6 +35,9 @@ const SignUp = () => {
       );
 
       message.success('Đăng ký thành công !');
+
+      router.push(`/signin`)
+
       setLoading(false);
     }
     catch (error) {
@@ -49,6 +48,11 @@ const SignUp = () => {
     }
   }
 
+  useEffect(() => {
+    if (user)
+      router.push('/')
+  }, [user])
+
   return (
     <div className={styles.container}>
       <div className='container'>
@@ -57,7 +61,7 @@ const SignUp = () => {
           id='signup_form'
           className={styles.form}
           onSubmit={submitFormHandler}
-          style={{ width: '420px' }}
+          style={{ width: '420px', marginTop: '16px' }}
         >
           <label>Họ tên</label>
           <Input

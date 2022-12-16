@@ -28,6 +28,13 @@ const UserSingleLessonView = () => {
 
       console.log('dataCourse: ', dataCourse);
       // check permission
+      // 0. if user is current instructor, skip check permission
+      if (user._id === dataCourse.instructor._id) {
+        setCurrentLesson(dataCourse.lessons.find(item => item._id === lessonId));
+        await setDelay(500);
+        setLoading(false);
+        return;
+      }
       // 1. count previous quizzes of the current lesson (lessonId)
       const currentLesson = dataCourse?.lessons?.find(_ => _?._id === lessonId);
       let previousQuizzes = [];
@@ -41,7 +48,6 @@ const UserSingleLessonView = () => {
           }
         }
       });
-      console.log('previousQuizzes: ', previousQuizzes);
       // 2.1 if count <= 0, allow to route
       if (previousQuizzes.length <= 0) {
         setCurrentLesson(dataCourse.lessons.find(item => item._id === lessonId));
@@ -55,8 +61,6 @@ const UserSingleLessonView = () => {
           if (user.courses.find(_ => _.courseId === dataCourse._id).completedQuizzes.includes(quiz._id))
             done += 1;
         });
-        // console.log('done: ', done);
-        // console.log('previousQuizzes.length: ', previousQuizzes.length);
 
         if (done === previousQuizzes.length) {
           setCurrentLesson(dataCourse.lessons.find(item => item._id === lessonId));
