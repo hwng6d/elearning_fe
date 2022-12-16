@@ -11,6 +11,7 @@ import ModalAddQuiz from '../forms/ModalAddQuiz';
 import ModalShowSelections from '../forms/ModalShowSelections';
 
 const TableSection = ({
+  isViewing = false,
   course,
   setCourse,
 }) => {
@@ -107,9 +108,6 @@ const TableSection = ({
 
   // table realted: quiz
   const quizTableRender = (record, index, indent, expanded) => {
-    console.log('-----');
-    console.log('record: ', record);
-
     const quizTableColumns = [
       {
         dataIndex: 'question',
@@ -127,12 +125,14 @@ const TableSection = ({
         width: '172px',
         align: 'center'
       },
-      {
-        dataIndex: 'operation',
-        title: 'Thao tác',
-        width: '128px',
-        align: 'center'
-      }
+      !isViewing
+        ? {
+          dataIndex: 'operation',
+          title: 'Thao tác',
+          width: '128px',
+          align: 'center'
+        }
+        : {}
     ];
 
     const quizTableData = [];
@@ -151,29 +151,31 @@ const TableSection = ({
           question: item?.question,
           answer: <EyeOutlined
             style={{ cursor: 'pointer', fontSize: '16px' }}
-            onClick={() => setModalShowSelections({...modalShowSelections, opened: true, quizId: item?._id})}
+            onClick={() => setModalShowSelections({ ...modalShowSelections, opened: true, quizId: item?._id })}
           />,
           correctAnswer: <CorrectAnswerDisplay correctanswer={item?.correctAnswer} />,
-          operation: <Space diretion='horizontal' size='small'>
-            <Tooltip title='Chỉnh sửa'>
-              <EditOutlined
-                className={styles.operation_icon}
-                style={{ cursor: 'pointer', fontSize: '16px', color: 'orange' }}
-                onClick={() => onEditQuizClick(record.key, item?._id)}
-              />
-            </Tooltip>
-            <Popconfirm
-              title={<p>Bạn có chắc muốn xóa quiz này ?</p>}
-              okText='Đồng ý'
-              cancelText='Hủy'
-              onConfirm={() => onRemoveQuizClick(record.key, item?._id)}
-            >
-              <MinusCircleOutlined
-                className={styles.operation_icon}
-                style={{ cursor: 'pointer', fontSize: '16px', color: 'red' }}
-              />
-            </Popconfirm>
-          </Space>
+          operation: (
+            <Space diretion='horizontal' size='small'>
+              <Tooltip title='Chỉnh sửa'>
+                <EditOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '16px', color: 'orange' }}
+                  onClick={() => onEditQuizClick(record.key, item?._id)}
+                />
+              </Tooltip>
+              <Popconfirm
+                title={<p>Bạn có chắc muốn xóa quiz này ?</p>}
+                okText='Đồng ý'
+                cancelText='Hủy'
+                onConfirm={() => onRemoveQuizClick(record.key, item?._id)}
+              >
+                <MinusCircleOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '16px', color: 'red' }}
+                />
+              </Popconfirm>
+            </Space>
+          )
         })
       }
     });
@@ -190,9 +192,6 @@ const TableSection = ({
 
   // table related: lesson
   const lessonTableRender = (record, index, indent, expanded) => {
-    console.log('-----');
-    console.log('record: ', record);
-
     const lessonTableColumns = [
       {
         dataIndex: 'index',
@@ -221,12 +220,14 @@ const TableSection = ({
         align: 'center',
         width: '132px'
       },
-      {
-        dataIndex: 'operation',
-        title: 'Thao tác',
-        width: '156px',
-        align: 'center'
-      }
+      !isViewing
+        ? {
+          dataIndex: 'operation',
+          title: 'Thao tác',
+          width: '156px',
+          align: 'center'
+        }
+        : {}
     ];
 
     const lessonTableData = [];
@@ -254,33 +255,35 @@ const TableSection = ({
             {/* <Switch checked={item.free_preview} /> */}
             <Checkbox checked={item.free_preview} />
           </div>,
-          operation: <Space diretion='horizontal' size='small'>
-            <Tooltip title='Chỉnh sửa'>
-              <EditOutlined
-                className={styles.operation_icon}
-                style={{ cursor: 'pointer', fontSize: '16px', color: 'orange' }}
-                onClick={() => onEditLessonClick(record.key, item._id)}
-              />
-            </Tooltip>
-            <Tooltip title={numOfQuizzes > 0 ? 'Hiện tại bài học này đã có quiz' : 'Thêm quiz mới'}>
-              <PlusOutlined
-                className={styles.operation_icon}
-                style={{ cursor: 'pointer', fontSize: '16px', color: 'green' }}
-                onClick={numOfQuizzes <= 0 && (() => onAddQuizClick(item?._id))}
-              />
-            </Tooltip>
-            <Popconfirm
-              title={<p>Bạn có chắc muốn xóa bài <b>{item.title}</b>?</p>}
-              okText='Đồng ý'
-              cancelText='Hủy'
-              onConfirm={() => onRemoveLessonClick(item?._id)}
-            >
-              <MinusCircleOutlined
-                className={styles.operation_icon}
-                style={{ cursor: 'pointer', fontSize: '16px', color: 'red' }}
-              />
-            </Popconfirm>
-          </Space>
+          operation: (
+            <Space diretion='horizontal' size='small'>
+              <Tooltip title='Chỉnh sửa'>
+                <EditOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '16px', color: 'orange' }}
+                  onClick={() => onEditLessonClick(record.key, item._id)}
+                />
+              </Tooltip>
+              <Tooltip title={numOfQuizzes > 0 ? 'Hiện tại bài học này đã có quiz' : 'Thêm quiz mới'}>
+                <PlusOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '16px', color: 'green' }}
+                  onClick={numOfQuizzes <= 0 && (() => onAddQuizClick(item?._id))}
+                />
+              </Tooltip>
+              <Popconfirm
+                title={<p>Bạn có chắc muốn xóa bài <b>{item.title}</b>?</p>}
+                okText='Đồng ý'
+                cancelText='Hủy'
+                onConfirm={() => onRemoveLessonClick(item?._id)}
+              >
+                <MinusCircleOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '16px', color: 'red' }}
+                />
+              </Popconfirm>
+            </Space>
+          )
         })
     });
     lessonTableData.sort((a, b) => a.index - b.index)
@@ -310,18 +313,20 @@ const TableSection = ({
       dataIndex: 'name',
       title: 'Tên Chương'
     },
-    {
-      dataIndex: 'operation',
-      title: 'Thao tác',
-      width: '224px',
-      align: 'center'
-    }
+    !isViewing
+      ? {
+        dataIndex: 'operation',
+        title: 'Thao tác',
+        width: '224px',
+        align: 'center'
+      }
+      : {}
   ];
 
   const dataSource = [];
   course?.sections?.forEach((itemSection) => {
     let numOfLessons = 0;
-    course?.lessons?.forEach(item => { if (item.section._id === itemSection._id) numOfLessons += 1 });
+    course?.lessons?.forEach(item => { if (item?.section?._id === itemSection?._id) numOfLessons += 1 });
 
     dataSource.push({
       key: itemSection._id,
@@ -331,36 +336,38 @@ const TableSection = ({
         <Tooltip title={itemSection.name}>{itemSection.name}</Tooltip>
         <p>({numOfLessons} bài học)</p>
       </Space>,
-      operation: <Space diretion='horizontal' size='small'>
-        <Tooltip title='Chỉnh sửa'>
-          <EditOutlined
-            className={styles.operation_icon}
-            style={{ cursor: 'pointer', fontSize: '16px', color: 'orange' }}
-            onClick={() => onEditSectionClick(itemSection._id)}
-          />
-        </Tooltip>
-        <Tooltip title='Thêm bài học mới'>
-          <PlusOutlined
-            className={styles.operation_icon}
-            style={{ cursor: 'pointer', fontSize: '16px', color: 'green' }}
-            onClick={() => onAddLessonClick(itemSection._id)}
-          />
-        </Tooltip>
-        <Tooltip title={numOfLessons <= 0 ? 'Xóa' : 'Bạn không thể xóa chương này vì đang có bài học'}>
-          <Popconfirm
-            disabled={numOfLessons <= 0 ? false : true} // if that sections container at least 1 lesson, disable
-            title={<p>Bạn có muốn xóa Chương <b>{itemSection.index}</b></p>}
-            okText='Đồng ý'
-            cancelText='Hủy'
-            onConfirm={() => onDeleteSectionClick(itemSection._id)}
-          >
-            <MinusCircleOutlined
+      operation: (
+        <Space diretion='horizontal' size='small'>
+          <Tooltip title='Chỉnh sửa'>
+            <EditOutlined
               className={styles.operation_icon}
-              style={{ cursor: 'pointer', fontSize: '16px', color: 'red' }}
+              style={{ cursor: 'pointer', fontSize: '16px', color: 'orange' }}
+              onClick={() => onEditSectionClick(itemSection._id)}
             />
-          </Popconfirm>
-        </Tooltip>
-      </Space>
+          </Tooltip>
+          <Tooltip title='Thêm bài học mới'>
+            <PlusOutlined
+              className={styles.operation_icon}
+              style={{ cursor: 'pointer', fontSize: '16px', color: 'green' }}
+              onClick={() => onAddLessonClick(itemSection._id)}
+            />
+          </Tooltip>
+          <Tooltip title={numOfLessons <= 0 ? 'Xóa' : 'Bạn không thể xóa chương này vì đang có bài học'}>
+            <Popconfirm
+              disabled={numOfLessons <= 0 ? false : true} // if that sections container at least 1 lesson, disable
+              title={<p>Bạn có muốn xóa Chương <b>{itemSection.index}</b></p>}
+              okText='Đồng ý'
+              cancelText='Hủy'
+              onConfirm={() => onDeleteSectionClick(itemSection._id)}
+            >
+              <MinusCircleOutlined
+                className={styles.operation_icon}
+                style={{ cursor: 'pointer', fontSize: '16px', color: 'red' }}
+              />
+            </Popconfirm>
+          </Tooltip>
+        </Space>
+      )
     })
   });
   dataSource.sort((a, b) => a.index - b.index);

@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const CourseListHorizontal = ({ courses }) => {
-  console.log('courses: ', courses);
-
+  // router
   const router = useRouter();
 
+  // functions
   const qandaHandler = () => {
     
   }
@@ -33,13 +33,13 @@ const CourseListHorizontal = ({ courses }) => {
             >
               <div
                 className={styles.container_list_item_image}
-                onClick={() => router.push(`/user/courses/${course?.courseId?.slug}`)}
+                onClick={() => router.push(`/user/courses/${course?.courseInfo?.slug}`)}
               >
                 <Image
-                  src={course?.courseId?.image?.Location}
+                  src={course?.courseInfo?.image?.Location}
                   width={224}
                   height={126}
-                  objectFit='cover'
+                  style={{ objectFit: 'cover' }}
                 />
               </div>
               <div
@@ -50,12 +50,12 @@ const CourseListHorizontal = ({ courses }) => {
                   size='small'
                 >
                   <h2
-                    onClick={() => router.push(`/user/courses/${course?.courseId?.slug}`)}
+                    onClick={() => router.push(`/user/courses/${course?.courseInfo?.slug}`)}
                     style={{ fontSize: '20px', cursor: 'pointer' }}
                   >
-                    {course?.courseId?.name}
+                    {course?.courseInfo?.name}
                   </h2>
-                  <p>Instructor: {course?.courseId?.instructor?.name}</p>
+                  <p>Instructor: {course?.courseInfo?.instructorInfo?.name}</p>
                   <p>...% hoàn thành</p>
                   <p>
                     <Space size='middle'>

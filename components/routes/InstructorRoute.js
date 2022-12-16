@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useRouter } from "next/router";
 import InstructorNav from '../nav/InstructorNav';
-import { SyncOutlined } from '@ant-design/icons';
 
 const InstructorRoute = ({ children, hideSidebar = true, ok }) => {
+  // router
   const router = useRouter();
+
+  // states
   // const [ok, setOk] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -43,7 +45,6 @@ const InstructorRoute = ({ children, hideSidebar = true, ok }) => {
             </div>
           )
       } */}
-
       <InstructorNav
         hideSidebar={hideSidebar}
         collapsed={collapsed}

@@ -1,31 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Avatar, Card, Carousel, message } from 'antd';
+import { Carousel } from 'antd';
 import CourseCard from '../components/cards/CourseCard';
 import styles from '../styles/index.module.scss';
 import axios from 'axios';
 
 export default function Home({ courses }) {
-  // const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState({ courses: false });
-
-  // useEffect(() => {
-  //   getPublishedCourses();
-  // }, []);
-
-  // const getPublishedCourses = async () => {
-  //   setLoading({ ...loading, courses: true });
-  //   try {
-  //     const { data } = await axios.get('/api/course/public');
-  //     setCourses(data.data);
-  //     setLoading({ ...loading, courses: false });
-  //   }
-  //   catch (error) {
-  //     setLoading({ ...loading, courses: false });
-  //     console.log('Đã xảy ra lỗi khi lấy thông tin khóa học, vui lòng thử lại');
-  //   }
-  // }
 
   return (
     <div
@@ -63,16 +45,12 @@ export default function Home({ courses }) {
         >
           {
             courses.map((course, index) => (
-              (<Link key={index} href={`/course/${course.slug}`}>
-
+              <Link key={index} href={`/course/${course.slug}`}>
                 <CourseCard
                   course={course}
                   index={index}
-                  loading={loading.courses}
                 />
-
-              </Link>)
-
+              </Link>
             ))
           }
         </div>
@@ -83,6 +61,7 @@ export default function Home({ courses }) {
 
 export async function getServerSideProps() {
   const { data } = await axios.get(`${process.env.API_URL}/course/public`);
+  
   return {
     props: {
       courses: data.data

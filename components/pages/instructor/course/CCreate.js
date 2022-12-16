@@ -33,6 +33,7 @@ function CCreate() {
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [previewOpened, setPreviewOpened] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   // variables
   const stepsName = [
@@ -40,7 +41,7 @@ function CCreate() {
     'Tên của khóa học',
     'Tóm tắt về khóa học',
     'Học viên nhận được gì sau khóa học ?',
-    'Gắn thẻ',
+    'Thêm phân loại',
     'Mô tả chi tiết về khóa học'
   ];
 
@@ -61,6 +62,19 @@ function CCreate() {
   const chooseImageHandler = async (files) => {
     const { fileList: newFileList } = files;
     setFileList(newFileList);
+  }
+
+  const getCategories = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/category/ins`
+      );
+
+      setCategories(data.data);
+    }
+    catch (error) {
+      message.error('Xảy ra lỗi khi lấy danh sách phân loại');
+    }
   }
 
   const imageUploadHandler = async () => {
@@ -99,7 +113,6 @@ function CCreate() {
   const submitHandler = async (e) => {
     e.preventDefault();
     console.log('formValues: ', formValues);
-    console.table(image);
 
     setFormValues({ ...formValues, loading: true });
     try {
@@ -120,8 +133,8 @@ function CCreate() {
   }
 
   useEffect(() => {
-    console.log('formValues change: ', formValues);
-  }, [formValues])
+    getCategories();
+  }, []);
 
   return (
     <div
@@ -133,7 +146,8 @@ function CCreate() {
           rel='stylesheet'
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet" />
+          href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet"
+        />
       </Head>
       <Breadcrumb
         className={styles.container_breadcrumb}
@@ -179,7 +193,7 @@ function CCreate() {
               <div
                 className={styles.container_content_inputs_intro}
               >
-                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler} />
                 <p
                   style={{ marginTop: '40px', fontSize: '20px' }}
                 >
@@ -193,7 +207,7 @@ function CCreate() {
               <div
                 className={styles.container_content_inputs_coursename}
               >
-                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler} />
                 <p
                   className={styles.p}
                   style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
@@ -214,7 +228,7 @@ function CCreate() {
               <div
                 className={styles.container_content_inputs_coursesummary}
               >
-                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler} />
                 <p
                   className={styles.p}
                   style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
@@ -235,7 +249,7 @@ function CCreate() {
               <div
                 className={styles.container_content_inputs_coursegoal}
               >
-                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler} />
                 <p
                   className={styles.p}
                   style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
@@ -257,20 +271,41 @@ function CCreate() {
               <div
                 className={styles.container_content_inputs_coursetags}
               >
-                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler} />
                 <p
                   className={styles.p}
                   style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
-                >(Bạn có thể thay đổi lại những nội dung gắn thẻ này sau)</p>
-                <InputList
+                >(Bạn có thể thay đổi lại nội dung phân loại này sau)</p>
+                {/* <InputList
                   maxLength={5}
-                  value='category'
+                  value='tags'
                   type='textbox'
                   formValues={formValues}
                   setFormValues={setFormValues}
                   scopeStyle={{ marginTop: '32px' }}
                   cellStyle={{ width: '128px' }}
-                />
+                /> */}
+                <div
+                  style={{
+                    marginTop: '16px',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Select
+                    showSearch={true}
+                    options={categories?.map(cate => {
+                      return {
+                        value: cate._id,
+                        label: cate.name
+                      }
+                    })}
+                    value={formValues.category}
+                    onChange={(value) => setFormValues({...formValues, category: value})}
+                    style={{ width: '384px' }}
+                  />
+                </div>
               </div>
             )
           }
@@ -279,7 +314,7 @@ function CCreate() {
               <div
                 className={styles.container_content_inputs_coursedescription}
               >
-                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler}/>
+                <HeaderComponent stepsName={stepsName} currStep={currStep} setCurrStep={setCurrStep} submitHandler={submitHandler} />
                 <p
                   className={styles.p}
                   style={{ fontFamily: 'Sriracha, cursive', fontSize: '18px' }}
@@ -297,161 +332,7 @@ function CCreate() {
               </div>
             )
           }
-        </div>
-
-        <Form
-          labelAlign='left'
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 8 }}
-          layout='horizontal'
-          initialValues={formValues}
-          style={{ marginTop: '256px', opacity: '0.2' }}
-        >
-          <Form.Item label='Tên khóa học'>
-            <Input
-              name='name'
-              minLength={3}
-              maxLength={320}
-              showCount={true}
-              allowClear={true}
-              value={formValues.name}
-              onChange={(e) => inputChangeHandler(e)}
-            />
-          </Form.Item>
-          <Form.Item label='Tóm tắt'>
-            <Input.TextArea
-              name='summary'
-              showCount={true}
-              maxLength={200}
-              allowClear={true}
-              onChange={(e) => inputChangeHandler(e)}
-            />
-          </Form.Item>
-          {/* goal input */}
-          <Form.Item label='Mô tả'>
-            <Input.TextArea
-              name='description'
-              allowClear={true}
-              onChange={(e) => inputChangeHandler(e)}
-            />
-          </Form.Item>
-          <Form.Item label='Tag (gắn thẻ)'>
-            <InputList
-              maxLength={5}
-              value='category'
-              type='textbox'
-              formValues={formValues}
-              setFormValues={setFormValues}
-            />
-          </Form.Item>
-          <Form.Item label='Loại khóa học' name='paid'>
-            <Select
-              value={formValues.paid}
-              onChange={(value) => setFormValues({
-                ...formValues,
-                paid: value,
-                price: !value && 0
-              })}
-            >
-              <Select.Option value={true}>Có phí</Select.Option>
-              <Select.Option value={false}>Miễn phí</Select.Option>
-            </Select>
-          </Form.Item>
-          {formValues.paid && (
-            <Form.Item label='Giá' name='price'>
-              <InputNumber
-                style={{ width: '100%' }}
-                value={formValues.price}
-                min={0}
-                max={99.99}
-                onChange={(value) => setFormValues({ ...formValues, price: value.toString() })}
-              />
-            </Form.Item>
-          )}
-          <Form.Item label='Hình ảnh'>
-            <Space direction='vertical'>
-              <Upload
-                className={`custom-upload-horizontal-image ${fileList.length && "disable_add_button"}`}
-                listType='picture-card'
-                accept='image/*'
-                onChange={chooseImageHandler}
-                onPreview={previewHandler}
-                fileList={fileList}
-              >
-                <Space direction='vertical'>
-                  <UploadOutlined />
-                  Chọn file
-                </Space>
-              </Upload>
-              {
-                !image
-                  ? (
-                    <Button
-                      disabled={fileList.length ? false : true}
-                      onClick={imageUploadHandler}
-                    >
-                      Tải lên
-                    </Button>
-                  )
-                  : (
-                    <Button
-                      type='danger'
-                      disabled={(fileList.length ? false : true) || !image}
-                      onClick={removeImageUploadHandler}
-                    >
-                      Xóa ảnh đã tải lên
-                    </Button>
-                  )
-              }
-            </Space>
-            <Modal
-              title={<b>Xem trước</b>}
-              open={previewOpened}
-              footer={null}
-              centered={true}
-              width='896px'
-              style={{ textAlign: 'center' }}
-              onCancel={() => setPreviewOpened(false)}
-            >
-              <Image
-                alt='preview'
-                src={previewImage}
-                preview={false}
-              />
-            </Modal>
-          </Form.Item>
-          <Form.Item label='Yêu cầu trước khóa học'>
-            <InputList
-              maxLength={5}
-              value='requirements'
-              type='textbox'
-              formValues={formValues}
-              setFormValues={setFormValues}
-            />
-          </Form.Item>
-          <Form.Item label='Ngôn ngữ'>
-            <InputList
-              maxLength={2}
-              value='languages'
-              type='select'
-              formValues={formValues}
-              setFormValues={setFormValues}
-            />
-          </Form.Item>
-          <Form.Item label='Đầu ra'>
-            <InputList
-              maxLength={2}
-              value='goal'
-              type='textbox'
-              formValues={formValues}
-              setFormValues={setFormValues}
-            />
-          </Form.Item>
-          <Button
-            type='primary'
-            onClick={submitHandler}
-          >Lưu & tiếp tục</Button>
-        </Form>
+        </div>      
       </div>
     </div>
   );

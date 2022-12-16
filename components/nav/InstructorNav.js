@@ -2,42 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Layout, Menu } from "antd";
 const { Content, Sider } = Layout;
-import { UnorderedListOutlined, UserOutlined, PlusOutlined } from '@ant-design/icons';
-import styles from '../../styles/components/nav/InstructorNav.module.scss';
-import CCreate from '../pages/instructor/course/CCreate';
-import CInstructorIndex from '../pages/instructor/CInstructorIndex';
+import { UserOutlined, PlusOutlined, MenuUnfoldOutlined, InsertRowBelowOutlined, InsertRowAboveOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import styles from '../../styles/components/nav/InstructorNav.module.scss';
 
-const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
+const InstructorNav = ({
+  hideSidebar,
+  collapsed,
+  setCollapsed,
+  children
+}) => {
   const router = useRouter();
   const [currSelected, setCurrSelected] = useState('/instructor');
   const [child, setChild] = useState(null);
 
-  // const sidebarItems = [
-  //   {
-  //     key: '/instructor',
-  //     icon: React.createElement(UserOutlined),
-  //     label: 'Bảng điều khiển',
-  //     onClick: () => selectedHandler(<CInstructorIndex />, '/instructor')
-  //   },
-  //   {
-  //     key: '/instructor/course/create',
-  //     icon: React.createElement(PlusOutlined),
-  //     label: 'Tạo khóa học mới',
-  //     onClick: () => selectedHandler(<CCreate />, '/instructor/course/create')
-  //   }
-  // ];
-
-  const selectedHandler = (childComponent, currentSelected) => {
+  const selectedHandler = (currentSelected) => {
     // setChild(childComponent);
     setCurrSelected(currentSelected);
   }
 
   useEffect(() => {
     if (router.pathname === '/instructor')
-      selectedHandler(<CInstructorIndex />, '/instructor');
+      // selectedHandler(<CInstructorIndex />, '/instructor');
+      selectedHandler('/instructor');
     else if (router.pathname === '/instructor/course/create')
-      selectedHandler(<CCreate />, '/instructor/course/create');
+      // selectedHandler(<CCreate />, '/instructor/course/create');
+      selectedHandler('/instructor/course/create');
+    else if (router.pathname === '/instructor/waiting-courses')
+      selectedHandler('/instructor/waiting-courses');
+    else if (router.pathname === '/instructor/public-courses')
+      selectedHandler('/instructor/public-courses');
+    else if (router.pathname === '/instructor/rejected-courses')
+      selectedHandler('/instructor/rejected-courses');
+    else if (router.pathname === '/instructor/editing-courses')
+      selectedHandler('/instructor/editing-courses');
   }, [router.pathname])
 
   return (
@@ -46,20 +44,20 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
       style={{ marginTop: '1px' }}
     >
       <Sider
-        hidden={hideSidebar}
         className={styles.site_layout_background}
-        style={{
-          minHeight: 'calc(100vh - 80px)'
-        }}
+        hidden={hideSidebar}
         defaultCollapsed={false}
         collapsible={true}
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
+        width={272}
+        style={{
+          minHeight: 'calc(100vh - 80px)'
+        }}
       >
         <Menu
           mode="inline"
           theme='light'
-          // items={sidebarItems}
           defaultOpenKeys={['group_1']}
           selectedKeys={[currSelected]}
           style={{
@@ -74,18 +72,60 @@ const InstructorNav = ({ hideSidebar, collapsed, setCollapsed, children }) => {
           >
             <Menu.Item
               key='/instructor'
-              icon={<UserOutlined />}
-              onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
+              icon={<MenuUnfoldOutlined />}
+              onClick={() => selectedHandler('/instructor')}
+              // onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
             >
               <Link href='/instructor'>
-                Các khóa học
+                Tất cả khóa học
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              key='/instructor/editing-courses'
+              icon={<InsertRowBelowOutlined />}
+              onClick={() => selectedHandler('/instructor/editing-courses')}
+              // onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
+            >
+              <Link href='/instructor/editing-courses'>
+                Khóa học đang chỉnh sửa
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              key='/instructor/waiting-courses'
+              icon={<InsertRowAboveOutlined />}
+              onClick={() => selectedHandler('/instructor/waiting-courses')}
+              // onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
+            >
+              <Link href='/instructor/waiting-courses'>
+                Khóa học chờ được xuất bản
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              key='/instructor/public-courses'
+              icon={<InsertRowAboveOutlined />}
+              onClick={() => selectedHandler('/instructor/public-courses')}
+              // onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
+            >
+              <Link href='/instructor/public-courses'>
+                Khóa học đã được xuất bản
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              key='/instructor/rejected-courses'
+              icon={<InsertRowBelowOutlined />}
+              onClick={() => selectedHandler('/instructor/rejected-courses')}
+              // onClick={() => selectedHandler(<CInstructorIndex />, '/instructor')}
+            >
+              <Link href='/instructor/rejected-courses'>
+                Khóa học bị từ chối
               </Link>
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item
             key='/instructor/course/create'
             icon={<PlusOutlined />}
-            onClick={() => selectedHandler(<CCreate />, '/instructor/course/create')}
+            onClick={() => selectedHandler('/instructor/course/create')}
+            // onClick={() => selectedHandler(<CCreate />, '/instructor/course/create')}
           >
             <Link href='/instructor/course/create'>
               Tạo khóa học mới

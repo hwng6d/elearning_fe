@@ -29,7 +29,7 @@ const ModalAddQA = ({
         );
 
         setModalAddQA({...modalAddQA, opened: false, lessonId: ''});
-        setNewQA({...newQA, content: ''});
+        setNewQA({...newQA, content: '', title: ''});
         getQAsOfLesson();
       }
     }
@@ -49,7 +49,7 @@ const ModalAddQA = ({
 
   return (
     <Modal
-      title={<b>{isEdit ? 'Cập nhật' : 'Thêm'} Review</b>}
+      title={<b>{isEdit ? 'Cập nhật' : 'Thêm'} Hỏi đáp</b>}
       width={640}
       open={!isEdit ? modalAddQA.opened : modalEditQA.opened}
       centered={true}

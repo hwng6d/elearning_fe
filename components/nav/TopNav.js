@@ -25,6 +25,12 @@ const TopNav = () => {
     <Menu
       items={[
         displayGreeting(user && user.name),
+        (user && user.role && user.role.includes('Admin'))
+        && {
+          label: 'Truy cập trang Admin',
+          icon: <AppstoreAddOutlined />,
+          onClick: () => { router.push('/admin') }
+        },
         (user && user.role && user.role.includes('Instructor'))
         && {
           label: 'Truy cập trang Instructor',
@@ -98,15 +104,6 @@ const TopNav = () => {
 
   return (
     <div>
-      {/* <Menu
-        selectedKeys={currItem ? [currItem] : []}
-        style={{ justifyContent: 'flex-end', padding: '0px 16px' }}
-        theme='dark'
-        mode='horizontal'
-        items={items}
-        onSelect={(info) => router.replace(`${info.key}`)}
-      /> */}
-
       <div className={styles.container}>
         <div className={styles.container_left}>
           <Space
@@ -127,19 +124,18 @@ const TopNav = () => {
               )
             }
           </Space>
-
         </div>
 
         <div className={styles.container_right}>
           {
             user && (
-              (user.role && !user.role.includes('Instructor'))
+              (user.role && !user.role.includes('Instructor') && !user.role.includes('Admin'))
               && (
-                (<Link href='/user/become-instructor' className={styles.container_right_label}>
-
-                  <span>Trở thành Instructor</span>
-
-                </Link>)
+                (
+                  <Link href='/user/become-instructor' className={styles.container_right_label}>
+                    <span>Trở thành Instructor</span>
+                  </Link>
+                )
               )
             )
           }
@@ -176,7 +172,8 @@ const TopNav = () => {
                   backgroundImage: 'linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61))',
                   alignItems: "center",
                   justifyContent: 'center',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  borderRadius: '4px'
                 }}
                 >
                   <a onClick={(e) => e.preventDefault(e)}>

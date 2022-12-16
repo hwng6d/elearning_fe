@@ -30,8 +30,8 @@ const ModalFreePreview = ({
         setVideo(isFreePreview.which.video_link);
       } else {
         setIsFreePreview({...isFreePreview, opened: true, which: freePreviewVideos[0]});
-        setCurrent(freePreviewVideos[0]._id);
-        setVideo(freePreviewVideos[0].video_link);
+        setCurrent(freePreviewVideos[0]?._id);
+        setVideo(freePreviewVideos[0]?.video_link);
       }
     }
   }, [isFreePreview.opened])
@@ -57,7 +57,7 @@ const ModalFreePreview = ({
         <div
           className={styles.container_titlename}
         >
-          <p><b>{course.name}</b></p>
+          <p><b>{course?.name}</b></p>
         </div>
         <div
           className={styles.container_video}
@@ -85,10 +85,10 @@ const ModalFreePreview = ({
             selectedKeys={[current]}
             items={freePreviewVideos.map(item => {
               return {
-                key: item._id,
-                label: item.title,
+                key: item?._id,
+                label: item?.title,
                 icon: <PlayCircleFilled />,
-                onClick: () => setVideo(item.video_link)
+                onClick: () => setVideo(item?.video_link)
               }
             })}
           />

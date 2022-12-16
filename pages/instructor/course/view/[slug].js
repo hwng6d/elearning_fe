@@ -1,19 +1,24 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { Popover, Space, Tooltip, Avatar, message, Modal, Upload, Button, Image, List, Popconfirm, BackTop } from 'antd';
-import { EditOutlined, PlusCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { Popover, Space, Tooltip, Avatar, message, Modal, Upload, Button, List, Popconfirm, BackTop } from 'antd';
+import { CaretRightOutlined, EditOutlined, HighlightOutlined, PlusCircleOutlined, RightSquareOutlined, SwapOutlined, UploadOutlined } from '@ant-design/icons';
 import InstructorRoute from '../../../../components/routes/InstructorRoute';
 import ReactMarkdown from 'react-markdown';
-// import ModalAddLesson from '../../../../components/forms/ModalAddLesson';
-// import ModalEditLesson from '../../../../components/forms/ModalEditLesson';
+import { Context } from '../../../../context';
+import Image from 'next/image';
 import ModalEditCourse from '../../../../components/forms/ModalEditCourse';
 import { getBase64 } from '../../../../utils/getBase64';
 import ModalAddSection from '../../../../components/forms/ModalAddSection';
 import TableSection from '../../../../components/tables/TableSection';
+import { getCourseStatus } from '../../../../utils/getCourseStatus';
 import styles from '../../../../styles/components/instructor/course/view/[slug].module.scss';
 
 function CourseView() {
+  // global context
+  const { state: { user } } = useContext(Context);
+
+  // router
   const router = useRouter();
   const { slug } = router.query;
 
@@ -21,7 +26,6 @@ function CourseView() {
 
   // #region | current component
   const [course, setCourse] = useState({});
-  const [hide, setHide] = useState(false);
   const [isDesSeeMore, setIsDesSeeMore] = useState(false);
   const [previewImgObj, setPreviewImgObj] = useState({
     previewImgs: [],
@@ -30,24 +34,52 @@ function CourseView() {
     modalPreviewImgOpened: false,
     uploadLoading: false,
   });
-  const [modalAddLessonOpened, setModalAddLessonOpened] = useState(false);
+  const [modalShowRejectReasonOpened, setModalShowRejectReasonOpened] = useState(false);
   const [modalEditCourse, setModalEditCourse] = useState({ opened: false, which: '' });
-  const [modalEditLesson, setModalEditLesson] = useState({ opened: false, which: '' });
-
   const [modalAddSection, setModalAddSection] = useState({ opened: false, sectionId: '' });
   // #endregion
 
   // #endregion
 
+  // variables
+
   // #region ***** FUNCTIONS *****
 
   // #region | current component
+  const seeDesMoreHandler = (isSeeMore) => setIsDesSeeMore(isSeeMore);
+
+  const onSubmitPublishClick = async () => {
+    try {
+      const { data } = await axios.put(
+        `/api/course/ins/${course?._id}/submit-publish`
+      );
+
+      setCourse(data.data);
+      message.success('Nộp phê duyệt xuất bản thành công');
+    }
+    catch (error) {
+      message.error(`Xảy ra lỗi khi nộp phê duyệt xuất bản. Chi tiết: ${error.message}`);
+    }
+  }
+
+  const onSubmitUndoPublishClick = async () => {
+    try {
+      const { data } = await axios.put(
+        `/api/course/ins/${course?._id}/submit-undopublish`
+      );
+
+      setCourse(data.data);
+      message.success('Hoàn tác nộp phê duyệt xuất bản thành công');
+    }
+    catch (error) {
+      message.error(`Xảy ra lỗi khi hoàn tác nộp phê duyệt xuất bản. Chi tiết: ${error.message}`);
+    }
+  }
+
   const getCourseBySlug = async () => {
     const { data } = await axios.get(`/api/course/ins/${slug}`);
     setCourse(data.data);
   }
-
-  const seeDesMoreHandler = (isSeeMore) => setIsDesSeeMore(isSeeMore);
 
   const updateImageHandler = async (e) => {
     setPreviewImgObj({ ...previewImgObj, uploadLoading: true });
@@ -62,7 +94,10 @@ function CourseView() {
       const { data: uploadImgReponse } = await axios.post('/api/course/ins/upload-image', { image: base64 });
 
       // update image of course
-      const { data: updateCourseReponse } = await axios.put(`/api/course/ins/${course._id}`, { image: uploadImgReponse.data });
+      const { data: updateCourseReponse } = await axios.put(
+        `/api/course/ins/${course._id}`,
+        { image: uploadImgReponse.data, name: course?.name }
+      );
 
       // set stuffs...
       message.success(`Cập nhật thành công khóa học ${updateCourseReponse.data.name}`);
@@ -81,27 +116,6 @@ function CourseView() {
       file.preview = await getBase64(file.originFileObj);
     }
     setPreviewImgObj({ ...previewImgObj, currentPreviewImg: file.url || file.preview, modalPreviewImgOpened: true });
-  }
-
-  const deleteLessonHandler = async (lessonId, video_link) => {
-    try {
-      // xóa video của bài học
-      await axios.post(
-        `/api/course/ins/delete-video/${course.instructor._id}`,
-        { video_link, instructorId: course.instructor._id }
-      );
-
-      // xóa bài học
-      await axios.put(
-        `/api/course/ins/${course._id}/lesson/${lessonId}/delete`,
-        { instructorId: course.instructor._id }
-      );
-      getCourseBySlug();
-      message.success('Xóa bài học thành công!')
-    }
-    catch (error) {
-      message.error(`Xảy ra lỗi xóa khóa học, vui lòng thử lại\nChi tiết: ${error.message}`)
-    }
   }
   // #endregion
 
@@ -135,18 +149,38 @@ function CourseView() {
                   content={(
                     <div>
                       <Tooltip title={course?.image ? 'Chỉnh sửa ảnh bìa' : 'Thêm ảnh bìa'}>
-                        <EditOutlined
-                          style={{ fontWeight: '600', fontSize: '24px', color: 'white', cursor: 'pointer' }}
-                          onClick={() => setPreviewImgObj({ ...previewImgObj, modalImgOpened: true })}
-                        />
+                        {
+                          course?.status === 'unaccepted'
+                            ? (
+                              <p>Bạn không thể chỉnh sửa khóa học khi đang chờ phê duyệt !</p>
+                            )
+                            : (
+                              <EditOutlined
+                                style={{
+                                  fontWeight: '600',
+                                  fontSize: '24px',
+                                  color: 'white'
+                                }}
+                                onClick={() => setPreviewImgObj({ ...previewImgObj, modalImgOpened: true })}
+                              />
+                            )
+                        }
                       </Tooltip>
-                    </div>)}
+                    </div>
+                  )}
                 >
-                  <img
-                    height={!course?.image ? '64px' : '210px'}
-                    src={course?.image ? course?.image?.Location : '/no-photo.png'}
-                    style={{ width: 'inherit', height: 'inherit', objectFit: course?.image?.Location ? 'cover' : 'scale-down' }}
-                  />
+                  <div style={{ width: '337px', height: '210px' }}>
+                    <Image
+                      src={course?.image ? course?.image?.Location : '/no-photo.png'}
+                      height={!course?.image ? '64' : '210'}
+                      width={337}
+                      style={{
+                        width: 'inherit',
+                        height: 'inherit',
+                        objectFit: course?.image?.Location ? 'cover' : 'scale-down'
+                      }}
+                    />
+                  </div>
                 </Popover>
               </div>
               <div
@@ -155,8 +189,13 @@ function CourseView() {
                 <Space size='middle' direction='vertical'>
                   <h1 className={styles.h1}>{course?.name}</h1>
                   <p style={{ fontSize: '16px' }}><b>Giá |</b> {course?.price}</p>
-                  <p style={{ fontSize: '16px' }}><b>Tag |</b> {course?.category}</p>
-                  <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length}</b> bài học</p>
+                  <p style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></p>
+                  <p style={{ fontSize: '16px' }}><b>Thẻ |</b> <Space split='-'>{course?.tags}</Space></p>
+                  <Space split='|'>
+                    <p style={{ fontSize: '16px' }}><b>{course?.sections?.length}</b> chương</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length}</b> bài học</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.quizzes?.length}</b> bài quiz</p>
+                  </Space>
                 </Space>
               </div>
             </div>
@@ -164,32 +203,133 @@ function CourseView() {
           <div
             className={styles.container_overview_right}
           >
-            <Tooltip title='Chỉnh sửa' style={{ backgroundColor: 'red' }} >
+            <Tooltip
+              title={`${course?.status === 'unaccepted'
+                ? 'Bạn không thể chỉnh sửa khóa học khi đang chờ phê duyệt !'
+                : 'Chỉnh sửa'}`
+              }
+            >
               <EditOutlined
                 className={styles.btn_edit_middle}
                 style={{ color: 'red', fontSize: '24px', cursor: 'pointer' }}
-                onClick={() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'general' })}
+                onClick={
+                  course?.status !== 'unaccepted'
+                  && (() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'general' }))
+                }
               />
             </Tooltip>
-            {/* <Tooltip title='Hoàn tất'>
-              <CheckOutlined className={styles.span} style={{ color: 'green', fontSize: '24px' }} />
-            </Tooltip> */}
           </div>
         </div>
         <div
           className={styles.container_detail}
         >
+          {/* link to course section */}
+          {
+            course?.published && (
+              <div
+                className={`${styles.container_detail_coursepage} ${styles.d_flex_row}`}
+                onClick={() => router.push(`/user/courses/${course?.slug}`)}
+                style={{ gap: '8px', cursor: 'pointer' }}
+              >
+                Đi đến khóa học <RightSquareOutlined style={{ fontSize: '16px' }} />
+              </div>
+            )
+          }
+          {/* Xuất bản section */}
+          <div
+            className={styles.container_detail_publish}
+          >
+            <div
+              className={styles.d_flex_row}
+            >
+              <div
+                className={styles.d_flex_row}
+              >
+                <h2 className={styles.h2}>Tình trạng khóa học</h2>
+                <div
+                  style={{
+                    fontWeight: 700,
+                    color: 'white',
+                    borderRadius: '8px',
+                    padding: '4px 20px',
+                    backgroundImage: `linear-gradient(to right, ${getCourseStatus(course)?.color}, #66c2a5)`
+                  }}
+                >{`${getCourseStatus(course)?.result}`}</div>
+                {
+                  course?.status === 'rejected' && (
+                    <p
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setModalShowRejectReasonOpened(true)}
+                    ><b><CaretRightOutlined /> Lý do bị từ chối</b></p>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+          <div
+            className={styles.container_detail_publish_detail}
+          >
+            <div
+              className={styles.container_detail_publish_buttons}
+            >
+              {
+                course?.status === 'unaccepted'
+                  ? (
+                    <Popconfirm
+                      title='Bạn có chắc hoàn tác chờ phê duyệt xuất bản ?'
+                      cancelText='Hủy'
+                      onConfirm={onSubmitUndoPublishClick}
+                    >
+                      <div
+                        className={styles.container_detail_publish_buttons_undopublish}
+                      >
+                        <SwapOutlined />
+                        <p>Hoàn tác nộp phê duyệt xuất bản</p>
+                      </div>
+                    </Popconfirm>
+                  )
+                  : (course?.lessons?.length < 3)
+                    ? (
+                      <p><b>Bạn cần ít nhất 3 bài học để nộp xuất bản</b></p>
+                    )
+                    : (course?.status === 'unpublic')
+                      ? (
+                        <Popconfirm
+                          title='Bạn có chắc muốn nộp phê duyệt xuất bản ?'
+                          cancelText='Hủy'
+                          onConfirm={onSubmitPublishClick}
+                        >
+                          <div
+                            className={styles.container_detail_publish_buttons_publish}
+                          >
+                            <HighlightOutlined />
+                            <p>Nộp phê duyệt xuất bản</p>
+                          </div>
+                        </Popconfirm>
+                      )
+                      : null
+              }
+            </div>
+          </div>
           {/* Tóm tắt section */}
           <div
             className={styles.container_detail_summary}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <h2 className={styles.h2}>Tóm tắt</h2>
-              <Tooltip title='Chỉnh sửa'>
+              <Tooltip
+                title={`${course?.status === 'unaccepted'
+                  ? 'Bạn không thể chỉnh sửa khóa học khi đang chờ phê duyệt !'
+                  : 'Chỉnh sửa'}`
+                }
+              >
                 <EditOutlined
                   className={styles.btn_edit_small}
                   style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
-                  onClick={() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'summary' })}
+                  onClick={
+                    course?.status !== 'unaccepted'
+                    && (() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'summary' }))
+                  }
                 />
               </Tooltip>
             </div>
@@ -205,11 +345,19 @@ function CourseView() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <h2 className={styles.h2}>Mô tả</h2>
-              <Tooltip title='Chỉnh sửa'>
+              <Tooltip
+                title={`${course?.status === 'unaccepted'
+                  ? 'Bạn không thể chỉnh sửa khóa học khi đang chờ phê duyệt !'
+                  : 'Chỉnh sửa'}`
+                }
+              >
                 <EditOutlined
                   className={styles.btn_edit_small}
                   style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
-                  onClick={() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'description' })}
+                  onClick={
+                    course?.status !== 'unaccepted'
+                    && (() => setModalEditCourse({ ...modalEditCourse, opened: true, which: 'description' }))
+                  }
                 />
               </Tooltip>
             </div>
@@ -242,18 +390,19 @@ function CourseView() {
               <h2 className={styles.h2}>Các bài học</h2>
               |
               <p style={{ fontSize: '18px' }}>{course?.lessons?.length} bài học</p>
-              {/* <Tooltip title='Thêm'>
+              <Tooltip
+                title={`${course?.status === 'unaccepted'
+                  ? 'Bạn không thể chỉnh sửa khóa học khi đang chờ phê duyệt !'
+                  : 'Thêm chương'}`
+                }
+              >
                 <PlusCircleOutlined
                   className={`${styles['btn_edit_small']} ${styles['btn_edit_small_lessons']}`}
                   style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
-                  onClick={() => setModalAddLessonOpened(!modalAddLessonOpened)}
-                />
-              </Tooltip> */}
-              <Tooltip title='Thêm chương'>
-                <PlusCircleOutlined
-                  className={`${styles['btn_edit_small']} ${styles['btn_edit_small_lessons']}`}
-                  style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }}
-                  onClick={() => setModalAddSection({...modalAddSection, opened: true})}
+                  onClick={
+                    course?.status !== 'unaccepted'
+                    && (() => setModalAddSection({ ...modalAddSection, opened: true }))
+                  }
                 />
               </Tooltip>
             </div>
@@ -261,62 +410,10 @@ function CourseView() {
               className={styles.container_detail_lessons_detail}
             >
               <TableSection
+                isViewing={course?.status === 'unaccepted' ? true : false}
                 course={course}
                 setCourse={setCourse}
               />
-
-              {/* <List
-                itemLayout='horizontal'
-                dataSource={course && course.lessons}
-                renderItem={(item, index) => (
-                  <List.Item
-                    key={index}
-                    className={styles.container_detail_lessons_detail_item}
-                  >
-                    <List.Item.Meta
-                      style={{ alignItems: 'center' }}
-                      avatar={<Avatar shape='square' size={36}><span style={{ fontSize: '16px' }}>{index + 1}</span></Avatar>}
-                      title={<p style={{ fontSize: '16px' }}>{item.title}</p>}
-                    />
-                    <Popover
-                      title='Tùy chọn'
-                      placement='left'
-                      content={
-                        <Space direction='vertical' size='small' style={{ alignItems: 'flex-start' }}>
-                          <Space
-                            className={styles.container_detail_lessons_detail_item_popup_row}
-                            direction='horizontal'
-                            size='middle'
-                            onClick={() => setModalEditLesson({ ...modalEditLesson, opened: true, which: item })}
-                          >
-                            <EditOutlined style={{ fontSize: '16px' }} />
-                            Chỉnh sửa
-                          </Space>
-
-                          <Popconfirm
-                            title={<p>Bạn có chắc muốn xóa bài <b>{item.title}</b>?</p>}
-                            okText='Đồng ý'
-                            cancelText='Hủy'
-                            onConfirm={() => deleteLessonHandler(item._id, item.video_link)}
-                          >
-                            <Space
-                              className={styles.container_detail_lessons_detail_item_popup_row}
-                              direction='horizontal'
-                              size='middle'
-                            >
-                              <DeleteOutlined style={{ fontSize: '16px' }} />
-                              Xóa
-                            </Space>
-                          </Popconfirm>
-
-                        </Space>
-                      }
-                    >
-                      <EllipsisOutlined style={{ fontSize: '20px', padding: '8px' }} />
-                    </Popover>
-                  </List.Item>
-                )}
-              /> */}
             </div>
           </div>
         </div>
@@ -366,6 +463,9 @@ function CourseView() {
             alt='preview'
             src={previewImgObj?.currentPreviewImg}
             preview={false}
+            width={848}
+            height={477}
+            style={{ objectFit: 'cover' }}
           />
         </Modal>
 
@@ -376,19 +476,33 @@ function CourseView() {
           setModalEditCourse={setModalEditCourse}
         />
 
-        {/* <ModalAddLesson
-          course={course}
-          setCourse={setCourse}
-          modalAddLessonOpened={modalAddLessonOpened}
-          setModalAddLessonOpened={setModalAddLessonOpened}
-        /> */}
-
         <ModalAddSection
           course={course}
           setCourse={setCourse}
           modalAddSection={modalAddSection}
           setModalAddSection={setModalAddSection}
         />
+
+        <Modal
+          title='Lý do từ chối phê duyệt'
+          open={modalShowRejectReasonOpened}
+          width='480px'
+          footer={null}
+          onCancel={() => setModalShowRejectReasonOpened(false)}
+        >
+          {
+            course?.rejected_reasons?.map((reason, index) => {
+              return (
+                <p
+                  key={`reason_${index}`}
+                  style={{ margin: '8px 0px' }}
+                >
+                  - {reason}
+                </p>
+              )
+            })
+          }
+        </Modal>
 
         {/* <ModalEditLesson
           course={course}
@@ -397,8 +511,12 @@ function CourseView() {
           setModalEditLesson={setModalEditLesson}
         /> */}
 
-        <button style={{ opacity: '0.3' }} onClick={() => setHide(!hide)}>{hide ? 'Ẩn' : 'Hiện'}</button>
-        {hide && <pre>{JSON.stringify(course, null, 4)}</pre>}
+        {/* <ModalAddLesson
+          course={course}
+          setCourse={setCourse}
+          modalAddLessonOpened={modalAddLessonOpened}
+          setModalAddLessonOpened={setModalAddLessonOpened}
+        /> */}
       </div>
     </InstructorRoute>
 

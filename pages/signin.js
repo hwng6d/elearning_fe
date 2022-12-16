@@ -94,9 +94,10 @@ const SignIn = () => {
             style={{ display: 'inline-block', width: 'inherit', marginTop: '10px' }}
           >
             <Button
-              style={{ width: 'inherit' }}
+              type='primary'
               onClick={(e) => submitFormHandler(e)}
               disabled={!email || !password || loading}
+              style={{ width: 'inherit', fontWeight: '600' }}
             >
               Đăng nhập {loading && <SyncOutlined spin={true} />}
             </Button>
