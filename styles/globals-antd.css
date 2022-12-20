@@ -208,3 +208,20 @@
 .tabs_review_body_addreview textarea {
   resize: none;
 }
+
+/* TopNav searchbox */
+.topnav_searchbox {
+  height: fit-content;
+  border: 2px solid #c9d1da;
+  padding: -8px;
+}
+
+/* Filter slider */
+.filter_slider {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.filter_slider .ms-Slider-container {
+  /* margin-top: 8px; */
+}

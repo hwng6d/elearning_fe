@@ -93,6 +93,8 @@ const InspectDetailCourseEditPage = () => {
       const { data } = await axios.get(`/api/course/ad/course-inspect/${courseId}?type=edit`);
 
       setCourse(data.data);
+
+      console.log('setCourse', data.data);
     }
     catch (error) {
       message.error(`Lấy thông tin chi tiết khóa học lỗi. Chi tiết: ${error.message}`);
@@ -219,11 +221,12 @@ const InspectDetailCourseEditPage = () => {
                 <Space size='middle' direction='vertical'>
                   <h1 className={styles.h1}>{course?.name}</h1>
                   <p style={{ fontSize: '16px' }}><b>Giá |</b> {course?.price}</p>
+                  <p style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></p>
                   <p style={{ fontSize: '16px' }}><b>Tag |</b> <Space split='-'>{course?.tags}</Space></p>
                   <Space split='|'>
-                    <p style={{ fontSize: '16px' }}><b>{course?.sections?.length}</b> chương</p>
-                    <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length}</b> bài học</p>
-                    <p style={{ fontSize: '16px' }}><b>{course?.quizzes?.length}</b> bài quiz</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.sections?.length || 0}</b> chương</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length || 0}</b> bài học</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.quizzes?.length || 0}</b> bài quiz</p>
                   </Space>
                 </Space>
               </div>

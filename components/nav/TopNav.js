@@ -1,14 +1,18 @@
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router'
-import { Button, Menu, Dropdown, Space, message, Modal } from 'antd';
-import { AppstoreAddOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import React, { useEffect, useState, useContext } from 'react';
+import { Button, Menu, Dropdown, Space, message, Modal, Input, Popover } from 'antd';
+import { Context } from '../../context/index';
+import { AppstoreAddOutlined, LogoutOutlined, RightOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
 import styles from '../../styles/components/nav/TopNav.module.scss';
-import { Context } from '../../context/index';
+import { SearchBox } from '@fluentui/react';
+// import { initializeIcons } from '@fluentui/react';
 
 const TopNav = () => {
+  // initializeIcons();
+
   // router
   const router = useRouter();
 
@@ -19,6 +23,8 @@ const TopNav = () => {
   const [currItem, setCurrItem] = useState('/');
   const [modalOpened, setModalOpened] = useState(false);
   const [course, setCourse] = useState({}); // this states only used when in learning route
+  const [categories, setCategories] = useState([]); // this states used when in publich route for searching, filtering...
+  const [search, setSearch] = useState('');
 
   // variables
   const menuItems = (
@@ -59,6 +65,12 @@ const TopNav = () => {
     }
   }
 
+  const onSearchEnter = async (value) => {
+    router.replace(
+      `/course?keyword=${value}`
+    )
+  }
+
   async function signoutHandler() {
     try {
       await axios.get('/api/auth/logout');
@@ -79,15 +91,27 @@ const TopNav = () => {
 
   async function getCourseInfo() {
     try {
-      if (router.pathname === '/user/courses/[slug]/lesson/[lessonId]') {
+      if (router.isReady) {
+        setCategories([]);
         const { data } = await axios.get(`/api/course/public/${router.query.slug}`);
         setCourse(data.data);
-      } else {
-        setCourse({});
       }
     }
     catch (error) {
-      message.error(`Có lỗi xảy ra. Chi tiết: ${error.message}`);
+      message.error(`Không lấy được tên khóa học. Chi tiết: ${error.message}`);
+    }
+  }
+
+  async function getCategoriesInfo() {
+    try {
+      if (router.isReady) {
+        setCourse({});
+        const { data } = await axios.get(`/api/category/public`);
+        setCategories(data.data);
+      }
+    }
+    catch (error) {
+      message.error(`Không lấy được danh sách phân loại. Chi tiết: ${error.message}`);
     }
   }
 
@@ -96,11 +120,14 @@ const TopNav = () => {
   }, [router.pathname]);
 
   useEffect(() => {
-    console.log('router.pathname: ', router.pathname);  // /user/courses/[slug]/lesson/[lessonId]
-    console.log(router.query);  // {slug: 'reactjs-zero-hero', lessonId: '860ba22b-30a3-4056-bb7d-8ddf891af2da'}
+    // console.log('router.pathname: ', router.pathname);  // /user/courses/[slug]/lesson/[lessonId]
+    // console.log(router.query);  // {slug: 'reactjs-zero-hero', lessonId: '860ba22b-30a3-4056-bb7d-8ddf891af2da'}
 
-    getCourseInfo();
-  }, [router.query])
+    if (router.pathname === '/user/courses/[slug]/lesson/[lessonId]')
+      getCourseInfo();
+    else
+      getCategoriesInfo();
+  }, [router.pathname]);
 
   return (
     <div>
@@ -110,22 +137,98 @@ const TopNav = () => {
             direction='horizontal'
             size='large'
             split={Object.keys(course || {}).length ? '|' : null}
+            style={{ alignItems: 'center' }}
           >
             <Link href='/' className={styles.anchor}>
-              <Image src={'/logo.png'} width={138} height={42} />
+              <Image
+                alt='web_logo'
+                src={'/logo.png'}
+                width={138}
+                height={42}
+                onClick={() => setSearch('')}
+              />
             </Link>
             {
-              course && (
+              Object.keys(course).length
+                ? (
+                  <div
+                    style={{ fontSize: '20px', fontWeight: '700', marginTop: '4px', color: '#3a3d40' }}
+                  >
+                    {course?.name}
+                  </div>
+                )
+                : null
+            }
+            {
+              categories?.length
+                ? (
+                  <div style={{ marginTop: '4px', marginLeft: '8px' }}>
+                    <Popover
+                      trigger='hover'
+                      title={null}
+                      placement='bottomRight'
+                      content={
+                        <div
+                          className={styles.popover_category}
+                        >
+                          {
+                            categories?.map((cate, index) => {
+                              return (
+                                <Link
+                                  key={`cate_${index}`}
+                                  href={`/category/${cate?.slug}`}
+                                >
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      cursor: 'pointer',
+                                      color: 'black'
+                                    }}
+                                  >
+                                    <p
+                                      key={`cate_${index}`}
+                                      style={{ padding: '12px 12px' }}
+                                    >
+                                      {cate?.name}
+                                    </p>
+                                    <RightOutlined style={{ fontSize: '10px' }} />
+                                  </div>
+                                </Link>
+                              )
+                            })
+                          }
+                        </div>
+                      }
+                    >
+                      <p style={{ fontSize: '18px', color: '#4e4e4e' }}><b>Phân loại</b></p>
+                    </Popover>
+                  </div>
+                )
+                : null
+            }
+            {
+              categories?.length
+              ? (
                 <div
-                  style={{ fontSize: '20px', fontWeight: '700', marginTop: '4px', color: '#3a3d40' }}
+                  style={{ margin: '4px 0px 0px 16px', width: '1024px' }}
                 >
-                  {course?.name}
+                  <SearchBox
+                    className='topnav_searchbox'
+                    placeholder='Nhập từ khóa...'
+                    iconProps={<SearchOutlined />}
+                    value={search}
+                    onChange={(_, value) => setSearch(value)}
+                    onSearch={onSearchEnter}
+                    style={{ height: '36px' }}
+                  />
                 </div>
               )
+              : null
             }
           </Space>
         </div>
-
         <div className={styles.container_right}>
           {
             user && (
@@ -183,6 +286,7 @@ const TopNav = () => {
               </Dropdown>
             )
           }
+
           <Modal
             title='Đăng xuất'
             open={modalOpened}

@@ -3,13 +3,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../../styles/components/forms/ModalEditCourse.module.scss';
 import InputList from '../inputs/inputlist/InputList';
+import { useRouter } from 'next/router';
 
-const ModalAddLesson = ({
+const ModalEditCourse = ({
   course,
   setCourse,
+  getCourseBySlug,
   modalEditCourse,
   setModalEditCourse,
 }) => {
+  // router
+  const router = useRouter();
+
   // states
   const [courseBeingEdited, setCourseBeingEdited] = useState({
     name: '',
@@ -34,9 +39,16 @@ const ModalAddLesson = ({
     console.log(courseBeingEdited);
     try {
       const { data } = await axios.put(`/api/course/ins/${course._id}`, courseBeingEdited);
-      setCourse(data.data);
-      message.success(`Cập nhật khóa học ${data.data.name} thành công`);
+
+      // getCourseBySlug();
+      if (data.data.slug === course?.slug)
+        getCourseBySlug();
+      else {
+        router.replace(`/instructor/course/view/${data.data.slug}`);
+      }
+
       setModalEditCourse({ ...modalEditCourse, opened: false, which: '' })
+      message.success(`Cập nhật khóa học thành công`);
     }
     catch (error) {
       message.error(`Xảy ra lỗi cập nhật khóa học, vui lòng thử lại\nChi tiết: ${error.message}`)
@@ -58,7 +70,7 @@ const ModalAddLesson = ({
       languages: course?.languages,
     });
     const { data } = await axios.get(
-      `/api/category/ins`
+      `/api/category/public`
     );
     setCategoryOptions(data.data);
   }
@@ -114,7 +126,7 @@ const ModalAddLesson = ({
                   options={categoryOptions?.map(cate => {
                     return {
                       value: cate._id,
-                      label: cate.name
+                      label: cate.name,
                     }
                   })}
                   onChange={(value) => setCourseBeingEdited({...courseBeingEdited, category: value})}
@@ -185,7 +197,7 @@ const ModalAddLesson = ({
                       style={{ width: '100%' }}
                       value={courseBeingEdited.price}
                       min={0}
-                      max={99.99}
+                      max={2000000}
                       onChange={(value) => setCourseBeingEdited({ ...courseBeingEdited, price: value })}
                     />
                   </Form.Item>
@@ -245,4 +257,4 @@ const ModalAddLesson = ({
   )
 }
 
-export default React.memo(ModalAddLesson);
+export default ModalEditCourse;

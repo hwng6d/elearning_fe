@@ -17,7 +17,7 @@ function CUserIndex() {
     try {
       setLoading(true);
       const { data } = await axios.get('/api/user/enrolled-courses');
-      setEnrolledCourses(data.data.courses);
+      setEnrolledCourses(data.data.courses || []);
       setLoading(false);
     }
     catch (error) {
@@ -45,11 +45,10 @@ function CUserIndex() {
           : (
             <CourseListHorizontal
               courses={enrolledCourses}
+              hidePrice={true}
             />
           )
       }
-      <button style={{ opacity: '0.3' }} onClick={() => setHide(!hide)}>{hide ? 'Ẩn' : 'Hiện'}</button>
-      {hide && <pre>{JSON.stringify(enrolledCourses, null, 4)}</pre>}
     </div>
   )
 }

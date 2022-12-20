@@ -14,6 +14,7 @@ const TableSection = ({
   isViewing = false,
   course,
   setCourse,
+  getCourseBySlug,
 }) => {
   // global context
   const { state: { user } } = useContext(Context);
@@ -34,12 +35,12 @@ const TableSection = ({
 
   const onDeleteSectionClick = async (sectionId) => {
     try {
-      const { data } = await axios.post(
+      await axios.post(
         `/api/course/ins/${course._id}/section/${sectionId}/delete`,
         { instructorId: user._id }
       );
 
-      setCourse(data.data);
+      getCourseBySlug();
       message('Xóa bài học thành công');
     }
     catch (error) {
@@ -70,12 +71,12 @@ const TableSection = ({
       );
 
       // xóa bài học
-      const { data } = await axios.put(
+      await axios.put(
         `/api/course/ins/${course._id}/lesson/${lessonId}/delete`,
         { instructorId: user._id }
       );
 
-      setCourse(data.data);
+      getCourseBySlug();
       message.success('Xóa bài học thành công');
     }
     catch (error) {
@@ -93,12 +94,12 @@ const TableSection = ({
 
   const onRemoveQuizClick = async (lessonId, quizId) => {
     try {
-      const { data } = await axios.put(
+      await axios.put(
         `/api/course/ins/${course._id}/lesson/${lessonId}/quiz/${quizId}/delete`,
         { instructorId: user._id }
       );
 
-      setCourse(data.data);
+      getCourseBySlug();
       message.success('Xóa quiz thành công');
     }
     catch (error) {
@@ -388,6 +389,7 @@ const TableSection = ({
       <ModalAddSection
         isEdit={true} // isEdit
         sectionId={modalEditSection.sectionId}  // isEdit
+        getCourseBySlug={getCourseBySlug}
         course={course}
         setCourse={setCourse}
         modalAddSection={modalEditSection}
@@ -421,6 +423,7 @@ const TableSection = ({
             setCourse={setCourse}
             modalAddLesson={modalAddLesson} // { opened, sectionId }
             setModalAddLesson={setModalAddLesson}
+            getCourseBySlug={getCourseBySlug}
           />
         )
       }
@@ -433,6 +436,7 @@ const TableSection = ({
             setCourse={setCourse}
             modalEditLesson={modalEditLesson} // { opened, sectionId, lessonId }
             setModalEditLesson={setModalEditLesson}
+            getCourseBySlug={getCourseBySlug}
           />
         )
       }
@@ -444,6 +448,7 @@ const TableSection = ({
             setCourse={setCourse}
             modalAddQuiz={modalAddQuiz}
             setModalAddQuiz={setModalAddQuiz}
+            getCourseBySlug={getCourseBySlug}
           />
         )
       }
@@ -456,6 +461,7 @@ const TableSection = ({
             setCourse={setCourse}
             modalEditQuiz={modalEditQuiz}
             setModalEditQuiz={setModalEditQuiz}
+            getCourseBySlug={getCourseBySlug}
           />
         )
       }

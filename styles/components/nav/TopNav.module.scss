@@ -1,14 +1,13 @@
 .container {
   box-sizing: border-box;
   min-height: 72px;
-  padding: 8px 20px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   align-content: center;
   justify-content: space-between;
   border-top: 12px solid black;
   border-image: linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61)) 1 stretch;
-  // border-image: linear-gradient(to right, #2b506c, #368bcb) 1 stretch;
   box-shadow: 10px 2px 3px rgb(220, 220, 220);
   background-color: #ffff;
 
@@ -19,6 +18,11 @@
     margin: 4px 0px;
     align-items: center;
   }
+
+  // &_center {
+  //   display: flex;
+  //   width: 60%;
+  // }
 
   &_right {
     display: flex;
@@ -93,4 +97,16 @@
   display: flex;
   margin: 0;
   padding: 0;
+}
+
+.popover {
+
+  &_category {
+    width: 396px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(184px, 0px));
+    justify-content: center;
+    column-gap: 16px;
+    row-gap: 4px;
+  }
 }

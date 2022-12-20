@@ -29,18 +29,18 @@ const CourseCard = ({
           <p
             className={styles.popover_container_coursename}
           >
-            {course.name}
+            {course?.name}
           </p>
           <p
             className={styles.popover_container_coursedate}
           >
-            Cập nhật tháng <b>{dayjs(course.updatedAt).month() + 1}/{dayjs(course.updatedAt).year()}</b>
+            Cập nhật tháng <b>{dayjs(course?.updatedAt).month() + 1}/{dayjs(course?.updatedAt).year()}</b>
           </p>
           <Space direction='horizontal' split='|' style={{ alignItems: 'center' }}>
             <p
               className={styles.popover_container_courselessons}
             >
-              <b>{course.lessons.length}</b> bài học
+              <b>{course?.lessons?.length}</b> bài học
             </p>
             <p
               className={styles.popover_container_courseduration}
@@ -49,20 +49,25 @@ const CourseCard = ({
             </p>
           </Space>
           <p
+            className={styles.popover_container_coursecategory}
+          >
+            <b>Phân loại: {course?.categoryInfo?.name}</b>
+          </p>
+          <div
             className={styles.popover_container_coursetags}
           >
             <b>Thẻ: </b>
             <Space direction='horizontal' split='|' style={{ alignItems: 'center', marginTop: '4px' }}>
-              {course.tags.map((_, index) => <p key={index}>{_}</p>)}
+              {course?.tags?.map((_, index) => <p key={index}>{_}</p>)}
             </Space>
-          </p>
+          </div>
           <div
             className={styles.popover_container_coursecommitment}
           >
             <p><b>Bạn sẽ:</b></p>
             <ul style={{ lineHeight: '24px', marginTop: '4px' }}>
               {
-                course.goal.map((_, index) => {
+                course?.goal?.map((_, index) => {
                   return (
                     <li key={index}>
                       {_}
@@ -103,9 +108,13 @@ const CourseCard = ({
           <Image
             width={288}
             height={162}
-            alt='course-cover'
-            src={course?.image?.Location}
-            style={{ objectFit: 'cover', width: '-webkit-fill-available', height: '-webkit-fill-available' }}
+            alt='courseCarousel'
+            src={course?.image?.Location || '/no-photo.png'}
+            style={{
+              objectFit: course?.image?.Location ? 'cover' : 'scale-down',
+              width: '-webkit-fill-available',
+              height: '-webkit-fill-available'
+            }}
           />
         </div>
         {/* body */}
@@ -115,7 +124,7 @@ const CourseCard = ({
           <p
             className={styles.container_body_coursename}
           >
-            {course.name}
+            {course?.name}
           </p>
           <p
             className={styles.container_body_courseinstructor}
@@ -125,8 +134,8 @@ const CourseCard = ({
           <p
             className={styles.container_body_courseprice}
           >
-            {course.paid
-              ? `${course.price} VNĐ`
+            {course?.paid
+              ? `${course?.price} VNĐ`
               : 'Miễn phí'}
           </p>
         </div>

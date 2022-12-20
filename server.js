@@ -1,10 +1,13 @@
 import express from 'express';
 import next from 'next';
+import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
+
 
 app
   .prepare()
@@ -16,7 +19,10 @@ app
         `/api`,
         createProxyMiddleware({
           target: 'http://localhost:8000',
-          changeOrigin: true
+          changeOrigin: true,
+          onProxyRes: function (proxyRes, req, res) {
+            proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+          }
         })
       )
     }

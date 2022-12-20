@@ -1,0 +1,113 @@
+.h2 {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.h2p {
+  margin-top: 4px !important;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.card {
+  &_courses {
+    margin: 20px 0px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
+    gap: 1.5rem;
+    row-gap: 2rem;
+  }
+}
+
+.container {
+  margin: 0 auto;
+
+  &_carousel {
+    display: block;
+    margin: 12px auto;
+  }
+
+  &_body {
+
+    &_tools {
+      margin-top: 0px;
+      height: fit-content;
+      width: 100%;
+
+      &_top {
+
+        &_name {
+          width: 70%;
+        }
+
+        &_sort {
+          width: 30%;
+        }
+      }
+
+      &_bottom {
+        width: 100%;
+
+        // &_star {
+        //   width: 20%;
+        // }
+
+        &_duration {
+          width: 25%;
+        }
+
+        &_price {
+          width: 40%;
+        }
+
+        &_button {
+          width: 30%;
+          
+          &_reset, &_search {
+            width: 50%;
+            margin-top: 16px;
+            text-align: right;
+
+          }
+        }
+      }
+    }
+
+    &_card {
+
+      &_courses {
+        margin: 8px 0px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
+        gap: 1.5rem;
+        row-gap: 2rem;
+      }
+
+    }
+
+    &_pagination {
+      margin-top: 24px;
+      width: 100%;
+      text-align: right;
+  
+    }
+  }
+}

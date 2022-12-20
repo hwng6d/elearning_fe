@@ -50,11 +50,12 @@ function CourseView() {
 
   const onSubmitPublishClick = async () => {
     try {
-      const { data } = await axios.put(
+      await axios.put(
         `/api/course/ins/${course?._id}/submit-publish`
       );
 
-      setCourse(data.data);
+      getCourseBySlug();
+
       message.success('Nộp phê duyệt xuất bản thành công');
     }
     catch (error) {
@@ -64,11 +65,12 @@ function CourseView() {
 
   const onSubmitUndoPublishClick = async () => {
     try {
-      const { data } = await axios.put(
+      await axios.put(
         `/api/course/ins/${course?._id}/submit-undopublish`
       );
 
-      setCourse(data.data);
+      getCourseBySlug();
+
       message.success('Hoàn tác nộp phê duyệt xuất bản thành công');
     }
     catch (error) {
@@ -171,6 +173,7 @@ function CourseView() {
                 >
                   <div style={{ width: '337px', height: '210px' }}>
                     <Image
+                      alt='no-photo'
                       src={course?.image ? course?.image?.Location : '/no-photo.png'}
                       height={!course?.image ? '64' : '210'}
                       width={337}
@@ -192,9 +195,9 @@ function CourseView() {
                   <p style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></p>
                   <p style={{ fontSize: '16px' }}><b>Thẻ |</b> <Space split='-'>{course?.tags}</Space></p>
                   <Space split='|'>
-                    <p style={{ fontSize: '16px' }}><b>{course?.sections?.length}</b> chương</p>
-                    <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length}</b> bài học</p>
-                    <p style={{ fontSize: '16px' }}><b>{course?.quizzes?.length}</b> bài quiz</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.sections?.length || 0}</b> chương</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length || 0}</b> bài học</p>
+                    <p style={{ fontSize: '16px' }}><b>{course?.quizzes?.length || 0}</b> bài quiz</p>
                   </Space>
                 </Space>
               </div>
@@ -413,6 +416,7 @@ function CourseView() {
                 isViewing={course?.status === 'unaccepted' ? true : false}
                 course={course}
                 setCourse={setCourse}
+                getCourseBySlug={getCourseBySlug}
               />
             </div>
           </div>
@@ -472,6 +476,7 @@ function CourseView() {
         <ModalEditCourse
           course={course}
           setCourse={setCourse}
+          getCourseBySlug={getCourseBySlug}
           modalEditCourse={modalEditCourse}
           setModalEditCourse={setModalEditCourse}
         />
@@ -481,6 +486,7 @@ function CourseView() {
           setCourse={setCourse}
           modalAddSection={modalAddSection}
           setModalAddSection={setModalAddSection}
+          getCourseBySlug={getCourseBySlug}
         />
 
         <Modal
@@ -503,24 +509,8 @@ function CourseView() {
             })
           }
         </Modal>
-
-        {/* <ModalEditLesson
-          course={course}
-          getCourseBySlug={getCourseBySlug} //setCourse
-          modalEditLesson={modalEditLesson}
-          setModalEditLesson={setModalEditLesson}
-        /> */}
-
-        {/* <ModalAddLesson
-          course={course}
-          setCourse={setCourse}
-          modalAddLessonOpened={modalAddLessonOpened}
-          setModalAddLessonOpened={setModalAddLessonOpened}
-        /> */}
       </div>
     </InstructorRoute>
-
-
   )
 }
 

@@ -41,7 +41,7 @@ const StripeSuccessPage = () => {
     <Space
       direction='vertical'
       size='large'
-      style={{ textAlign: 'center', marginTop: '64px', color: 'green', fontWeight: '600' }}
+      style={{ textAlign: 'center', marginTop: '64px', color: 'green', fontWeight: '600', width: '100%' }}
     >
       <SyncOutlined
         spin={true}
@@ -49,7 +49,7 @@ const StripeSuccessPage = () => {
       />
       <p
         style={{ fontSize: '16px' }}
-      >Đang xử lý thanh toán, bạn chờ chút nhé!</p>
+      >Đang xử lý, bạn chờ chút nhé!</p>
     </Space>
   )
 }
