@@ -17,6 +17,7 @@ const _ModalAddLesson = ({
   setCourse,
   modalAddLesson, // { opened, sectionId }
   setModalAddLesson,
+  getCourseBySlug,
 }) => {
   // global context
   const { state: { user } } = useContext(Context);
@@ -188,23 +189,24 @@ const _ModalAddLesson = ({
 
       if (!isEdit) {
         // send request to BE to add new lesson
-        const { data: lessonResponse } = await axios.post(
+        await axios.post(
           `/api/course/ins/${course._id}/lesson`,
           // { ...newLesson, instructorId: course.instructor._id, video_link: newLesson.video_link }
           { ...newLesson, instructorId: user._id }
         );
 
+        getCourseBySlug();
+
         // notify and set everything to be original
-        message.success('Thêm bài học thành công !');
-        setCourse(lessonResponse.data);
         setNewLesson({ index: -1, section: '', title: '', content: '', duration: 0, video_link: {}, free_preview: false });
         setVideosUpload([]);
         setValidateMessage('');
         setProgressUploadVideo(0);
         setModalAddLesson({ ...modalAddLesson, opened: false, sectionId: '' });
+        message.success('Thêm bài học thành công !');
       } else {
         // send request to BE to edit lesson
-        const { data: lessonResponse } = await axios.put(
+        await axios.put(
           `/api/course/ins/${course._id}/lesson/${modalEditLesson.lessonId}/update`,
           {
             lesson: newLesson,
@@ -216,15 +218,16 @@ const _ModalAddLesson = ({
           }
         );
 
+        getCourseBySlug();
+
         // notify and set everything to be original
-        message.success('Cập nhật bài học thành công !');
-        setCourse(lessonResponse.data);
         setNewLesson({ index: -1, section: '', title: '', content: '', duration: 0, video_link: {}, free_preview: false });
         setVideosUpload([]);
         setValidateMessage('');
         setProgressUploadVideo(0);
         setOriginAtEdit({ ...originAtEdit, section: -1, index: -1 });
         setModalEditLesson({ ...modalEditLesson, opened: false, sectionId: '', lessonId: '' });
+        message.success('Cập nhật bài học thành công !');
       }
     }
     catch (error) {
@@ -237,7 +240,6 @@ const _ModalAddLesson = ({
 
   useEffect(() => {
     if (router.isReady) {
-      console.log('course: ', course);
       if (!isEdit) {
         setNewLesson({ ...newLesson, index: maxLessonIndexInSection + 1 });
       } else {
@@ -245,10 +247,6 @@ const _ModalAddLesson = ({
       }
     }
   }, [modalAddLesson, modalEditLesson]);
-
-  useEffect(() => {
-    console.log('newLesson: ', newLesson);
-  }, [newLesson])
 
   return (
     <Modal

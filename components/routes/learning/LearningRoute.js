@@ -84,7 +84,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
     setQuizResult({ ...quizResult, status: 'waiting', message: '' });
     setQuizAnswered('');
     setActiveTab('tab_overview');
-    router.push(`/user/courses/${course.slug}/lesson/${key}`);
+    router.push(`/user/courses/${course?.slug}/lesson/${key}`);
   }
 
   const tabChangeHandler = (activeKey) => {
@@ -106,11 +106,11 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
   const onDoQuizClick = (event, lessonId, quizId) => {
     event.stopPropagation();
 
-    if (user._id === course.instructor._id) {
+    if (user._id === course?.instructor?._id) {
       const quiz = course?.quizzes?.find(quiz => quiz?._id === quizId);
       setIsQuizScreen({ ...quizId, opened: true, quiz });
     } else {
-      if (!user.courses.find(_ => _.courseId === course._id).completedLessons.includes(lessonId)) {
+      if (!user.courses.find(_ => _.courseId === course?._id).completedLessons.includes(lessonId)) {
         message.error('Hãy hoàn thành việc học trước khi làm bài quiz');
         return;
       }
@@ -126,7 +126,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
       console.log('quizAnswered: ', quizAnswered);
 
       const { data: result } = await axios.post(
-        `/api/user/quiz-answer/${course._id}/${quizId}`,
+        `/api/user/quiz-answer/${course?._id}/${quizId}`,
         { quiz: { index: quizAnswered } }
       );
       if (result.success) {
@@ -161,7 +161,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
       if (currentLesson._id === lessonId) {
         if (!isCompleted) {  //user want to mark lesson to be completed
           const { data } = await axios.post(
-            `/api/user/enrolled-courses/${course._id}/lesson/${currentLesson._id}/mark-complete`
+            `/api/user/enrolled-courses/${course?._id}/lesson/${currentLesson._id}/mark-complete`
           );
           dispatch({
             type: 'LOGIN',
@@ -171,7 +171,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
           setIsQuizScreen({ ...isQuizScreen, opened: false, quiz: {} });
         } else {  //user want to mark lesson to be incompleted
           const { data } = await axios.post(
-            `/api/user/enrolled-courses/${course._id}/lesson/${currentLesson._id}/mark-incomplete`
+            `/api/user/enrolled-courses/${course?._id}/lesson/${currentLesson._id}/mark-incomplete`
           );
           dispatch({
             type: 'LOGIN',
@@ -221,7 +221,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
           {
             course?.lessons?.map(lesson => {
               if (lesson?.section?._id === section?._id) {
-                const isCompleted = user?.courses?.find(item => item?.courseId === course._id)?.completedLessons?.includes(lesson._id);
+                const isCompleted = user?.courses?.find(item => item?.courseId === course?._id)?.completedLessons?.includes(lesson._id);
                 const isQuiz = course?.quizzes?.findIndex(quiz => quiz.lesson === lesson._id);
                 const quiz = isQuiz < 0 ? undefined : course?.quizzes[isQuiz];
                 const completeIconStyles = {
@@ -241,7 +241,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       direction='horizontal'
                     >
                       {
-                        user._id !== course.instructor._id && (
+                        user?._id !== course?.instructor?._id && (
                           <Tooltip
                             title={
                               currentLesson._id !== lesson._id
@@ -291,7 +291,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                                     {`${user._id === course?.instructor._id ? 'Xem quiz' : `Let's quiz`}`}
                                   </p>
                                   {
-                                    user?.courses?.find(_ => _.courseId === course._id)?.completedQuizzes?.includes(quiz._id) && (
+                                    user?.courses?.find(_ => _?.courseId === course?._id)?.completedQuizzes?.includes(quiz._id) && (
                                       <CheckOutlined style={{ color: 'green', fontSize: '18px' }} />
                                     )
                                   }
@@ -415,7 +415,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       })}
                     </Radio.Group>
                     {
-                      user._id === course.instructor._id && (
+                      user._id === course?.instructor?._id && (
                         <div>
                           <p style={{ marginTop: '12px' }}><b>Đáp án:</b></p>
                           <p>
@@ -425,7 +425,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       )
                     }
                     {
-                      user._id !== course.instructor._id && <div
+                      user._id !== course?.instructor?._id && <div
                         className={styles.container_content_videosection_quiz_body_submit}
                         style={{ marginTop: '16px' }}
                       >

@@ -67,7 +67,7 @@ function CCreate() {
   const getCategories = async () => {
     try {
       const { data } = await axios.get(
-        `/api/category/ins`
+        `/api/category/public`
       );
 
       setCategories(data.data);

@@ -68,7 +68,7 @@ const InputList = ({
   });
 
   return (
-    <div style={{...scopeStyle}}>
+    <div style={{ ...scopeStyle }}>
       <div>
         {tagChild}
       </div>
@@ -77,7 +77,7 @@ const InputList = ({
           ref={inputRef}
           type="text"
           size="small"
-          style={{...cellStyle, padding: '4px 8px', fontSize: '14px'}}
+          style={{ ...cellStyle, padding: '4px 8px', fontSize: '14px' }}
           value={inputValue}
           onChange={handleInputChange}
           onBlur={handleInputConfirm}
@@ -87,7 +87,7 @@ const InputList = ({
       {!inputVisible && formValues[`${value}`]?.length < maxLength && (
         <Tag
           onClick={showInput} className="site-tag-plus"
-          style={{...cellStyle, padding: '4px 16px', fontSize: '14px'}}
+          style={{ ...cellStyle, padding: '4px 16px', fontSize: '14px' }}
         >
           <PlusOutlined /> Thêm
         </Tag>

@@ -12,6 +12,7 @@ const ModalAddQuiz = ({
   setModalEditQuiz, // edit
   modalAddQuiz, // { opened, lessonId }
   setModalAddQuiz,
+  getCourseBySlug,
 }) => {
   // global context
   const { state: { user } } = useContext(Context);
@@ -67,24 +68,24 @@ const ModalAddQuiz = ({
   const addQuizHandler = async () => {
     try {
       if (!isEdit) {
-        const { data } = await axios.post(
+        await axios.post(
           `/api/course/ins/${course._id}/lesson/${modalAddQuiz.lessonId}/quiz`,
           { quiz, instructorId: user._id }
         );
 
-        setCourse(data.data);
+        getCourseBySlug();
         setQuiz({...quiz, question: '', answer: [], correctAnswer: []})
         setModalAddQuiz({...modalAddQuiz, opened: false, lessonId: ''});
         message.success('Thêm quiz thành công');
       } else {
         console.log('quiz: ', quiz);
 
-        const { data } = await axios.put(
+        await axios.put(
           `/api/course/ins/${course._id}/lesson/${modalEditQuiz.lessonId}/quiz/${modalEditQuiz.quizId}/update`,
           { quiz, instructorId: user._id }
         )
 
-        setCourse(data.data);
+        getCourseBySlug();
         setQuiz({...quiz, question: '', answer: [], correctAnswer: []})
         setModalEditQuiz({...modalAddQuiz, opened: false, lessonId: '', quizId: ''});
         message.success('Chỉnh sửa quiz thành công');

@@ -8,6 +8,7 @@ import styles from '../../styles/components/forms/ModalAddSection.module.scss';
 const ModalAddSection = ({
   isEdit = false, // isEdit
   sectionId = '', // isEdit
+  getCourseBySlug,
   course,
   setCourse,
   modalAddSection,
@@ -38,17 +39,17 @@ const ModalAddSection = ({
   const addSectionHandler = async () => {
     try {
       if (!isEdit) {
-        const { data } = await axios.post(
+        await axios.post(
           `/api/course/ins/${course._id}/section`,
           { ...newSection, instructorId: user._id }
         );
 
-        setCourse(data.data);
+        getCourseBySlug();
 
         setNewSection({ ...newSection, index: 1, name: '' });
         setModalAddSection({...modalAddSection, opened: false});
       } else {
-        const { data } = await axios.post(
+        await axios.post(
           `/api/course/ins/${course._id}/section/${sectionId}/update`,
           {
             ...newSection,
@@ -57,7 +58,7 @@ const ModalAddSection = ({
           }
         );
 
-        setCourse(data.data);
+        getCourseBySlug();
 
         setNewSection({ ...newSection, index: 1, name: '' });
         setOriginIndexAtEdit(-1);

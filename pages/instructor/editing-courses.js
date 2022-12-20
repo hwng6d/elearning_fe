@@ -17,14 +17,16 @@ const EditingCoursesPage = () => {
     try {
       setLoading(true);
       const queryString = new URLSearchParams({
-        status: 'unpublic'
+        status: 'unpublic',
+        page: 1,
+        limit: 16,
       }).toString();
 
       const { data } = await axios.get(
         `/api/course/ins?${queryString}`
       );
 
-      setCourses(data.data);
+      setCourses(data?.data[0]?.paginatedResults);
       setLoading(false);
     }
     catch (error) {

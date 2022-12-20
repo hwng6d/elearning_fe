@@ -27,6 +27,7 @@ import {
   ReadOutlined,
   WifiOutlined,
   DashOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import ReactMarkdown from 'react-markdown';
 import Image from "next/image";
@@ -78,14 +79,14 @@ const SingleCourseView = ({ course }) => {
         return;
       }
 
-      if (user._id === course.instructor._id) {
+      if (user._id === course?.instructorInfo?._id) {
         message.info('Bạn hiện là Instructor của khóa học này');
         return;
       }
 
       setMsg('Đang thực hiện...');
       await setDelay(3000);
-      const { data } = await axios.post(`/api/user/enrollment/paid/${course._id}`);
+      const { data } = await axios.post(`/api/user/enrollment/paid/${course?._id}`);
       const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
       stripe.redirectToCheckout({ sessionId: data.data.id });
     }
@@ -104,14 +105,14 @@ const SingleCourseView = ({ course }) => {
         return;
       }
 
-      if (user._id === course.instructor._id) {
+      if (user._id === course?.instructor?._id) {
         message.info('Bạn hiện là Instructor của khóa học này');
         return;
       }
 
       setMsg('Đang thực hiện...');
       await setDelay(3000);
-      const { data } = await axios.post(`/api/user/enrollment/free/${course._id}`);
+      const { data } = await axios.post(`/api/user/enrollment/free/${course?._id}`);
       dispatch({
         type: 'LOGIN',
         payload: data.data
@@ -128,7 +129,7 @@ const SingleCourseView = ({ course }) => {
   }
 
   const checkEnrolled = async () => {
-    const { data } = await axios.post(`/api/user/check-enrollment/${course._id}`);
+    const { data } = await axios.post(`/api/user/check-enrollment/${course?._id}`);
     setEnrolled({ ...enrolled, data: data.data });
   }
 
@@ -260,25 +261,29 @@ const SingleCourseView = ({ course }) => {
           <div
             className={styles.container_general_wrapper_left}
           >
-            <Space size='small' className={styles.container_general_wrapper_left_tag}>
-              {course?.tags?.map((item, index) => <Tag key={`${index}_tag`} color="orange">{item}</Tag>)}
-            </Space>
+            <div className={styles.d_flex_row}>
+              <p style={{ color: 'white', fontSize: '18px' }}><b>{course?.categoryInfo?.name}</b></p>
+              <span><RightOutlined /></span>
+              <Space size='small' className={styles.container_general_wrapper_left_tag}>
+                {course?.tags?.map((item, index) => <Tag key={`${index}_tag`} color="orange">{item}</Tag>)}
+              </Space>
+            </div>
             <h1
               className={styles.container_general_wrapper_left_coursename}
-            >{course.name}</h1>
+            >{course?.name}</h1>
             <p
               className={styles.container_general_wrapper_left_coursesummary}
-            >{course.summary}</p>
+            >{course?.summary}</p>
             <p
               className={styles.container_general_wrapper_left_courseinstructor}
-            >Giảng viên <b>{course.instructor.name}</b></p>
+            >Giảng viên <b>{course?.instructorInfo?.name}</b></p>
             <Space
               direction="horizontal"
               size='small'
               className={styles.container_general_wrapper_left_courselanguage}
             >
               <GlobalOutlined />
-              <Space split='|'>{course.languages.map(lang => <p key={`${lang}_lang`}>{lang}</p>)}</Space>
+              <Space split='|'>{course?.languages?.map(lang => <p key={`${lang}_lang`}>{lang}</p>)}</Space>
             </Space>
           </div>
           <div
@@ -292,7 +297,7 @@ const SingleCourseView = ({ course }) => {
                 className={styles.container_general_wrapper_right_image_detail}
               >
                 <Image
-                  src={course.image.Location}
+                  src={course?.image?.Location}
                   width={320}
                   height={180}
                   style={{ objectFit: 'cover' }}
@@ -315,7 +320,7 @@ const SingleCourseView = ({ course }) => {
             </div>
             <div
               className={styles.container_general_wrapper_right_price}
-            >{course.paid ? `${course.price} vnđ` : 'Miễn phí'}</div>
+            >{course?.paid ? `${course?.price} vnđ` : 'Miễn phí'}</div>
           </div>
         </div>
       </div>
@@ -343,7 +348,7 @@ const SingleCourseView = ({ course }) => {
                 <List
                   size="small"
                   split={false}
-                  dataSource={course.goal}
+                  dataSource={course?.goal}
                   style={{ margin: '4px' }}
                   renderItem={item => (
                     <List.Item
@@ -358,12 +363,12 @@ const SingleCourseView = ({ course }) => {
               className={styles.container_body_wrapper_top_right}
             >
               {
-                (user?._id === course?.instructor?._id)
+                (user?._id === course?.instructorInfo?._id)
                   ? (
                     <Button
                       className={styles.container_body_wrapper_top_right_buttonrollin}
                       type='primary'
-                      onClick={() => router.push(`/user/courses/${course.slug}`)}
+                      onClick={() => router.push(`/user/courses/${course?.slug}`)}
                     >
                       Đi đến khóa học
                     </Button>
@@ -374,7 +379,7 @@ const SingleCourseView = ({ course }) => {
                         <Popconfirm
                           disabled={false}
                           title={
-                            course.paid
+                            course?.paid
                               ? <div>
                                 <p>Bạn muốn thực hiện lệnh mua khóa học này ?</p>
                                 {msg && <p style={{ color: 'green' }}>{msg}</p>}
@@ -384,7 +389,7 @@ const SingleCourseView = ({ course }) => {
                                 {msg && <p style={{ color: 'green' }}>{msg}</p>}
                               </div>
                           }
-                          onConfirm={course.paid ? paidEnrollmentHandler : freeEnrollmentHandler}
+                          onConfirm={course?.paid ? paidEnrollmentHandler : freeEnrollmentHandler}
                           okText='Đồng ý'
                           cancelText='Hủy'
                         >
@@ -393,7 +398,7 @@ const SingleCourseView = ({ course }) => {
                             type='primary'
                           >
                             {
-                              course.paid
+                              course?.paid
                                 ? 'Mua ngay'
                                 : 'Học miễn phí'
                             }
@@ -404,7 +409,7 @@ const SingleCourseView = ({ course }) => {
                         <Button
                           className={styles.container_body_wrapper_top_right_buttonrollin}
                           type='primary'
-                          onClick={() => router.push(`/user/courses/${course.slug}`)}
+                          onClick={() => router.push(`/user/courses/${course?.slug}`)}
                         >
                           Vào học
                         </Button>
@@ -432,13 +437,13 @@ const SingleCourseView = ({ course }) => {
                   className={styles.courseinfocard_item}
                 >
                   <ReadOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-                  {course.lessons.length} bài học
+                  {course?.lessons.length} bài học
                 </div>
                 <div
                   className={styles.courseinfocard_item}
                 >
                   <GlobalOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-                  {course.languages.length} ngôn ngữ
+                  {course?.languages.length} ngôn ngữ
                 </div>
                 <div
                   className={styles.courseinfocard_item}
@@ -473,7 +478,7 @@ const SingleCourseView = ({ course }) => {
                       <h2 className={styles.h2}>Yêu cầu trước khóa học</h2>
                     </Space>
                   }
-                  dataSource={course.requirements}
+                  dataSource={course?.requirements}
                   style={{ border: '1px solid #d1d7dc', marginTop: '12px' }}
                   renderItem={(item) => (
                     <List.Item
@@ -502,7 +507,7 @@ const SingleCourseView = ({ course }) => {
                   <Space style={{ color: 'green', fontWeight: '600', fontSize: '16px', marginTop: '8px' }}>
                     <CheckOutlined />
                     <p>Bạn đã tham gia khóa học này, hãy đến<span> </span>
-                      <Link href={`/user/courses/${course.slug}`}>
+                      <Link href={`/user/courses/${course?.slug}`}>
                         <span
                           style={{
                             borderBottom: '2px dotted green',
@@ -540,7 +545,7 @@ const SingleCourseView = ({ course }) => {
                     : <ReactMarkdown children={course?.description?.substring(0, 300)} disallowedElements={['h1', 'h2']} />
                 }
                 {
-                  course.description.length > 300 && (
+                  course?.description?.length > 300 && (
                     <div>
                       <hr style={{ borderTop: '1px dashed grey' }} />
                       <label

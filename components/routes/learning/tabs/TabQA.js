@@ -174,7 +174,7 @@ const TabQA = ({ course, currentLesson, activeTab }) => {
                                   src={'/user_default.svg'}
                                   width={64}
                                   height={64}
-                                  alt='avatar'
+                                  alt='default_avatar'
                                   style={{ width: 'inherit', height: 'inherit', objectFit: 'cover' }}
                                 />
                               </div>

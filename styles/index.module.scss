@@ -9,13 +9,21 @@
   font-weight: 500;
 }
 
-.card {
-  &_courses {
-    margin: 12px 0px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
-    gap: 1.5rem;
-    row-gap: 2rem;
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
   }
 }
 
@@ -24,6 +32,23 @@
   margin: 0 auto;
 }
 
+
 .container {
   margin: 0 auto;
+
+  &_cardcourses {
+    margin: 20px 0px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
+    gap: 1.5rem;
+    row-gap: 2rem;
+  
+  }
+
+  &_pagination {
+    margin-top: 24px;
+    width: 100%;
+    text-align: right;
+
+  }
 }

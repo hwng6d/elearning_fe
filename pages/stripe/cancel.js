@@ -16,11 +16,13 @@ const StringCancelPage = () => {
           size='middle'
         >
           <Image
+            alt='stripe_pay'
             src='/stripe_payment.svg'
             width={320}
             height={320}
           />
           <Image
+            alt='stripe_cancel'
             src='/stripe_cancel.svg'
             width={192}
             height={192}

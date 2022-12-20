@@ -1,0 +1,64 @@
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h2 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.container {
+  padding: 16px 24px;
+
+  &_body {
+    padding: 32px 64px 32px 16px;
+
+  }
+}
+
+.plancard {
+
+  &_container {
+    height: 360px;
+    width: 284px;
+
+    &_top {
+      height: 85%;
+      border-bottom: 1px solid gray;
+
+      &_top {
+        height: 20%;
+        border-bottom: 1px solid gray;
+        background-color: white;
+
+      }
+
+      &_bottom {
+        height: 80%;
+
+      }
+
+    }
+
+    &_bottom {
+      height: 15%;
+      background-color: white;
+
+    }
+  }
+}

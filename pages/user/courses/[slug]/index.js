@@ -17,12 +17,14 @@ const UserSingleCourseView = () => {
   const checkEnrollement = async () => {
     try {
       if (router.isReady) {
+        console.log('checkEnrollement triggered');
+
         // get course info to get course._id
         const { data: { data: dataCourse } } = await axios.get(`/api/course/public/${slug}`);
 
         // accessible if current user is instructor of course
         console.log('dataCourse: ', dataCourse);
-        if (user._id === dataCourse.instructor._id) {
+        if (user._id === dataCourse.instructorInfo._id) {
           router.replace(
             `/user/courses/${slug}/lesson/${dataCourse.lessons[0]._id}`
           );

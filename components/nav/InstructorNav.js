@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Layout, Menu } from "antd";
 const { Content, Sider } = Layout;
-import { UserOutlined, PlusOutlined, MenuUnfoldOutlined, InsertRowBelowOutlined, InsertRowAboveOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusOutlined, MenuUnfoldOutlined, InsertRowBelowOutlined, InsertRowAboveOutlined, DingtalkOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import styles from '../../styles/components/nav/InstructorNav.module.scss';
 
@@ -36,6 +36,8 @@ const InstructorNav = ({
       selectedHandler('/instructor/rejected-courses');
     else if (router.pathname === '/instructor/editing-courses')
       selectedHandler('/instructor/editing-courses');
+    else if (router.pathname === '/instructor/membership')
+      selectedHandler('/instructor/membership');
   }, [router.pathname])
 
   return (
@@ -129,6 +131,16 @@ const InstructorNav = ({
           >
             <Link href='/instructor/course/create'>
               Tạo khóa học mới
+            </Link>
+          </Menu.Item>
+          <Menu.Item
+            key='/instructor/membership'
+            icon={<DingtalkOutlined />}
+            onClick={() => selectedHandler('/instructor/membership')}
+            // onClick={() => selectedHandler(<CCreate />, '/instructor/membership')}
+          >
+            <Link href='/instructor/membership'>
+              Đăng ký thành viên
             </Link>
           </Menu.Item>
         </Menu>
