@@ -9,7 +9,7 @@ const StripeSuccessPage = () => {
   const { state: { user }, dispatch } = useContext(Context);
   const router = useRouter();
   const { courseId } = router.query;
-
+  
   const successRequest = async () => {
     const { data } = await axios.get(`/api/user/stripe-success/${courseId}`);
 
@@ -24,7 +24,6 @@ const StripeSuccessPage = () => {
 
     // get course info to get course's slug
     const { data: courseData } = await axios.get(`/api/course/public/id/${courseId}`);
-    console.log('courseData: ', courseData);
 
     // redirect to paid course
     router.push(`/user/courses/${courseData.data.slug}`);

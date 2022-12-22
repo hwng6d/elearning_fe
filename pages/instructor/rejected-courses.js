@@ -4,13 +4,16 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import CourseCard from '../../components/cards/CourseCard';
-import { Spin } from "antd";
+import { Spin, Pagination } from "antd";
 import styles from '../../styles/components/instructor/RejectedCourses.module.scss';
+import { setDelay } from "../../utils/setDelay";
 
 const RejectedCoursesPage = () => {
   // states
   const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // functions
   const getPublicCourses = async () => {
@@ -19,7 +22,7 @@ const RejectedCoursesPage = () => {
       const queryString = new URLSearchParams({
         status: 'rejected',
         page: 1,
-        limit: 16,
+        limit: 12,
       }).toString();
 
       const { data } = await axios.get(
@@ -27,6 +30,9 @@ const RejectedCoursesPage = () => {
       );
 
       setCourses(data?.data[0]?.paginatedResults);
+      setTotal(data?.data[0]?.totalCount[0]?.count || 0);
+
+      await setDelay(300);
       setLoading(false);
     }
     catch (error) {
@@ -37,7 +43,7 @@ const RejectedCoursesPage = () => {
 
   useEffect(() => {
     getPublicCourses();
-  }, []);
+  }, [currentPage]);
 
   return (
     <InstructorRoute hideSidebar={false}>
@@ -47,7 +53,10 @@ const RejectedCoursesPage = () => {
         <h1
           className={styles.h1}
         >Các khóa học bị từ chối xuất bản</h1>
-        {
+        <div
+          className={styles.container_wrapper}
+        >
+          {
           loading
             ? (
               <div style={{ textAlign: 'center', marginTop: '32px', width: '100%' }}>
@@ -91,6 +100,19 @@ const RejectedCoursesPage = () => {
               </div>
             )
         }
+        </div>
+        <div
+        className={styles.container_pagination}
+      >
+        <Pagination
+          current={currentPage}
+          pageSize={12}
+          total={total}
+          showSizeChanger={false}
+          showTotal={(total) => `Tổng cộng: ${total}.`}
+          onChange={(page, pagesize) => setCurrentPage(page)}
+        />
+      </div>
       </div>
     </InstructorRoute>
   )

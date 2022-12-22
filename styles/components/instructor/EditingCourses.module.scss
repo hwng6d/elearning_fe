@@ -34,6 +34,17 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
       gap: 52px;
+
+      &_meta {
+        justify-content: space-between;
+      }
     }
+  }
+
+  &_pagination {
+    margin-top: 24px;
+    width: 100%;
+    text-align: right;
+
   }
 }

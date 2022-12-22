@@ -19,7 +19,8 @@ import styles from '../../../styles/components/routes/learning/LearningRoute.mod
 import axios from "axios";
 import TabOverview from './tabs/TabOverview'
 import TabQA from './tabs/TabQA'
-import TabReview from './tabs/TabReview'
+import TabReview from './tabs/TabReview';
+import { secondsToHms } from "../../../utils/secondsToHms";
 
 const LearningRoute = ({ loading, course, currentLesson }) => {
   // global context
@@ -47,12 +48,12 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
         children: <TabOverview course={course} currentLesson={currentLesson} activeTab={activeTab} />
       },
       {
-        label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Q&A</p>,
+        label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Hỏi đáp</p>,
         key: 'tab_qa',
         children: <TabQA course={course} currentLesson={currentLesson} activeTab={activeTab} />
       },
       {
-        label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Review</p>,
+        label: <p style={{ fontSize: '15px', fontWeight: '600', color: '#6a6f73' }}>Đánh giá</p>,
         key: 'tab_review',
         children: <TabReview course={course} currentLesson={currentLesson} activeTab={activeTab} />
       }
@@ -106,11 +107,11 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
   const onDoQuizClick = (event, lessonId, quizId) => {
     event.stopPropagation();
 
-    if (user._id === course?.instructor?._id) {
+    if (user?._id === course?.instructor?._id) {
       const quiz = course?.quizzes?.find(quiz => quiz?._id === quizId);
       setIsQuizScreen({ ...quizId, opened: true, quiz });
     } else {
-      if (!user.courses.find(_ => _.courseId === course?._id).completedLessons.includes(lessonId)) {
+      if (!user?.courses.find(_ => _.courseId === course?._id).completedLessons.includes(lessonId)) {
         message.error('Hãy hoàn thành việc học trước khi làm bài quiz');
         return;
       }
@@ -213,7 +214,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
               </Tooltip>
               <Space size={8} direction='horizontal' split='|' style={{ lineHeight: '20px' }}>
                 <p>0/{totalLessons}</p>
-                <p>{totalDuration}s</p>
+                <p>{secondsToHms(totalDuration)}</p>
               </Space>
             </Space>
           }
@@ -276,11 +277,11 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <PlayCircleFilled style={{ fontSize: '16px', color: '#313131' }} />
-                            <p>{lesson.duration}s</p>
+                            <p>{secondsToHms(lesson?.duration)}</p>
                           </div>
                           {
                             quiz && (
-                              <Tooltip title={`${user._id === course?.instructor._id ? 'Xem quiz' : 'Làm bài quiz'}`}>
+                              <Tooltip title={`${user?._id === course?.instructor._id ? 'Xem quiz' : 'Làm bài quiz'}`}>
                                 <div
                                   className={styles.container_sider_lessonlist_itemlesson_infoquiz}
                                   style={{ gap: '12px' }}
@@ -288,7 +289,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                                 >
                                   <TrophyFilled style={{}} />
                                   <p>
-                                    {`${user._id === course?.instructor._id ? 'Xem quiz' : `Let's quiz`}`}
+                                    {`${user?._id === course?.instructor._id ? 'Xem quiz' : `Let's quiz`}`}
                                   </p>
                                   {
                                     user?.courses?.find(_ => _?.courseId === course?._id)?.completedQuizzes?.includes(quiz._id) && (
@@ -402,7 +403,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                     <p style={{ marginTop: '12px' }}><b>Các lựa chọn:</b></p>
                     <Radio.Group
                       value={quizAnswered}
-                      disabled={quizResult.status === true || user._id === course?.instructor?._id}
+                      disabled={quizResult.status === true || user?._id === course?.instructor?._id}
                       onChange={(e) => setQuizAnswered(e.target.value)}
                       style={{ marginTop: '12px', padding: '0px 8px', display: 'grid', gap: '20px' }}
                     >
@@ -415,7 +416,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       })}
                     </Radio.Group>
                     {
-                      user._id === course?.instructor?._id && (
+                      user?._id === course?.instructor?._id && (
                         <div>
                           <p style={{ marginTop: '12px' }}><b>Đáp án:</b></p>
                           <p>
@@ -425,7 +426,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       )
                     }
                     {
-                      user._id !== course?.instructor?._id && <div
+                      user?._id !== course?.instructor?._id && <div
                         className={styles.container_content_videosection_quiz_body_submit}
                         style={{ marginTop: '16px' }}
                       >

@@ -20,7 +20,7 @@ function CInstructorIndex() {
     try {
       setLoading(true);
 
-      const query = { page: currentPage, limit: 16 };
+      const query = { page: currentPage, limit: 12 };
       const queryString = new URLSearchParams(query).toString();
       const { data } = await axios.get(`/api/course/ins?${queryString}`);
       setCourses(data?.data[0]?.paginatedResults);
@@ -80,8 +80,10 @@ function CInstructorIndex() {
       >
         <Pagination
           current={currentPage}
-          pageSize={16}
+          pageSize={12}
           total={total}
+          showSizeChanger={false}
+          showTotal={(total) => `Tổng cộng: ${total}.`}
           onChange={(page, pagesize) => setCurrentPage(page)}
         />
       </div>
