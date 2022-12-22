@@ -129,6 +129,11 @@ const TopNav = () => {
       getCategoriesInfo();
   }, [router.pathname]);
 
+  // useEffect(() => {
+  //   if (router.pathname !== '/user/courses/[slug]/lesson/[lessonId]')
+  //     getCategoriesInfo();
+  // }, [router.pathname && user])
+
   return (
     <div>
       <div className={styles.container}>

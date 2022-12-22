@@ -1,42 +1,73 @@
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import axios from "axios";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { Context } from "../../context";
+import { useState, useEffect, useContext } from "react";
 
 const ModalPaymentOption = ({
   modalPaymentOption,
   setModalPaymentOption,
 }) => {
-  const { price } = modalPaymentOption;
+  // global context
+  const { state: { user }, dispatch } = useContext(Context);
 
-  function vnPay(amount, description, lang) {
-    let body = {
-      amount: price,
-      bankCode: 'NCB',
-      orderDescription: `Membership nextgoal: ${price}`,
-      language: 'vn',
+  // variables
+  const { type } = modalPaymentOption;
+
+  // router
+  const router = useRouter();
+
+  const vnPay = async (amount, description, lang) => {
+    try {
+      // temporarily save beforeClickMembership_type
+      const { data: dataUser } = await axios.put(
+        `/api/instructor/temp-save-beforeclickmembership?type=${type}`
+      );
+
+      console.log('dataUser.data: ', dataUser.data)
+
+      dispatch({
+        type: 'LOGIN',
+        payload: dataUser.data
+      });
+      
+      window.localStorage.setItem('user', JSON.stringify(dataUser.data));
+
+      // checkout
+      const body = {
+        typeOfMembership: type,
+        amount: type === 'premium' ? 3490000 : type === 'gold' ? 2490000 : type === 'silver' ? 1490000 : 0,
+        bankCode: 'NCB',
+        orderDescription: `Membership nextgoal: ${type === 'premium' ? 3490000 : type === 'gold' ? 2490000 : type === 'silver' ? 1490000 : 0}`,
+        language: 'vn',
+      };
+
+      const { data } = await axios.post(
+        `/api/payment/create_payment_url`,
+        body
+      );
+
+      // console.log('data: ', data);
+
+      // window.open(data.vnpUrl, "_blank", 'noopener,noreferrer');
+      window.open(data.vnpUrl);
     }
-    console.log(body);
-
-    axios.post(
-      '/api/payment/create_payment_url',
-      body
-    )
-      .then((data) => {
-        // console.log(data);
-        window.open(data.data.vnpUrl, "_blank", 'noopener,noreferrer');
-      })
-      .catch(err => console.error(err));
+    catch (error) {
+      message.error(`Có lỗi xảy ra khi thanh toán Instructor membership. Chi tiết: ${error.message}`);
+      console.log('error: ', error);
+      // router.push(`/${error.response.data.data.shortUrl}`);
+    }
   }
 
   return (
     <Modal
       width={512}
       centered={true}
-      title='Chọn phương thức thanh toán'
+      title='Thanh toán'
       footer={null}
       open={modalPaymentOption.opened}
-      onCancel={() => setModalPaymentOption({ ...modalPaymentOption, opened: false, price: 0 })}
+      onCancel={() => setModalPaymentOption({ ...modalPaymentOption, opened: false, type: '' })}
     >
       <div
         style={{
@@ -71,7 +102,7 @@ const ModalPaymentOption = ({
           />
         </div> */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <p style={{ color: '#ff5349' }}><b>{price} vnđ</b></p>
+          <p style={{ color: '#ff5349' }}><b>{type === 'silver' ? '1.490.000' : type === 'gold' ? '2.980.000' : type === 'premium' ? '5.960.000' : ''} vnđ</b></p>
         </div>
         <div
           style={{

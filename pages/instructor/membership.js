@@ -1,50 +1,83 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import InstructorRoute from '../../components/routes/InstructorRoute';
 import ModalPaymentOption from '../../components/forms/ModalPaymentOption';
+import { Context } from '../../context';
 import styles from '../../styles/components/instructor/Membership.module.scss';
 
 const MembershipPage = () => {
+  // global context
+  const { state: { user } } = useContext(Context);
+
   // states
-  const [modalPaymentOption, setModalPaymentOption] = useState({ opened: false, price: 0 });
+  const [isAlreadyMembership, setAlreadyMembership] = useState(false);
+  const [modalPaymentOption, setModalPaymentOption] = useState({ opened: false, type: '' });
 
   // functions
+  const getMemberShipInfo = () => {
+    if (user) {
+      if (user?.instructor_information?.plan_start)
+        setAlreadyMembership(true);
+    }
+  }
+
   const onCardClick = async (type) => {
     setModalPaymentOption({
       ...modalPaymentOption,
       opened: true,
-      price: type === 'silver' ? 1490000 : type === 'gold' ? 2980000 : type === 'premium' ? 5960000 : 0
+      type
     });
   }
 
+  useEffect(() => {
+    getMemberShipInfo();
+  }, [user]);
+
   return (
     <InstructorRoute hideSidebar={false}>
-      <div
-        className={styles.container}
-      >
-        <h2
-          className={styles.h2}
-        >Thành viên của nextgoal</h2>
-        <div
-          className={`${styles.container_body} ${styles.d_flex_row}`}
-          style={{ gap: '64px', justifyContent: 'center' }}
-        >
-          <div style={{ marginTop: '128px' }}>
-            <PlanCard type='silver' onCardClick={() => onCardClick('silver')}/>
-          </div>
-          <div style={{ marginTop: '0px' }}>
-            <PlanCard type='premium' onCardClick={() => onCardClick('premium')}/>
-          </div>
-          <div style={{ marginTop: '128px' }}>
-            <PlanCard type='gold' onCardClick={() => onCardClick('gold')}/>
-          </div>
-        </div>
+      {
+        !isAlreadyMembership
+          ? (
+            <div
+              className={styles.container}
+            >
+              <h2
+                className={styles.h2}
+              >Thành viên Instructor của nextgoal</h2>
+              <div
+                className={`${styles.container_body} ${styles.d_flex_row}`}
+                style={{
+                  background: `linear-gradient(#ffd247 20%, #ffff 80%)`,
+                  marginTop: '32px',
+                  gap: '64px',
+                  justifyContent: 'center',
+                  borderRadius: '20px',
+                  border: '10px solid #ffd247'
+                }}
+              >
+                <div style={{ marginTop: '128px' }}>
+                  <PlanCard type='silver' onCardClick={() => onCardClick('silver')} />
+                </div>
+                <div style={{ marginTop: '0px' }}>
+                  <PlanCard type='premium' onCardClick={() => onCardClick('premium')} />
+                </div>
+                <div style={{ marginTop: '128px' }}>
+                  <PlanCard type='gold' onCardClick={() => onCardClick('gold')} />
+                </div>
+              </div>
 
-        <ModalPaymentOption
-          modalPaymentOption={modalPaymentOption}
-          setModalPaymentOption={setModalPaymentOption}
-        />
-      </div>
+              <ModalPaymentOption
+                modalPaymentOption={modalPaymentOption}
+                setModalPaymentOption={setModalPaymentOption}
+              />
+            </div>
+          )
+          : (
+            <div>
+              <h2>Bạn đã là thành viên membership: {user?.instructor_information?.plan_type?.toUpperCase()}</h2>
+            </div>
+          )
+      }
     </InstructorRoute>
   )
 }

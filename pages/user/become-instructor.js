@@ -38,6 +38,7 @@ function BecomeInstructor() {
         return;
       }
 
+      // save general information
       const { data } = await axios.post(
         '/api/instructor/become-instructor-2',
         { value: { ...value, userId: user._id } }
@@ -51,6 +52,11 @@ function BecomeInstructor() {
         });
         window.localStorage.setItem('user', JSON.stringify(data.data));
       }
+
+      // save banking information
+      const response = await axios.post('/api/instructor/become-instructor');
+      window.location.href = response.data.data.account_link;
+
       await setDelay(5000);
       setLoading(false);
     }
@@ -59,19 +65,6 @@ function BecomeInstructor() {
       setLoading(false);
     }
   }
-
-  // const becomeInstructorHandler = async () => {
-  //   console.log('become instructor');
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.post('/api/instructor/become-instructor');
-  //     window.location.href = response.data.data.account_link;
-  //   }
-  //   catch (error) {
-  //     console.log('error', error);
-  //     setLoading(false);
-  //   }
-  // }
 
   useEffect(() => {
     if (!user)

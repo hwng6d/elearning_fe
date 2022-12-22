@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, List, Popover, Space } from "antd";
 import Image from "next/image";
 import dayjs from "dayjs";
+import {secondsToHms} from '../../utils/secondsToHms';
 import styles from '../../styles/components/cards/CourseCard.module.scss';
 
 const CourseCard = ({
@@ -45,7 +46,7 @@ const CourseCard = ({
             <p
               className={styles.popover_container_courseduration}
             >
-              Thời lượng: <b>{totalDuration}s</b>
+              Thời lượng: <b>{secondsToHms(totalDuration)}</b>
             </p>
           </Space>
           <p

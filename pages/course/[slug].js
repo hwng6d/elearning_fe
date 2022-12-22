@@ -36,6 +36,7 @@ import ModalShowReviews from "../../components/forms/ModalShowReviews";
 import { setDelay } from "../../utils/setDelay";
 import { loadStripe } from "@stripe/stripe-js";
 import dayjs from "dayjs";
+import {secondsToHms} from '../../utils/secondsToHms';
 import styles from '../../styles/course/[slug].module.scss';
 
 
@@ -168,7 +169,7 @@ const SingleCourseView = ({ course }) => {
               </Tooltip>
               <Space size={8} direction='horizontal' split='|' style={{ lineHeight: '48px' }}>
                 <p><b>{totalLessons} bài học</b></p>
-                <p><b>{totalDuration}s</b></p>
+                <p><b>{secondsToHms(totalDuration)}</b></p>
               </Space>
             </div>
           }
@@ -219,7 +220,7 @@ const SingleCourseView = ({ course }) => {
                             </div>
                           )
                         }
-                        <p>{lesson.duration}s</p>
+                        <p>{secondsToHms(lesson.duration)}</p>
                       </div>
                     </div>
                   </Menu.Item>
@@ -431,7 +432,7 @@ const SingleCourseView = ({ course }) => {
                   className={styles.courseinfocard_item}
                 >
                   <PlaySquareOutlined style={{ fontSize: '28px', color: '#2c2b2b' }} />
-                  {totalDuration} s
+                  {secondsToHms(totalDuration)}
                 </div>
                 <div
                   className={styles.courseinfocard_item}

@@ -1,11 +1,11 @@
 import { Space } from 'antd';
 import Image from 'next/image';
-import UserRoute from '../../components/routes/UserRoute';
+import InstructorRoute from '../../components/routes/InstructorRoute';
 
-const StringCancelPage = () => {
+const VNPayCancelPage = () => {
 
   return (
-    <UserRoute hideSidebar={true}>
+    <InstructorRoute hideSidebar={true}>
       <Space
         direction='vertical'
         size='small'
@@ -31,10 +31,10 @@ const StringCancelPage = () => {
 
         <h1
           style={{ fontSize: '28px' }}
-        >Thanh toán khóa học không thành công, hãy thử lại</h1>
+        >Thanh toán Instructor Membership không thành công, hãy thử lại</h1>
       </Space>
-    </UserRoute>
+    </InstructorRoute>
   )
 }
 
-export default StringCancelPage;
+export default VNPayCancelPage;
