@@ -1,9 +1,10 @@
 import { Button, Input, Modal, Space, InputNumber, Select, Form, Switch, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from '../../styles/components/forms/ModalEditCourse.module.scss';
 import InputList from '../inputs/inputlist/InputList';
 import { useRouter } from 'next/router';
+import { ERRORS_NAME } from '../../utils/constant';
+import styles from '../../styles/components/forms/ModalEditCourse.module.scss';
 
 const ModalEditCourse = ({
   course,
@@ -19,14 +20,15 @@ const ModalEditCourse = ({
   const [courseBeingEdited, setCourseBeingEdited] = useState({
     name: '',
     category: '',
-    summary: '',
     tags: [],
     paid: '',
     price: '',
-    goal: [],
-    requirements: [],
-    languages: [],
+    // description: '',
     published: false,
+    // summary: '',
+    requirements: [],
+    goal: [],
+    languages: [],
   });
   const [categoryOptions, setCategoryOptions] = useState([]);
 
@@ -51,7 +53,12 @@ const ModalEditCourse = ({
       message.success(`Cập nhật khóa học thành công`);
     }
     catch (error) {
-      message.error(`Xảy ra lỗi cập nhật khóa học, vui lòng thử lại\nChi tiết: ${error.message}`)
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
+      else
+        message.error(`Xảy ra lỗi cập nhật khóa học, vui lòng thử lại\nChi tiết: ${error.message}`);
     }
   }
 

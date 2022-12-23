@@ -65,36 +65,31 @@ const EditingCoursesPage = () => {
               )
               : (
                 <div
-                  className={styles.container_wrapper}
-                  style={{ width: '1408px' }}
+                  className={styles.container_wrapper_courses}
                 >
-                  <div
-                    className={styles.container_wrapper_courses}
-                  >
-                    {
-                      !courses?.length
-                        ? (
-                          <p>Không có dữ liệu</p>
-                        )
-                        : (
-                          courses.map(course => {
-                            return (
-                              (
-                                <Link
-                                  key={course._id}
-                                  href={`/instructor/course/view/${course.slug}`}
-                                >
-                                  <CourseCard
-                                    course={course}
-                                    disable={true}
-                                  />
-                                </Link>
-                              )
-                            );
-                          })
-                        )
-                    }
-                  </div>
+                  {
+                    !courses?.length
+                      ? (
+                        <p>Không có dữ liệu</p>
+                      )
+                      : (
+                        courses.map(course => {
+                          return (
+                            (
+                              <Link
+                                key={course._id}
+                                href={`/instructor/course/view/${course.slug}`}
+                              >
+                                <CourseCard
+                                  course={course}
+                                  disable={true}
+                                />
+                              </Link>
+                            )
+                          );
+                        })
+                      )
+                  }
                 </div>
               )
           }

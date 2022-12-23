@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { Layout, Menu } from "antd";
 const { Content, Sider } = Layout;
 import { UserOutlined, PlusOutlined, MenuUnfoldOutlined, InsertRowBelowOutlined, InsertRowAboveOutlined, DingtalkOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { Context } from '../../context';
 import styles from '../../styles/components/nav/InstructorNav.module.scss';
+import { checkValidMembership } from '../../utils/checkValidMembership';
 
 const InstructorNav = ({
   hideSidebar,
@@ -12,7 +14,13 @@ const InstructorNav = ({
   setCollapsed,
   children
 }) => {
+  // global context
+  const { state: { user } } = useContext(Context);
+
+  // router
   const router = useRouter();
+
+  // states
   const [currSelected, setCurrSelected] = useState('/instructor');
   const [child, setChild] = useState(null);
 

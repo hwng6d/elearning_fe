@@ -30,14 +30,14 @@ const TopNav = () => {
   const menuItems = (
     <Menu
       items={[
-        displayGreeting(user && user.name),
-        (user && user.role && user.role.includes('Admin'))
+        displayGreeting(user?.name, user?.role),
+        (user?.role?.includes('Admin'))
         && {
           label: 'Truy cập trang Admin',
           icon: <AppstoreAddOutlined />,
           onClick: () => { router.push('/admin') }
         },
-        (user && user.role && user.role.includes('Instructor'))
+        (user?.role?.includes('Instructor'))
         && {
           label: 'Truy cập trang Instructor',
           icon: <AppstoreAddOutlined />,
@@ -58,9 +58,36 @@ const TopNav = () => {
   );
 
   // functions
-  function displayGreeting(name) {
+  function displayGreeting(name, role) {
+    const plan_type = user?.instructor_information?.plan_type;
+    const style = {
+      padding: '2px 8px',
+      borderRadius: '10px',
+      color: 'white',
+      fontWeight: 600,
+      fontSize: '12px',
+      backgroundImage: `linear-gradient(
+        to left,
+        #${plan_type === 'premium' ? 'ffa190' : plan_type === 'silver' ? 'c9d1da' : plan_type === 'gold' ? 'f3c783' : 'ffff'},
+        #f3633a)`,
+    }
+
     return {
-      label: <h4>Xin chào {name}!</h4>,
+      label: (
+        <div className={styles.d_flex_row}>
+          <h4>Xin chào {name}!</h4>
+          {
+            role?.includes('Instructor')
+              && (
+                <div
+                  style={style}
+                >
+                  {user?.instructor_information?.plan_type?.toUpperCase()}
+                </div>
+              )
+          }
+        </div>
+      ),
       selectable: 'string'
     }
   }

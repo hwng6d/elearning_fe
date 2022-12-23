@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useRouter } from "next/router";
 import InstructorNav from '../nav/InstructorNav';
 
-const InstructorRoute = ({ children, hideSidebar = true, ok }) => {
+const InstructorRoute = ({ children, hideSidebar = true }) => {
   // router
   const router = useRouter();
 

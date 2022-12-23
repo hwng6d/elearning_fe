@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useContext } from 'react';
 import { Context } from '../../context';
 import { Button, Modal, Input, List, message, Space } from 'antd';
 import { useRouter } from 'next/router';
+import { ERRORS_NAME } from '../../utils/constant';
 import axios from 'axios';
 
 const ModalAddQuiz = ({
@@ -74,6 +75,8 @@ const ModalAddQuiz = ({
         );
 
         getCourseBySlug();
+        setAnswer({ ...answer, '1': '', '2': '', '3': '', '4': '' })
+        setCorrectAnswer({ ...correctAnswer, '1': false, '2': false, '3': false, '4': false, value: '' });
         setQuiz({...quiz, question: '', answer: [], correctAnswer: []})
         setModalAddQuiz({...modalAddQuiz, opened: false, lessonId: ''});
         message.success('Thêm quiz thành công');
@@ -86,17 +89,20 @@ const ModalAddQuiz = ({
         )
 
         getCourseBySlug();
+        setAnswer({ ...answer, '1': '', '2': '', '3': '', '4': '' })
+        setCorrectAnswer({ ...correctAnswer, '1': false, '2': false, '3': false, '4': false, value: '' });
         setQuiz({...quiz, question: '', answer: [], correctAnswer: []})
         setModalEditQuiz({...modalAddQuiz, opened: false, lessonId: '', quizId: ''});
         message.success('Chỉnh sửa quiz thành công');
       }
     }
     catch (error) {
-      console.log('error: ', error);
-      if (error?.response?.data?.message === `Current lesson has already had quiz, try updating or deleting instead`)
-        message.error('Bài học hiện tại đã có quiz, hãy thử cập nhật hoặc xóa')
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
       else
-        message.error(`Có lỗi xảy ra khi ${!isEdit ? 'Thêm' : 'Chỉnh sửa'} quiz. Chi tiết: ${error.message}`);
+        message.error(`Xảy ra lỗi khi ${isEdit ? 'sửa nội dung' : 'thêm'} quiz, vui lòng thử lại.\nChi tiết: ${error}`);
     }
   }
 
