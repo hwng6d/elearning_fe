@@ -57,17 +57,13 @@ const RejectedCoursesPage = () => {
           className={styles.container_wrapper}
         >
           {
-          loading
-            ? (
-              <div style={{ textAlign: 'center', marginTop: '32px', width: '100%' }}>
-                <Spin spinning={true} size='large' />
-              </div>
-            )
-            : (
-              <div
-                className={styles.container_wrapper}
-                style={{ width: '1408px' }}
-              >
+            loading
+              ? (
+                <div style={{ textAlign: 'center', marginTop: '32px', width: '100%' }}>
+                  <Spin spinning={true} size='large' />
+                </div>
+              )
+              : (
                 <div
                   className={styles.container_wrapper_courses}
                 >
@@ -97,22 +93,21 @@ const RejectedCoursesPage = () => {
                       )
                   }
                 </div>
-              </div>
-            )
-        }
+              )
+          }
         </div>
         <div
-        className={styles.container_pagination}
-      >
-        <Pagination
-          current={currentPage}
-          pageSize={12}
-          total={total}
-          showSizeChanger={false}
-          showTotal={(total) => `Tổng cộng: ${total}.`}
-          onChange={(page, pagesize) => setCurrentPage(page)}
-        />
-      </div>
+          className={styles.container_pagination}
+        >
+          <Pagination
+            current={currentPage}
+            pageSize={12}
+            total={total}
+            showSizeChanger={false}
+            showTotal={(total) => `Tổng cộng: ${total}.`}
+            onChange={(page, pagesize) => setCurrentPage(page)}
+          />
+        </div>
       </div>
     </InstructorRoute>
   )

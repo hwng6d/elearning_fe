@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { Context } from '../../context/index';
 import axios from 'axios';
+import { ERRORS_NAME } from '../../utils/constant';
 import styles from '../../styles/components/forms/ModalAddSection.module.scss';
 
 const ModalAddSection = ({
@@ -48,6 +49,7 @@ const ModalAddSection = ({
 
         setNewSection({ ...newSection, index: 1, name: '' });
         setModalAddSection({...modalAddSection, opened: false});
+        message.success('Thêm chương thành công');
       } else {
         await axios.post(
           `/api/course/ins/${course._id}/section/${sectionId}/update`,
@@ -63,13 +65,21 @@ const ModalAddSection = ({
         setNewSection({ ...newSection, index: 1, name: '' });
         setOriginIndexAtEdit(-1);
         setModalAddSection({...modalAddSection, opened: false});
+        message.success('Cập nhật chương thành công');
       }
     }
     catch (error) {
-      if (error?.response?.data?.message === 'Exist current section index in this course')
-        message.error('Số thứ tự chương hiện tại đã tồn tại trong khóa học này, vui lòng chọn lại.')
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
       else
-        message.error(`Xảy ra lỗi khi ${isEdit ? 'sửa nội dung' : 'thêm'} chương, vui lòng thử lại.\nChi tiết: ${error}`)
+        message.error(`Xảy ra lỗi khi ${isEdit ? 'sửa nội dung' : 'thêm'} chương, vui lòng thử lại.\nChi tiết: ${error}`);
+
+      // if (error?.response?.data?.message === 'Exist current section index in this course')
+      //   message.error('Số thứ tự chương hiện tại đã tồn tại trong khóa học này, vui lòng chọn lại.')
+      // else
+      //   message.error(`Xảy ra lỗi khi ${isEdit ? 'sửa nội dung' : 'thêm'} chương, vui lòng thử lại.\nChi tiết: ${error}`)
     }
   }
 

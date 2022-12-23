@@ -51,9 +51,12 @@ const SignIn = () => {
       setLoading(false);
     }
     catch (error) {
-      const err_message = ERRORS_NAME.find(item => { if (error.response.data.message.includes(item.keyword)) return item });
-      message.error(err_message ? err_message.vietnamese : error.response.data.message);
-      setLoading(false);
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
+      else
+        message.error(`Xảy ra lỗi khi đăng ký, vui lòng thử lại\nChi tiết: ${error.message}`);
     }
   }
 

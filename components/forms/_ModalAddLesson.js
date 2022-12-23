@@ -7,6 +7,7 @@ import Plyr from 'plyr-react';
 import loadVideo from '../../utils/loadVideo';
 import axios from 'axios';
 import { findMax } from '../../utils/findMax';
+import { ERRORS_NAME } from '../../utils/constant';
 import styles from '../../styles/components/forms/ModalAddLesson.module.scss';
 
 const _ModalAddLesson = ({
@@ -231,10 +232,12 @@ const _ModalAddLesson = ({
       }
     }
     catch (error) {
-      if (error?.response?.data?.message === `Index is taken, please choose another one`)
-        message.error('Số thứ tự đã tồn tại trong chương này, vui lòng thử lại');
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
       else
-        message.error(`Xảy ra lỗi khi thêm bài học, vui lòng thử lại.\nChi tiết: ${error.message}`)
+        message.error(`Xảy ra lỗi khi ${isEdit ? 'sửa nội dung' : 'thêm'} bài học, vui lòng thử lại.\nChi tiết: ${error}`);
     }
   }
 

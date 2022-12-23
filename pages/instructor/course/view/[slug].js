@@ -473,13 +473,17 @@ function CourseView() {
           />
         </Modal>
 
-        <ModalEditCourse
-          course={course}
-          setCourse={setCourse}
-          getCourseBySlug={getCourseBySlug}
-          modalEditCourse={modalEditCourse}
-          setModalEditCourse={setModalEditCourse}
-        />
+        {
+          modalEditCourse.opened && (
+            <ModalEditCourse
+              course={course}
+              setCourse={setCourse}
+              getCourseBySlug={getCourseBySlug}
+              modalEditCourse={modalEditCourse}
+              setModalEditCourse={setModalEditCourse}
+            />
+          )
+        }
 
         <ModalAddSection
           course={course}

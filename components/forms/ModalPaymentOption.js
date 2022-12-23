@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { Context } from "../../context";
 import { useState, useEffect, useContext } from "react";
+import { ERRORS_NAME } from "../../utils/constant";
 
 const ModalPaymentOption = ({
   modalPaymentOption,
@@ -37,7 +38,7 @@ const ModalPaymentOption = ({
       // checkout
       const body = {
         typeOfMembership: type,
-        amount: type === 'premium' ? 3490000 : type === 'gold' ? 2490000 : type === 'silver' ? 1490000 : 0,
+        amount: type === 'premium' ? 3490000 : type === 'gold' ? 2490000 : type === 'silver' ? 990000 : 0,
         bankCode: 'NCB',
         orderDescription: `Membership nextgoal: ${type === 'premium' ? 3490000 : type === 'gold' ? 2490000 : type === 'silver' ? 1490000 : 0}`,
         language: 'vn',
@@ -50,12 +51,15 @@ const ModalPaymentOption = ({
 
       // console.log('data: ', data);
 
-      // window.open(data.vnpUrl, "_blank", 'noopener,noreferrer');
-      window.open(data.vnpUrl);
+      window.open(data.vnpUrl, "_blank", 'noopener,noreferrer');
     }
     catch (error) {
-      message.error(`Có lỗi xảy ra khi thanh toán Instructor membership. Chi tiết: ${error.message}`);
-      console.log('error: ', error);
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
+      else
+        message.error(`Xảy ra lỗi khi đăng ký, vui lòng thử lại\nChi tiết: ${error.message}`);
       // router.push(`/${error.response.data.data.shortUrl}`);
     }
   }
@@ -79,30 +83,10 @@ const ModalPaymentOption = ({
           padding: '40px 24px'
         }}
       >
-        {/* <div
-          style={{
-            width: '128px',
-            height: '128px',
-            cursor: 'pointer',
-            border: '1px solid gray',
-            borderRadius: '10px',
-            padding: '24px',
-          }}
-        >
-          <Image
-            src='/paypal.png'
-            width={316}
-            height={312}
-            alt='paypal_payment'
-            style={{
-              objectFit: 'cover',
-              width: '-webkit-fill-available',
-              height: '-webkit-fill-available'
-            }}
-          />
-        </div> */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <p style={{ color: '#ff5349' }}><b>{type === 'silver' ? '1.490.000' : type === 'gold' ? '2.980.000' : type === 'premium' ? '5.960.000' : ''} vnđ</b></p>
+          <p style={{ color: '#ff5349' }}>
+            <b>{type === 'silver' ? '990.000' : type === 'gold' ? '2.490.000' : type === 'premium' ? '3.490.000' : ''} vnđ</b>
+          </p>
         </div>
         <div
           style={{
