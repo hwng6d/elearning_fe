@@ -187,6 +187,9 @@ const TableSection = ({
         dataSource={quizTableData}
         pagination={false}
         rowClassName='quiz_row'
+        expandable={{
+          defaultExpandAllRows: true
+        }}
       />
     )
   }
@@ -296,7 +299,8 @@ const TableSection = ({
         pagination={false}
         expandable={{
           expandedRowRender: quizTableRender,
-          rowExpandable: (record) => record.numOfQuizzes > 0
+          rowExpandable: (record) => record.numOfQuizzes > 0,
+          defaultExpandAllRows: true
         }}
         rowClassName='lesson_row'
       />
@@ -380,7 +384,8 @@ const TableSection = ({
         dataSource={dataSource}
         expandable={{
           expandedRowRender: lessonTableRender,
-          rowExpandable: (record) => record.numOfLessons > 0
+          rowExpandable: (record) => record.numOfLessons > 0,
+          defaultExpandAllRows: true
         }}
         pagination={false}
         rowClassName='section_row'

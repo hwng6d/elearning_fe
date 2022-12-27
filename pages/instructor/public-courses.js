@@ -5,6 +5,7 @@ import Link from "next/link";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import CourseCard from '../../components/cards/CourseCard';
 import { Spin, Pagination } from "antd";
+import { SearchBox } from '@fluentui/react';
 import styles from '../../styles/components/instructor/PublicCourses.module.scss';
 import { setDelay } from "../../utils/setDelay";
 
@@ -14,8 +15,13 @@ const PublicCoursesPage = () => {
   const [courses, setCourses] = useState([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState({ keyword: '' });
 
   // functions
+  const onSearchEnter = async () => {
+    getPublicCourses();
+  }
+
   const getPublicCourses = async () => {
     try {
       setLoading(true);
@@ -24,6 +30,7 @@ const PublicCoursesPage = () => {
         status: 'public',
         page: 1,
         limit: 12,
+        name: search.keyword,
       }).toString();
 
       const { data } = await axios.get(
@@ -51,9 +58,18 @@ const PublicCoursesPage = () => {
       <div
         className={styles.container}
       >
-        <h1
-          className={styles.h1}
-        >Các khóa học đang được xuất bản</h1>
+        <div className={styles.d_flex_row} style={{ gap: '32px' }}>
+          <h1
+            className={styles.h1}
+          >Các khóa học đang được xuất bản</h1>
+          <SearchBox
+            placeholder='Nhập từ khóa...'
+            value={search.keyword}
+            onChange={(_, value) => setSearch({ ...search, keyword: value })}
+            onSearch={onSearchEnter}
+            style={{ width: '512px' }}
+          />
+        </div>
         <div
           className={styles.container_wrapper}
         >

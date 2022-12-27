@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { Popover, Space, Tooltip, Avatar, message, Modal, Upload, Button, List, Popconfirm, BackTop } from 'antd';
-import { CaretRightOutlined, EditOutlined, HighlightOutlined, PlusCircleOutlined, RightSquareOutlined, SwapOutlined, UploadOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, EditOutlined, HighlightOutlined, PlusCircleOutlined, RightSquareOutlined, SwapOutlined, TableOutlined, UploadOutlined } from '@ant-design/icons';
 import InstructorRoute from '../../../../components/routes/InstructorRoute';
 import ReactMarkdown from 'react-markdown';
 import { Context } from '../../../../context';
@@ -13,6 +13,8 @@ import ModalAddSection from '../../../../components/forms/ModalAddSection';
 import TableSection from '../../../../components/tables/TableSection';
 import { getCourseStatus } from '../../../../utils/getCourseStatus';
 import styles from '../../../../styles/components/instructor/course/view/[slug].module.scss';
+import { DirectionalHint, TooltipDelay, TooltipHost, Breadcrumb, Separator } from '@fluentui/react';
+import ModalViewCourseChanges from '../../../../components/forms/ModalViewCourseChanges';
 
 function CourseView() {
   // global context
@@ -37,6 +39,7 @@ function CourseView() {
   const [modalShowRejectReasonOpened, setModalShowRejectReasonOpened] = useState(false);
   const [modalEditCourse, setModalEditCourse] = useState({ opened: false, which: '' });
   const [modalAddSection, setModalAddSection] = useState({ opened: false, sectionId: '' });
+  const [modalViewCourseChangesOpened, setModalViewCourseChangesOpened] = useState(false);
   // #endregion
 
   // #endregion
@@ -89,8 +92,8 @@ function CourseView() {
       const base64 = await getBase64(previewImgObj.previewImgs[0].originFileObj);
 
       // delete current image if have
-      course.image &&
-        (await axios.post('/api/course/ins/remove-image', { image: course.image }));
+      // course.image &&
+      //   (await axios.post('/api/course/ins/remove-image', { image: course.image }));
 
       // upload to s3
       const { data: uploadImgReponse } = await axios.post('/api/course/ins/upload-image', { image: base64 });
@@ -133,6 +136,18 @@ function CourseView() {
       <div
         className={styles.container}
       >
+        <div
+          className={styles.container_breadcrumb}
+        >
+          <Breadcrumb
+            items={[
+              { text: 'Home', key: '/', onClick: () => router.push('/') },
+              { text: 'Instructor', key: '/instructor' },
+              { text: 'Tất cả khóa học', key: '/instructor' },
+              { text: `${course?.name}`, key: `/instructor/course/view/${course?.slug}` },
+            ]}
+          />
+        </div>
         <div
           className={styles.container_overview}
         >
@@ -247,6 +262,7 @@ function CourseView() {
             >
               <div
                 className={styles.d_flex_row}
+                style={{ gap: '24px' }}
               >
                 <h2 className={styles.h2}>Tình trạng khóa học</h2>
                 <div
@@ -258,6 +274,29 @@ function CourseView() {
                     backgroundImage: `linear-gradient(to right, ${getCourseStatus(course)?.color}, #66c2a5)`
                   }}
                 >{`${getCourseStatus(course)?.result}`}</div>
+                {
+                  ((course?.status === 'unpublic' || course?.status === 'unaccepted') && course?.published) && (
+                    <TooltipHost
+                      delay={TooltipDelay.zero}
+                      directionalHint={DirectionalHint.topCenter}
+                      tooltipProps={{
+                        onRenderContent: () => (
+                          <div>
+                            <p style={{ fontSize: '14px' }}>Xem các thay đổi so với lần được public gần nhất</p>
+                          </div>
+                        )
+                      }}
+                    >
+                      <div
+                        onClick={() => setModalViewCourseChangesOpened(true)}
+                        style={{ border: '2px solid #8a2be2', padding: '4px 12px', cursor: 'pointer' }}
+                      >
+                        <p
+                          style={{ color: '#8a2be2' }}><b>Xem các thay đổi</b></p>
+                      </div>
+                    </TooltipHost>
+                  )
+                }
                 {
                   course?.status === 'rejected' && (
                     <p
@@ -513,6 +552,16 @@ function CourseView() {
             })
           }
         </Modal>
+
+        {
+          modalViewCourseChangesOpened && (
+            <ModalViewCourseChanges
+              modalViewCourseChangesOpened={modalViewCourseChangesOpened}
+              setModalViewCourseChangesOpened={setModalViewCourseChangesOpened}
+              course={course}
+            />
+          )
+        }
       </div>
     </InstructorRoute>
   )
