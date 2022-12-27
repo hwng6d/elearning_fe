@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { SyncOutlined } from '@ant-design/icons';
-import { Input, Button } from 'antd';
+import { Input, Button, Space, message } from 'antd';
+import { Context } from '../context';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from '../styles/SignIn.module.scss';
 import { ERRORS_NAME } from '../utils/constant';
 
-const SignUp = () => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const { state: { user }, dispatch } = useContext(Context);
+
+  useEffect(() => {
+    if (user)
+      router.push('/');
+  }, [user])
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
@@ -21,19 +32,31 @@ const SignUp = () => {
         password
       });
 
-      await axios.post(
+      const { data } = await axios.post(
         // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         `/api/auth/login`,
         { email, password }
       );
 
-      toast.success('Đã đăng nhập !');
+      dispatch({
+        type: 'LOGIN',
+        payload: data.data
+      });
+      
+      window.localStorage.setItem('user', JSON.stringify(data.data));
+      
+      router.push('/user');
+
+      message.success('Đã đăng nhập !');
       setLoading(false);
     }
     catch (error) {
-      const err_message = ERRORS_NAME.find(item => { if (error.response.data.message.includes(item.keyword)) return item });
-      toast.error(err_message ? err_message.vietnamese : error.response.data.message)
-      setLoading(false);
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
+      else
+        message.error(`Xảy ra lỗi khi đăng ký, vui lòng thử lại\nChi tiết: ${error.message}`);
     }
   }
 
@@ -44,7 +67,6 @@ const SignUp = () => {
         <form
           id='signup_form'
           className={styles.form}
-          onSubmit={submitFormHandler}
         >
           <div className={styles.form_email}>
             <label className={styles.form_label}>Email</label>
@@ -72,20 +94,43 @@ const SignUp = () => {
           </div>
 
           <div
-            style={{ display: 'flex', justifyContent: 'flex-end' }}
-
+            style={{ display: 'inline-block', width: 'inherit', marginTop: '10px' }}
           >
             <Button
+              type='primary'
               onClick={(e) => submitFormHandler(e)}
               disabled={!email || !password || loading}
+              style={{ width: 'inherit', fontWeight: '600' }}
             >
               Đăng nhập {loading && <SyncOutlined spin={true} />}
             </Button>
+            <div
+              className='container_bottom'
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}
+            >
+              <div
+                className='container_bottom_left'
+              >
+                <Link href='forgot-password' style={{ color: '#ff3200' }}>
+                  Quên mật khẩu
+                </Link>
+              </div>
+              <div
+                className='container_bottom_right'
+                style={{ display: 'flex', justifyContent: 'center' }}>
+                <span
+                  style={{ width: 'inherit' }}
+                >
+                  Chưa có tải khoản ? <Link href='/signup'>Đăng ký ngay</Link>
+                </span>
+              </div>
+            </div>
+
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default SignUp
+export default SignIn

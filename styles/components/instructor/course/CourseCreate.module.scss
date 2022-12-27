@@ -1,0 +1,64 @@
+.container {
+  margin: 0px;
+  padding: 0px 12px;
+  box-sizing: border-box;
+  text-align: center;
+
+  &_content {
+    margin: 12px 32px;
+
+    &_inputs {
+      margin-top: 32px;
+      padding: 0px 384px;
+
+      &_intro {
+
+      }
+
+      &_coursename {
+
+      }
+
+      &_coursesummary {
+
+      }
+
+      &_coursegoal {
+
+      }
+
+      &_coursetags {
+
+      }
+    }
+
+    &_buttonsofstep {
+      margin-top: 32px;
+    }
+
+    &_steps {
+      padding: 0px 384px;
+    }
+  }
+}
+
+.h1 {
+  padding: 12px 6px;
+  color: #5c6166;
+}
+
+.p {
+  color: #5c6166;
+}
+
+.buttonstep_icon {
+  color: #a5a6a8;
+  border: 2px solid #0000;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.4s;
+
+  &:hover {
+    color: #ff7444;
+  }
+}

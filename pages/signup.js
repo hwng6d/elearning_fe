@@ -1,27 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { SyncOutlined } from '@ant-design/icons';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
+import { Context } from '../context';
+import Link from 'next/link';
 import styles from '../styles/SignUp.module.scss';
 import { ERRORS_NAME } from '../utils/constant';
 
 const SignUp = () => {
+  // global context
+  const { state: { user }, dispatch } = useContext(Context);
+  
+  // router
+  const router = useRouter();
+
+  // states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // functions
   const submitFormHandler = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      console.table({
-        name,
-        email,
-        password
-      });
 
       await axios.post(
         // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -29,16 +34,26 @@ const SignUp = () => {
         { name, email, password }
       );
 
-      toast.success('Đăng ký thành công !');
+      message.success('Đăng ký thành công !');
+
+      router.push(`/signin`)
+
       setLoading(false);
     }
     catch (error) {
-      console.log(error);
-      const err_message = ERRORS_NAME.find(item => { if (error.response.data.message.includes(item.keyword)) return item });
-      toast.error(err_message ? err_message.vietnamese : error.response.data.message)
-      setLoading(false);
+      const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      
+      if (err_message)
+        message.error(err_message.vietnamese);
+      else
+        message.error(`Xảy ra lỗi khi đăng ký, vui lòng thử lại\nChi tiết: ${error.message}`);
     }
   }
+
+  useEffect(() => {
+    if (user)
+      router.push('/')
+  }, [user])
 
   return (
     <div className={styles.container}>
@@ -48,8 +63,9 @@ const SignUp = () => {
           id='signup_form'
           className={styles.form}
           onSubmit={submitFormHandler}
-          style={{ width: 'fit-content' }}
+          style={{ width: '420px', marginTop: '16px' }}
         >
+          <label>Họ tên</label>
           <Input
             className={styles.input}
             allowClear={true}
@@ -58,6 +74,7 @@ const SignUp = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          <label>Email</label>
           <Input
             className={styles.input}
             allowClear={true}
@@ -66,29 +83,39 @@ const SignUp = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <label>Mật khẩu</label>
           <Input
             className={styles.input}
             allowClear={true}
             id='password'
             type='password'
             placeholder='Nhập mật khẩu'
-            alue={password}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <div
-            style={{ display: 'flex', justifyContent: 'flex-end' }}
+            style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
           >
-            <Button
-              onClick={(e) => submitFormHandler(e)}
-              disabled={!email || !name || !password || loading}
+            <div
+              style={{ gap: '10px', display: 'flex', alignItems: 'center' }}
+              className='container_right'
             >
-              Đăng ký {loading && <SyncOutlined spin={true} />}
-            </Button>
+              <span>
+                Đã có tài khoản ? <Link href='/signin'>Đăng nhập</Link>
+              </span>
+              <Button
+                style={{ width: '92px' }}
+                onClick={(e) => submitFormHandler(e)}
+                disabled={!email || !name || !password || loading}
+              >
+                Đăng ký {loading && <SyncOutlined spin={true} />}
+              </Button>
+            </div>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default SignUp

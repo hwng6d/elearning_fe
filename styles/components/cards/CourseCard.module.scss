@@ -1,0 +1,91 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.container {
+  cursor: pointer;
+
+  &_header {
+    border-bottom: 1px solid #d9d9d9;
+    box-sizing: border-box;
+  }
+
+  &_body {
+    padding: 12px 0px;
+    height: 136px;
+    display: grid;
+
+    &_coursename {
+      margin-bottom: 8px !important;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 20px;
+      height: 42px;
+      white-space: break-spaces;
+      overflow: hidden;
+      color: black;
+    }
+
+    &_courseinstructor {
+      margin-bottom: 8px !important;
+      display: block;
+      font-size: 14px;
+      line-height: 18px;
+      color: black;
+    }
+
+    &_courseprice {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 18px;
+      margin-bottom: 0px;
+      color: black;
+    }
+  }
+}
+
+.popover_container {
+  padding: 12px 20px;
+  height: fit-content;
+
+  &_coursename {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+    overflow: hidden;
+    color: #ff4a4a;
+  }
+
+  &_coursedate {
+    margin-top: 12px !important;
+    color: #1d5f54;
+    font-weight: 500;
+  }
+
+  &_courselessons, &_coursetags, &_coursecommitment, &_courseduration, &_coursecategory {
+    margin-top: 8px !important;
+  }
+
+  &_addtocart {
+    width: 100%;
+    border: none;
+    background-image: linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61));
+
+    &:hover {
+      transition: 0.5s;
+      background-image: linear-gradient(to left, rgb(255, 105, 105), rgb(255, 155, 61));
+    }
+  }
+}

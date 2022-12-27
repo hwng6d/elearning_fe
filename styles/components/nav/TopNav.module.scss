@@ -1,0 +1,129 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+
+.container {
+  box-sizing: border-box;
+  min-height: 72px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: space-between;
+  border-top: 12px solid black;
+  border-image: linear-gradient(to right, rgb(255, 74, 74), rgb(255, 155, 61)) 1 stretch;
+  box-shadow: 10px 2px 3px rgb(220, 220, 220);
+  background-color: #ffff;
+
+  &_left {
+    display: flex;
+    min-height: 40px;
+    max-height: 64px;
+    margin: 4px 0px;
+    align-items: center;
+  }
+
+  // &_center {
+  //   display: flex;
+  //   width: 60%;
+  // }
+
+  &_right {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    align-content: center;
+
+    &_label {
+      margin: 4px 14px;
+      color: rgb(120, 120, 120);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #btn_signin, #btn_signup {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0px 6px;
+      border-radius: 5px;
+      border-width: 2px;
+      height: 36px;
+      padding: 0px 16px;
+    }
+
+    #btn_signin {
+      background-color: #ff8e3e;
+      color: white;
+      border-color: #ff8e3e;
+      border-color:  #ff8e3e;
+      box-shadow: 3px 3px #fb6e09;
+    }
+
+    #btn_signin:hover {
+      background-color: white;
+      color: #ff8f3e;
+      font-weight: 600;
+      border-width: 2px;
+    }
+
+    #btn_signup {
+      border-color: #ababab;
+      box-shadow: 3px 3px rgb(176, 176, 176);
+    }
+
+    #btn_signup:hover {
+      background-color: #39ddac;
+      color: white;
+      font-weight: 600;
+      border-width: 2px;
+    }
+
+    // #btn_signout {
+    //   display: flex;
+    //   margin: 8px 4px 4px 16px;
+    //   padding: 8px;
+    //   justify-content: center;
+    //   align-items: center;
+    //   align-content: center;
+    //   cursor: pointer;
+    //   border-radius: 50%;
+    //   border: 2px solid rgb(138, 138, 138);
+    // }
+    // #btn_signout:hover {
+    //   background-color: rgb(255, 217, 221);
+    //   transition: background 200ms ease-in, color 200ms ease-in;
+    // }
+  }
+}
+
+.anchor {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.popover {
+
+  &_category {
+    width: 396px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(184px, 0px));
+    justify-content: center;
+    column-gap: 16px;
+    row-gap: 4px;
+  }
+}

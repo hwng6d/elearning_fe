@@ -10,19 +10,30 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@fluentui/react": "^8.103.9",
+    "@next/font": "^13.0.5",
+    "@nivo/core": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
+    "@stripe/stripe-js": "^1.42.0",
     "antd": "^4.23.0",
     "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.5",
     "express": "^4.18.1",
     "http-proxy-middleware": "^2.0.6",
-    "next": "12.2.5",
+    "lodash": "^4.17.21",
+    "next": "13.0.5",
+    "plyr-react": "^5.1.0",
+    "rc-tween-one": "^3.0.6",
     "react": "18.2.0",
+    "react-checkbox-tree": "1.7.3",
     "react-dom": "18.2.0",
-    "react-toastify": "^9.0.8",
-    "sass": "^1.54.9"
+    "react-markdown": "^8.0.3",
+    "sass": "^1.56.1"
   },
   "devDependencies": {
     "eslint": "8.23.0",
-    "eslint-config-next": "12.2.5"
+    "eslint-config-next": "13.0.5"
   },
   "type": "module",
   "resolutions": {

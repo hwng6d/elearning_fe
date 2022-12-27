@@ -1,0 +1,64 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h2 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.container {
+  padding: 12px 24px;
+
+  &_overall {
+
+    &_cards {
+      margin-top: 20px;
+
+      &_item {
+        width: 312px;
+        padding: 32px 36px;
+        // background-image: linear-gradient(to right, rgb(255, 104, 104), rgb(255, 176, 101));
+        // border-radius: 12px;
+
+        &_icon {
+          width: 48px;
+          height: 48px;
+
+        }
+
+        &_text {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
+  &_statistic {
+    margin-top: 36px;
+
+    &_charts {
+      margin-top: 12px;
+    }
+  }
+
+  &_undone {
+    margin-top: 72px;
+
+    &_cards {
+      margin-top: 20px;
+    }
+  }
+}

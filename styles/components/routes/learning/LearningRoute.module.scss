@@ -1,0 +1,184 @@
+.h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.container {
+  margin-top: 1px;
+  flex-direction: row-reverse !important;
+
+  &_sider {
+    background-color: #f7f9fa;
+
+    &_header {
+      display: flex;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 16px 24px;
+      background-color: white;
+      align-items: center;
+      justify-content: space-between;
+
+    }
+
+    &_lessonlist {
+
+      &_itemsection{
+        margin-top: -1px;
+        font-size: 16px;
+        background-color: #f7f9fa;
+        border-top: 0.5px solid #d1d7dc;
+        border-bottom: 0.5px solid #d1d7dc;
+      }
+
+      &_itemlesson {
+        margin: 0px !important;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 12px 24px !important;
+        height: fit-content !important;
+        line-height: 32px !important;
+        background-color: rgba(255, 255, 255, 0.971);
+
+        &_wrapper {
+          display: flex;
+          gap: 12px;
+          align-items: flex-start;
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        &_infoquiz {
+          display: flex;
+          align-items: center;
+
+          &:hover {
+            font-weight: 700;
+          }
+        }
+      }
+    }
+  }
+
+  &_content {
+    background-color: white;
+
+    &_videosection {
+      display: flex;
+      justify-content: center;
+      max-height: 756px;
+
+      &_video {
+        background-color: #1c1d1f;
+        width: 1344px;
+      }
+
+      &_quiz {
+        padding: 24px;
+        background-color: #ffff;
+        width: 100%;
+
+        &_body {
+          font-size: 16px;
+
+          &_submit {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0px 24px;
+
+            .quiz_body_submit_button {
+              border: none;
+              background: linear-gradient(to left, rgb(255, 105, 105), rgb(255, 155, 61));
+              font-size: 15px;
+              height: fit-content;
+
+              &:hover {
+                font-weight: 600;
+                background: #ebc000;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &_bodysection {
+      padding: 12px 24px;
+
+      &_tabs {
+
+        &_review {
+          padding: 8px 24px;
+
+          &_overview {
+
+            .tabs_review_overview {
+              width: 100%;
+              margin-top: 12px;
+              padding: 0px 48px;
+              justify-content: flex-start !important;
+
+              &_average {
+                justify-content: center;
+                align-items: center;
+                gap: 16px;
+              }
+
+              &_progressbar {
+                width: 384px;
+              }
+            }
+          }
+
+          &_body {
+
+            .tabs_review_body {
+              margin-top: 12px;
+
+              &_addreview {
+                margin-top: 12px;
+                display: flex;
+                flex-direction: row;
+                width: 1024px;
+                justify-content: center;
+                height: 80px;
+
+                &_left {
+                  width: 80%;
+                }
+
+                &_right {
+                  width: 20%;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: flex-start;
+                  align-items: center;
+                  gap: 8px;
+
+                  &_button {
+                    width: 80%;
+                    background-image: linear-gradient(to left, #ff4a4a, #ff9a3d);
+                    border: none;
+                  }
+                }
+              }
+
+              &_search {
+                margin-top: 12px;
+              }
+
+              &_list {
+                margin-top: 8px;
+
+                &_item {
+                  align-items: flex-start;
+                }
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
+}

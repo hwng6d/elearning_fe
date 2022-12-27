@@ -1,17 +1,9 @@
 .container {
   margin: 0 auto;
-
-  .header1 {
-    text-align: center;
-    padding: 32px;
-    font-size: 32px;
-    color: white;
-    background-image: linear-gradient(to right, rgb(43, 0, 255) , rgb(55, 238, 107));
-  }
   
   .form {
     margin: 0 auto;
-    width: 284px;
+    width: 380px;
 
     &_label {
       font-size: 15px;
@@ -25,4 +17,12 @@
   .input {
     margin: 6px 0px;
   }
+}
+
+.header1 {
+  text-align: center;
+  padding: 52px;
+  font-size: 36px;
+  color: white;
+  background-image: linear-gradient(to right, rgb(43, 0, 255) , rgb(55, 238, 107));
 }

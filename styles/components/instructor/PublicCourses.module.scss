@@ -1,0 +1,56 @@
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h1 {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.container {
+  padding: 12px 36px;
+  margin: auto 0;
+
+  &_wrapper {
+    display: flex;
+    margin: 24px auto;
+
+    &_courses {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
+      gap: 52px;
+    }
+
+    &_card {
+      width: 288px;
+      height: 300px;
+      display: inline-block;
+
+      &_meta {
+        justify-content: space-between;
+      }
+    }
+  }
+
+  &_pagination {
+    margin-top: 24px;
+    width: 100%;
+    text-align: right;
+
+  }
+}

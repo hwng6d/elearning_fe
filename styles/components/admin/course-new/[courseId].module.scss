@@ -1,0 +1,209 @@
+.d_flex {
+  &_col, &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h2 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.h3 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.container {
+  padding: 12px 24px;
+
+  &_submitresult {
+    width: 100%;
+    margin: 12px 0px;
+
+    &_button {
+      display: flex;
+      flex-direction: row;
+      background-color: #dedede;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      transition: 0.5s;
+      cursor: pointer;
+
+      &_back {
+        padding: 12px 24px;
+        width: 5%;
+      }
+
+      &_left {
+        width: 50%;
+        padding: 12px 24px;
+        background-color: greenyellow;
+      }
+
+      &_right {
+        width: 45%;
+        padding: 12px 24px;
+        background-color: #ff5600;
+      }
+    }
+  }
+
+  &_overview {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    height: fit-content;
+
+    &_left {
+      width: 90%;
+      height: fit-content;
+    }
+
+    &_right {
+      display: flex;
+      justify-content: flex-end;
+      width: 10%;
+
+      .span {
+        margin: 0px 12px;
+      }
+    }
+  }
+
+  &_detail {
+    margin-top: 24px;
+
+    &_description,
+    &_lessons,
+    &_summary,
+    &_tags,
+    &_requirements,
+    &_goals,
+    &_languages {
+      margin-top: 20px;
+    }
+
+    &_summary {
+
+      &_detail {
+        margin: 8px 8px;
+        font-size: 16px;
+      }
+    }
+
+    &_description {
+
+      &_detail {
+        margin: 8px 8px;
+        border: 1px dashed grey;
+        padding: 12px 16px;
+      }
+    }
+
+    &_tags, &_requirements, &_goals, &_languages {
+
+      &_detail {
+        margin: 4px 8px;
+        font-size: 16px;
+        line-height: 30px;
+      }
+    }
+
+    &_lessons {
+
+      &_detail {
+        margin: 12px 8px;
+
+        &_item {
+          margin: 12px 0px;
+          padding: 4px 12px 4px 0px;
+
+          &_popup {
+
+            &_row {
+              padding: 4px 8px;
+
+              &:hover {
+                color: #ff8540;
+                cursor: pointer;
+                transition: 0.3s;
+              }
+            }
+          }
+
+          &:hover {
+            cursor: pointer;
+            background-color: lightgray;
+            transition: 0.4s;
+          }
+        }
+      }
+    }
+  }
+}
+
+.overview_detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &_left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 212px;
+    width: 377px;
+    text-align: left;
+    border: 1px solid darkgrey;
+  }
+
+  &_right {
+    margin: 0px 36px;
+    text-align: left;
+    width: 80%;
+  }
+}
+
+.btn {
+
+  &_edit {
+
+    &_small {
+      font-size: 16px;
+      color: red;
+      cursor: pointer;
+      padding: 8px;
+
+      &:hover {
+        border-radius: 8px;
+        background-color: bisque;
+        transition: 0.3s;
+      }
+    }
+
+    &_middle {
+      font-size: 16px;
+      color: red;
+      cursor: pointer;
+      padding: 12px;
+
+      &:hover {
+        border-radius: 8px;
+        background-color: bisque;
+        transition: 0.3s;
+      }
+    }
+  }
+}

@@ -1,0 +1,86 @@
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.container {
+
+  &_coursename {
+    display: block;
+    height: fit-content;
+  }
+}
+
+.wrapper {
+  // margin-top: 4px;
+  // align-items: flex-start;
+  // height: 100%;
+  // border-right: 2px solid #989898;
+  // padding: 2px 0px 8px 12px;
+
+
+  // &:hover {
+  //   background-color: #e4e6e8;
+  //   border-radius: 12px;
+  //   transition: 0.3s;
+  // }
+
+  &_same,
+  &_diff {
+    margin-top: 4px;
+    align-items: flex-start;
+    height: 100%;
+    border: 3px solid transparent;
+    border-right: 3px solid #989898;
+    padding: 2px 0px 8px 12px;
+
+
+    &:hover {
+      border: 3px solid #989898;
+      background-color: #edeff1;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+  }
+
+  &_diff {
+    border-right: 3px solid #ff5348;
+    background-color: #fffbec;
+
+    &:hover {
+      border: 3px solid #ff5348;
+      background-color: #fff9df;
+    }
+  }
+
+  &_left,
+  &_right {
+    width: 50%;
+    height: 100%;
+    margin-top: 4px;
+    font-size: 14px;
+    padding: 0px 12px 0px 0px;
+
+  }
+
+  &_left {
+    border-right: 2px solid #989898;
+
+    &:hover {
+      border-radius: 12px;
+    }
+  }
+}

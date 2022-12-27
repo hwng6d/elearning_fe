@@ -1,0 +1,53 @@
+.h2 {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.h2p {
+  margin-top: 4px !important;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.carousel {
+  display: block;
+  margin: 0 auto;
+}
+
+
+.container {
+  margin: 0 auto;
+
+  &_cardcourses {
+    margin: 20px 0px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(288px, 0px));
+    gap: 1.5rem;
+    row-gap: 2rem;
+  }
+
+  &_pagination {
+    margin-top: 24px;
+    width: 100%;
+    text-align: right;
+
+  }
+}

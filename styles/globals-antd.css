@@ -1,0 +1,245 @@
+/* when sidebar is triggered */
+.ant-layout .ant-layout-sider.ant-layout-sider-has-trigger .ant-layout-sider-children .ant-menu .ant-menu-item {
+  margin: 0px 0px;
+}
+
+/* when sidebar is collapsed (not triggered): ant-ment-item */
+.ant-layout .ant-layout-sider.ant-layout-sider-collapsed .ant-layout-sider-children .ant-menu .ant-menu-item {
+  margin: 20px 0px 0px 0px;
+}
+
+/* when sidebar is collapsed (not triggered): ant-ment-submenu */
+.ant-layout .ant-layout-sider.ant-layout-sider-collapsed .ant-layout-sider-children .ant-menu .ant-menu-submenu {
+  margin: 20px 0px 0px 0px;
+}
+
+/* when menu item is selected */
+.ant-menu-item-selected {
+  background-color: rgba(0, 0, 0, 0) !important;
+  color: #0887fd !important;
+}
+
+.ant-dropdown-trigger {
+  color: rgb(29, 29, 29);
+}
+
+.ant-dropdown-menu-title-content h4 {
+  margin: 6px 2px;
+}
+
+.ant-modal-close-x {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-modal-close-x:hover {
+  margin: 8px;
+  width: 40px !important;
+  height: 40px !important;
+  background-color: bisque;
+  border-radius: 15%;
+  transition: 0.3s;
+}
+
+.ant-modal-body {
+  padding: 12px 24px 12px 24px !important;
+}
+
+.disable_add_button .ant-upload.ant-upload-select.ant-upload-select-picture-card {
+  display: none;
+}
+
+.ant-upload-list-item.ant-upload-list-item-done.ant-upload-list-item-list-type-text {
+  margin-top: 0px;
+}
+
+/* antd custom free review modal */
+.ant-menu.ant-menu-dark.menu_freepreview {
+  background-color: black;
+}
+
+.ant-menu.ant-menu-dark.menu_freepreview .ant-menu-item {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 8px 12px;
+  height: fit-content;
+}
+
+.ant-menu.ant-menu-dark.menu_freepreview .ant-menu-item.ant-menu-item-selected {
+  background-color: #3e4143 !important;
+}
+
+.ant-modal.modal_freepreview .ant-modal-close {
+  margin: 4px 4px 0px 0px;
+  color: white;
+}
+
+.ant-modal.modal_freepreview .ant-modal-close-x:hover {
+  background-color: black;
+}
+
+/* antd custom course content menu: LearningRoute  */
+.container_learninglist .ant-menu-item.ant-menu-item-selected {
+  background-color: #d1d7dc !important;
+  color: black !important;
+}
+
+.container_learninglist .ant-menu-item.ant-menu-item-selected::after {
+  border: none !important;
+}
+
+.container_learninglist .ant-menu-item.ant-menu-item-active {
+  background-color: #d1d7dc !important;
+  color: black !important;
+}
+
+.container_learninglist.ant-menu-submenu .ant-menu-submenu-title {
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 8px 34px 8px 24px !important;
+}
+
+.container_learninglist.ant-menu-submenu .ant-menu-submenu-title,
+.ant-menu-submenu-arrow {
+  color: black !important;
+}
+
+.container_learninglist.ant-menu-submenu-open .ant-menu-submenu-title,
+.ant-menu-submenu-arrow {
+  color: black !important;
+}
+
+.container_learninglist.ant-menu-submenu-active .ant-menu-submenu-title,
+.ant-menu-submenu-arrow {
+  color: black !important;
+}
+
+/* antd custom course content menu: SingleCourseView  */
+.container_learninglist.public_view .ant-menu.ant-menu-sub .ant-menu-item.ant-menu-item-active {
+  background-color: #ffff !important;
+}
+
+.container_learninglist.public_view .ant-menu-submenu-title {
+  border-bottom: 1px solid #d1d7dc;
+}
+
+/* antd custom tabs in learning route */
+.container_content_bodysection_tabs_wrapper .ant-tabs .ant-tabs-tab {
+  background-color: #eeeeee !important;
+}
+
+.container_content_bodysection_tabs_wrapper .ant-tabs .ant-tabs-tab.ant-tabs-tab-active {
+  background-color: #ffff !important;
+}
+
+.container_content_bodysection_tabs_wrapper .ant-tabs .ant-tabs-tab.ant-tabs-tab-active p {
+  font-size: 16px;
+  font-weight: 700 !important;
+  color: #505052 !important;
+}
+
+/* antd custom steps of createing course page */
+.container_content_steps .ant-steps-item.ant-steps-item-wait::before {
+  background-color: #ff6246 !important;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-wait .ant-steps-item-container .ant-steps-item-icon {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-finish::before {
+  background-color: #ff6246 !important;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: #ff6246;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-icon {
+  color: #ff6246;
+  font-size: 18px;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-process.ant-steps-item-active::before {
+  background-color: #ff6246 !important;
+}
+
+.container_content_steps .ant-steps-item.ant-steps-item-process.ant-steps-item-active .ant-steps-item-container .ant-steps-item-icon {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: #ff6246;
+  background-color: #ff6246;
+}
+
+/* custom table */
+.ant-table .ant-table-content .ant-table-thead .ant-table-cell {
+  text-align: left !important;
+}
+
+.ant-table .ant-table-content .ant-table-thead .ant-table-cell {
+  padding: 10px 12px !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .ant-table-row .ant-table-cell {
+  padding: 10px 28px !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .section_row .ant-table-cell {
+  background-color: #fff7e8 !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .section_row .ant-table-cell:hover {
+  background-color: #ffebc3 !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .lesson_row .ant-table-cell {
+  background-color: #e0ffe5 !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .lesson_row .ant-table-cell:hover {
+  background-color: #aaffb6 !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .quiz_row .ant-table-cell {
+  background-color: #d0f4ff !important;
+}
+
+.ant-table .ant-table-content .ant-table-tbody .quiz_row .ant-table-cell:hover {
+  background-color: #8ce4ff !important;
+}
+
+/* Review text area */
+.tabs_review_body_addreview textarea {
+  resize: none;
+}
+
+/* TopNav searchbox */
+.topnav_searchbox {
+  height: fit-content;
+  border: 2px solid #c9d1da;
+  padding: -8px;
+}
+
+/* Filter slider */
+.filter_slider {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter_slider .ms-Slider-container {
+  /* margin-top: 8px; */
+}
