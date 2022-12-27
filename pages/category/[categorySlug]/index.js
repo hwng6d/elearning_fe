@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { Carousel, Spin, message, Select, Rate, Pagination } from "antd";
-import Image from "next/image";
+import { Carousel, Spin, message, Select, Rate, Pagination, Image } from "antd";
+// import Image from "next/image";
 import { setDelay } from "../../../utils/setDelay";
 import CourseCard from "../../../components/cards/CourseCard";
 import Link from "next/link";
@@ -17,6 +17,7 @@ const CategoryPage = () => {
   // states
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState({});
+  const [banners, setBanners] = useState([]);
   const [courses, setCourses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -118,9 +119,40 @@ const CategoryPage = () => {
     }
   }
 
+  const fetchBanners = async () => {
+    try {
+      setLoading(true)
+      if (router.isReady) {
+        // get category detail to get _id
+        const { data: dataCategory } = await axios.get(
+          `/api/category/public/${categorySlug}`
+        );
+
+        // get banners of that category
+        const query = { type: 'category', categoryId: dataCategory.data._id };
+        const queryString = new URLSearchParams(query).toString();
+        const { data: dataBanners } = await axios.get(
+          `/api/banner/public?${queryString}`
+        );
+
+        setBanners(dataBanners.data);
+        setLoading(false);
+      }
+    }
+    catch (error) {
+      message.error(`Xảy ra lỗi khi lấy thông tin banners. Chi tiết: ${error.message}`);
+      console.log('error fetchBanners: ', error);
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     fetchData();
   }, [categorySlug, currentPage]);
+
+  useEffect(() => {
+    fetchBanners();
+  }, [categorySlug])
 
   return (
     <div
@@ -165,12 +197,29 @@ const CategoryPage = () => {
           className={styles.container_carousel}
         >
           <Carousel autoplay={true} effect='fade'>
-            <Image
+            {/* <Image
               alt='carousel_1'
               width={1280}
               height={156}
               src={`/carousels/carousel_${categorySlug}.svg`}
-            />
+            /> */}
+            {
+              banners?.map((banner, index) => {
+                return (
+                  <Image
+                    key={`catebanner_${index}`}
+                    src={banner?.image?.Location}
+                    width={1232}
+                    height={156}
+                    preview={false}
+                    style={{
+                      width: '-webkit-fill-available',
+                      height: '-webkit-fill-available'
+                    }}
+                  />
+                )
+              })
+            }
           </Carousel>
         </div>
         <div

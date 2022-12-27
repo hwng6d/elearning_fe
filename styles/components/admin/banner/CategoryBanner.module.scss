@@ -1,0 +1,64 @@
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h2 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.container {
+  padding: 12px 24px;
+
+  &_table {
+    margin-top: 24px;
+
+  }
+}
+
+.btn {
+
+  &_edit {
+
+    &_small {
+      font-size: 16px;
+      color: red;
+      cursor: pointer;
+      padding: 8px;
+
+      &:hover {
+        border-radius: 8px;
+        background-color: bisque;
+        transition: 0.3s;
+      }
+    }
+
+    &_middle {
+      font-size: 16px;
+      color: red;
+      cursor: pointer;
+      padding: 12px;
+
+      &:hover {
+        border-radius: 8px;
+        background-color: bisque;
+        transition: 0.3s;
+      }
+    }
+  }
+}

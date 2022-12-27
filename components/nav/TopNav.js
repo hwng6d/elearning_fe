@@ -249,7 +249,6 @@ const TopNav = () => {
                   <SearchBox
                     className='topnav_searchbox'
                     placeholder='Nhập từ khóa...'
-                    iconProps={<SearchOutlined />}
                     value={search}
                     onChange={(_, value) => setSearch(value)}
                     onSearch={onSearchEnter}

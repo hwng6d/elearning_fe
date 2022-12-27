@@ -16,7 +16,7 @@ const AdminNav = ({
   const router = useRouter();
 
   // variables
-  const keys = ['/admin', 'group_1', '/tags'];
+  const keys = ['/admin', 'group_1', '/tags', 'group_2'];
 
   // states
   const [currSelected, setCurrSelected] = useState('/admin');
@@ -36,6 +36,12 @@ const AdminNav = ({
       selectedHandler('/admin/course-edit');
     else if (router.pathname.includes('/admin/categories'))
       selectedHandler('/admin/categories');
+    else if (router.pathname.includes('/admin/banner/home-banner'))
+      selectedHandler('/admin/banner/home-banner');
+    else if (router.pathname.includes('/admin/banner/advertisement-banner'))
+      selectedHandler('/admin/banner/advertisement-banner');
+    else if (router.pathname.includes('/admin/banner/category-banner'))
+      selectedHandler('/admin/banner/category-banner');
   }, [router.pathname]);
   
   return (
@@ -107,6 +113,39 @@ const AdminNav = ({
               Quản lý phân loại
             </Link>
           </Menu.Item>
+          <Menu.SubMenu
+            key='group_2'
+            title='Quản lý banner'
+            icon={<AppstoreOutlined />}
+          >
+            <Menu.Item
+              key='/admin/banner/home-banner'
+              icon={<AuditOutlined />}
+              onClick={() => selectedHandler('/admin/banner/home-banner')}
+            >
+              <Link href='/admin/banner/home-banner'>
+                Banner trang chủ
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              key='/admin/banner/advertisement-banner'
+              icon={<AuditOutlined />}
+              onClick={() => selectedHandler('/admin/banner/advertisement-banner')}
+            >
+              <Link href='/admin/banner/advertisement-banner'>
+                Banner quảng cáo
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              key='/admin/banner/category-banner'
+              icon={<AuditOutlined />}
+              onClick={() => selectedHandler('/admin/banner/category-banner')}
+            >
+              <Link href='/admin/banner/category-banner'>
+                Banner các phân loại
+              </Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </Menu>
       </Sider>
       <Content

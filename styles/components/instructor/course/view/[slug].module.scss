@@ -15,9 +15,10 @@
 }
 
 .container {
-  margin: 24px;
+  margin: 12px 24px;
 
   &_overview {
+    margin-top: 24px;
     display: flex;
     align-items: center;
     height: fit-content;

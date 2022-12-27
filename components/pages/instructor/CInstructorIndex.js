@@ -4,23 +4,27 @@ import axios from 'axios';
 import CourseCard from '../../cards/CourseCard';
 import Link from 'next/link';
 import { setDelay } from '../../../utils/setDelay';
+import { SearchBox } from '@fluentui/react';
 import styles from '../../../styles/components/instructor/InstructorIndex.module.scss';
 
 function CInstructorIndex() {
+  // states
   const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState({ keyword: '' });
 
-  useEffect(() => {
+  // functions
+  const onSearchEnter = async () => {
     getInstructorCourses();
-  }, [currentPage]);
+  }
 
   const getInstructorCourses = async () => {
     try {
       setLoading(true);
 
-      const query = { page: currentPage, limit: 12 };
+      const query = { page: currentPage, limit: 12, name: search.keyword };
       const queryString = new URLSearchParams(query).toString();
       const { data } = await axios.get(`/api/course/ins?${queryString}`);
       setCourses(data?.data[0]?.paginatedResults);
@@ -34,14 +38,27 @@ function CInstructorIndex() {
       setLoading(false);
     }
   }
+  
+  useEffect(() => {
+    getInstructorCourses();
+  }, [currentPage]);
 
   return (
     <div
       className={styles.container}
     >
-      <h1
-        className={styles.h1}
-      >Các khóa học hiện tại</h1>
+      <div className={styles.d_flex_row} style={{ gap: '32px' }}>
+        <h1
+          className={styles.h1}
+        >Các khóa học hiện tại</h1>
+        <SearchBox
+          placeholder='Nhập từ khóa...'
+          value={search.keyword}
+          onChange={(_, value) => setSearch({...search, keyword: value})}
+          onSearch={onSearchEnter}
+          style={{ width: '512px' }}
+        />
+      </div>
       <div
         className={styles.container_wrapper}
         style={{ width: '1408px' }}

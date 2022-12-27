@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
-import { Carousel, Input, Select, Pagination, message } from 'antd';
+import { Carousel, Input, Select, Pagination, message, Image } from 'antd';
 import CourseCard from '../components/cards/CourseCard';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import styles from '../styles/index.module.scss';
 
-export default function Home({ courses, total }) {
+export default function Home({ courses, total, homeBanners, saleBanners }) {
   // router
   const router = useRouter();
 
@@ -37,7 +37,7 @@ export default function Home({ courses, total }) {
 
   const fetDataForCurrentPage = async () => {
     router.push(
-      `?page=${currentPage}&limit=16`
+      `?page=${currentPage}&limit=14`
     );
   }
 
@@ -58,7 +58,7 @@ export default function Home({ courses, total }) {
         style={{ width: '1280px', height: '35%' }}
       >
         <Carousel autoplay={true} effect='fade'>
-          <Image
+          {/* <Image
             alt='carousel_1'
             width={1280}
             height={312}
@@ -69,7 +69,20 @@ export default function Home({ courses, total }) {
             width={1280}
             height={312}
             src='/carousels/carousel_2.svg'
-          />
+          /> */}
+          {
+            homeBanners?.map((banner, index) => {
+              return (
+                <Image
+                  alt={`carouselhome_${index}`}
+                  width={1280}
+                  height={312}
+                  preview={false}
+                  src={banner?.image?.Location}
+                />
+              )
+            })
+          }
         </Carousel>
       </div>
       <div
@@ -87,14 +100,63 @@ export default function Home({ courses, total }) {
           className={styles.container_cardcourses}
         >
           {
-            courses.map((course, index) => (
-              <Link key={index} href={`/course/${course.slug}`}>
-                <CourseCard
-                  course={course}
-                  index={index}
-                />
-              </Link>
-            ))
+            courses.map((course, index) => {
+              if (index < 10) {
+                return (
+                  <div
+                    className={styles.container_cardcourses_item}>
+                    <Link
+                      key={index}
+                      href={`/course/${course.slug}`}
+                    >
+                      <CourseCard
+                        course={course}
+                        index={index}
+                      />
+                    </Link>
+                  </div>
+                )
+              }
+            })
+          }
+          <div
+            className={styles.container_cardcourses_sale}
+            style={{ width: '600px', border: '16px solid #ff4d49', borderRadius: '12px' }}
+          >
+            <Carousel autoplay={true} effect='fade' style={{ width: '585' }}>
+              {
+                saleBanners?.map((banner, index) => {
+                  return (
+                    <Image
+                      alt={`carouselsale_${index}`}
+                      width={585}
+                      height={273}
+                      preview={false}
+                      src={banner?.image?.Location}
+                    />
+                  )
+                })
+              }
+            </Carousel>
+          </div>
+        </div>
+
+        <div
+          className={styles.container_cardcourses}
+        >
+          {
+            courses.map((course, index) => {
+              if (index >= 10 && index < 14) {
+                return (
+                  <Link key={index} href={`/course/${course.slug}`}>
+                    <CourseCard
+                      course={course}
+                      index={index}
+                    />
+                  </Link>
+                )
+              }
+            })
           }
         </div>
         <div
@@ -102,8 +164,9 @@ export default function Home({ courses, total }) {
         >
           <Pagination
             current={currentPage}
-            pageSize={16}
+            pageSize={14}
             total={total}
+            showSizeChanger={false}
             onChange={(page, pagesize) => setCurrentPage(page)}
           />
         </div>
@@ -113,18 +176,24 @@ export default function Home({ courses, total }) {
 }
 
 export async function getServerSideProps(context) {
-  let query = { page: 1, limit: 16 };
+  let query = { page: 1, limit: 14 };
   if (context.query.page) query['page'] = context.query.page;
   if (context.query.limit) query['limit'] = context.query.limit;
 
   const queryString = new URLSearchParams(query).toString();
 
-  const { data } = await axios.get(`${process.env.API_URL}/course/public?${queryString}`);
+  const { data: dataCourses } = await axios.get(`${process.env.API_URL}/course/public?${queryString}`);
+
+  const { data: dataHomeBanners } = await axios.get(`${process.env.API_URL}/banner/public?type=home`);
+
+  const { data: dataSaleBanner } = await axios.get(`${process.env.API_URL}/banner/public?type=sale&salePosition=right`);
 
   return {
     props: {
-      courses: data?.data[0]?.paginatedResults,
-      total: data?.data[0]?.totalCount[0]?.count || 0
+      courses: dataCourses?.data[0]?.paginatedResults,
+      total: dataCourses?.data[0]?.totalCount[0]?.count || 0,
+      homeBanners: dataHomeBanners.data,
+      saleBanners: dataSaleBanner.data,
     }
   }
 }

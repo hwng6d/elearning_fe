@@ -5,11 +5,11 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
 import { message, BackTop, Popover, Tooltip, Space, Modal, Popconfirm, Checkbox, Input } from 'antd';
+import { TooltipHost, TooltipDelay, DirectionalHint } from '@fluentui/react';
 import { RightOutlined, EditOutlined, PlusCircleOutlined, LeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import TableSection from '../../../components/tables/TableSection';
-import * as CheckboxTree from 'react-checkbox-tree';
-import 'react-checkbox-tree/lib/react-checkbox-tree.css';
-import styles from '../../../styles/components/admin/course-new/[courseId].module.scss';
+import ModalViewCourseChanges from '../../../components/forms/ModalViewCourseChanges';
+import styles from '../../../styles/components/admin/course-edit/[courseId].module.scss';
 
 const InspectDetailCourseEditPage = () => {
   // router
@@ -28,6 +28,7 @@ const InspectDetailCourseEditPage = () => {
     modalPreviewImgOpened: false,
     uploadLoading: false,
   });
+  const [modalViewCourseChangesOpened, setModalViewCourseChangesOpened] = useState(false);
 
   // variables
   const listRejectReasons = [
@@ -177,7 +178,7 @@ const InspectDetailCourseEditPage = () => {
                     title={<b>Từ chối phê duyệt khóa học này ?</b>}
                     placement='left'
                     cancelText='Hủy'
-                    onConfirm={() => setModalSelectRejectReason({...modalSelectRejectReason, opened: true})}
+                    onConfirm={() => setModalSelectRejectReason({ ...modalSelectRejectReason, opened: true })}
                   >
                     <div
                       className={styles.container_submitresult_button_right}
@@ -232,6 +233,39 @@ const InspectDetailCourseEditPage = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div
+          className={styles.container_publish}
+        >
+          {
+            (course?.status === 'unaccepted' && course?.published) && (
+              <TooltipHost
+                delay={TooltipDelay.zero}
+                directionalHint={DirectionalHint.topCenter}
+                tooltipProps={{
+                  onRenderContent: () => (
+                    <div>
+                      <p style={{ fontSize: '14px' }}>Xem các thay đổi so với lần được public gần nhất</p>
+                    </div>
+                  )
+                }}
+              >
+                <div
+                  onClick={() => setModalViewCourseChangesOpened(true)}
+                  style={{
+                    padding: '4px 12px',
+                    cursor: 'pointer',
+                    width: '337px',
+                    textAlign: 'center',
+                    backgroundImage: 'linear-gradient(to left, #b832ff, #d394ff)'
+                  }}
+                >
+                  <p
+                    style={{ color: '#ffffff' }}><b>Xem các thay đổi</b></p>
+                </div>
+              </TooltipHost>
+            )
+          }
         </div>
         <div
           className={styles.container_detail}
@@ -401,7 +435,7 @@ const InspectDetailCourseEditPage = () => {
               open={modalSelectRejectReason.opened}
               cancelText='Hủy'
               okText='Đồng ý'
-              onCancel={() => setModalSelectRejectReason({...modalSelectRejectReason, opened: false})}
+              onCancel={() => setModalSelectRejectReason({ ...modalSelectRejectReason, opened: false })}
               onOk={onRejectPublishClick}
             >
               <Checkbox.Group
@@ -422,12 +456,22 @@ const InspectDetailCourseEditPage = () => {
                 modalSelectRejectReason.reasons.includes('Khác (ghi rõ):') && (
                   <Input
                     value={modalSelectRejectReason.otherReason}
-                    onChange={(e) => setModalSelectRejectReason({...modalSelectRejectReason, otherReason: e.target.value})}
+                    onChange={(e) => setModalSelectRejectReason({ ...modalSelectRejectReason, otherReason: e.target.value })}
                     style={{ marginTop: '8px' }}
                   />
                 )
               }
             </Modal>
+          )
+        }
+
+        {
+          modalViewCourseChangesOpened && (
+            <ModalViewCourseChanges
+              modalViewCourseChangesOpened={modalViewCourseChangesOpened}
+              setModalViewCourseChangesOpened={setModalViewCourseChangesOpened}
+              course={course}
+            />
           )
         }
       </div>
