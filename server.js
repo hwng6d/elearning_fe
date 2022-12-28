@@ -18,7 +18,8 @@ app
       server.use(
         `/api`,
         createProxyMiddleware({
-          target: 'http://localhost:8000',
+          //target: 'http://localhost:8000',
+          target: process.env.TARGET_API_URL,
           changeOrigin: true,
           onProxyRes: function (proxyRes, req, res) {
             proxyRes.headers['Access-Control-Allow-Origin'] = '*';
@@ -33,7 +34,7 @@ app
 
     server.listen(3000, (error) => {
       if (error) throw error;
-      console.log('> Ready on http://localhost:8000')
+      console.log(`> Ready on ${process.env.TARGET_API_URL}`)
     })
   })
   .catch(error => {
