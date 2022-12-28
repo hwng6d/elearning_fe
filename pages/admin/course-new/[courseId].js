@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { message, BackTop, Tooltip, Space, Modal, Popconfirm, Checkbox, Input } from 'antd';
 import { RightOutlined, LeftOutlined } from '@ant-design/icons';
 import TableSection from '../../../components/tables/TableSection';
-import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import styles from '../../../styles/components/admin/course-new/[courseId].module.scss';
 
 const InspectDetailCourseNewPage = () => {
