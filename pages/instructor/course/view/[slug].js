@@ -207,8 +207,8 @@ function CourseView() {
                 <Space size='middle' direction='vertical'>
                   <h1 className={styles.h1}>{course?.name}</h1>
                   <p style={{ fontSize: '16px' }}><b>Giá |</b> {course?.price?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}</p>
-                  <p style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></p>
-                  <p style={{ fontSize: '16px' }}><b>Thẻ |</b> <Space split='-'>{course?.tags}</Space></p>
+                  <div style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></div>
+                  <div style={{ fontSize: '16px' }}><b>Thẻ |</b> <Space split='-'>{course?.tags}</Space></div>
                   <Space split='|'>
                     <p style={{ fontSize: '16px' }}><b>{course?.sections?.length || 0}</b> chương</p>
                     <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length || 0}</b> bài học</p>
@@ -299,10 +299,10 @@ function CourseView() {
                 }
                 {
                   course?.status === 'rejected' && (
-                    <p
+                    <div
                       style={{ cursor: 'pointer' }}
                       onClick={() => setModalShowRejectReasonOpened(true)}
-                    ><b><CaretRightOutlined /> Lý do bị từ chối</b></p>
+                    ><b><CaretRightOutlined /> Lý do bị từ chối</b></div>
                   )
                 }
               </div>

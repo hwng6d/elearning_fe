@@ -81,7 +81,7 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
         <h2 className={styles.h2}>Phản hồi của học viên</h2>
         <div className={styles.tabs_review_overview_body}>
           <Space className={styles.tabs_review_overview_body_average} direction='vertical' size={16}>
-            <p
+            <div
               style={{ fontSize: '76px', color: '#b4690e', fontWeight: '700', lineHeight: '64px' }}
             >
               {
@@ -89,7 +89,7 @@ const TabReview = ({ course, currentLesson, activeTab }) => {
                   ? <DashOutlined />
                   : (Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)
               }
-            </p>
+            </div>
             {
               !isNaN((Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1))
                 ? (
