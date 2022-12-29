@@ -116,7 +116,7 @@ const ModalShowReviews = ({
                         style={{ fontSize: '14px' }}
                       />
                     </div>
-                    <p
+                    <div
                       style={{ fontSize: '12px', textAlign: 'right' }}
                     >
                       <b>
@@ -126,7 +126,7 @@ const ModalShowReviews = ({
                           : ((listReview?.total?.filter(_ => _.star === number).length) / (listReview?.total?.length) * 100).toFixed(1)
                         }
                       </b>
-                    </p>
+                    </div>
                   </div>
                 )
               })

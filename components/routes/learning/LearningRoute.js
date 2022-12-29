@@ -296,7 +296,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                               >
                                 <div
                                   onClick={(event) => onSeePdfClick(event, lesson)}
-                                  style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}
+                                  style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center', padding: '0px 16px' }}
                                 >
                                   <p>File</p>
                                   <FilePdfFilled style={{ color: 'black', fontSize: '18px' }} />

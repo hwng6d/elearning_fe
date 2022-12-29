@@ -219,8 +219,8 @@ const InspectDetailCourseNewPage = () => {
                 <Space size='middle' direction='vertical'>
                   <h1 className={styles.h1}>{course?.name}</h1>
                   <p style={{ fontSize: '16px' }}><b>Giá |</b> {course?.price}</p>
-                  <p style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></p>
-                  <p style={{ fontSize: '16px' }}><b>Tag |</b> <Space split='-'>{course?.tags}</Space></p>
+                  <div style={{ fontSize: '16px' }}><b>Phân loại |</b> <Space split='-'>{course?.categoryInfo?.name}</Space></div>
+                  <div style={{ fontSize: '16px' }}><b>Tag |</b> <Space split='-'>{course?.tags}</Space></div>
                   <Space split='|'>
                     <p style={{ fontSize: '16px' }}><b>{course?.sections?.length || 0}</b> chương</p>
                     <p style={{ fontSize: '16px' }}><b>{course?.lessons?.length || 0}</b> bài học</p>

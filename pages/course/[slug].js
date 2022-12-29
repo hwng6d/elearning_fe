@@ -28,6 +28,7 @@ import {
   WifiOutlined,
   DashOutlined,
   RightOutlined,
+  ThunderboltFilled,
 } from "@ant-design/icons";
 import ReactMarkdown from 'react-markdown';
 import Image from "next/image";
@@ -39,6 +40,10 @@ import dayjs from "dayjs";
 import {secondsToHms} from '../../utils/secondsToHms';
 import styles from '../../styles/course/[slug].module.scss';
 
+const discount30 = (price) => {
+  const discounted = Math.round((price * 70) / 100).toFixed(2);
+  return discounted;
+}
 
 const SingleCourseView = ({ course }) => {
   // router
@@ -321,7 +326,29 @@ const SingleCourseView = ({ course }) => {
             </div>
             <div
               className={styles.container_general_wrapper_right_price}
-            >{course?.paid ? `${course?.price?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}` : 'Miễn phí'}</div>
+            >
+              {/* {course?.paid ? `${course?.price?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}` : 'Miễn phí'} */}
+              {course?.paid
+              ? (
+                course?.instructorInfo?.instructor_information?.plan_type !== 'premium'
+                  ? (
+                    <p>{course?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
+                  )
+                  : (
+                    <div className={styles.d_flex_row}>
+                      <p style={{ textDecoration: 'line-through' }}>
+                        {course?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                      </p>
+                      <p style={{ color: '#ff5249' }}>
+                        {parseInt(discount30(course?.price))?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                      </p>
+                      <ThunderboltFilled style={{ color: '#ff5249' }}/>
+                    </div>
+                  )
+              )
+              : 'Miễn phí'
+            }
+            </div>
           </div>
         </div>
       </div>
@@ -507,7 +534,7 @@ const SingleCourseView = ({ course }) => {
                 ? (
                   <Space style={{ color: 'green', fontWeight: '600', fontSize: '16px', marginTop: '8px' }}>
                     <CheckOutlined />
-                    <p>Bạn đã tham gia khóa học này, hãy đến<span> </span>
+                    <div>Bạn đã tham gia khóa học này, hãy đến<span> </span>
                       <Link href={`/user/courses/${course?.slug}`}>
                         <span
                           style={{
@@ -516,7 +543,7 @@ const SingleCourseView = ({ course }) => {
                             color: 'green'
                           }}>địa chỉ</span>
                       </Link> dành cho học viên đã đăng ký cho khóa học
-                    </p>
+                    </div>
                   </Space>
                 )
                 : null
@@ -577,7 +604,7 @@ const SingleCourseView = ({ course }) => {
                     className={`${styles.coursereview_detail_overall_average} ${styles.d_flex_col}`}
                     style={{ gap: '12px' }}
                   >
-                    <p
+                    <div
                       style={{ fontSize: '76px', color: '#b4690e', fontWeight: '700', lineHeight: '64px' }}
                     >
                       {
@@ -585,7 +612,7 @@ const SingleCourseView = ({ course }) => {
                           ? <DashOutlined />
                           : (Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)
                       }
-                    </p>
+                    </div>
                     <Rate
                       allowHalf={true}
                       value={(Math.floor(calculateAverage(listReview.total.map(_ => _.star)) * 10) / 10).toFixed(1)}
