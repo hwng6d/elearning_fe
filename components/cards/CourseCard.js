@@ -3,8 +3,14 @@ import { Button, List, Popover, Space } from "antd";
 import Image from "next/image";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import {secondsToHms} from '../../utils/secondsToHms';
+import { secondsToHms } from '../../utils/secondsToHms';
 import styles from '../../styles/components/cards/CourseCard.module.scss';
+import { ThunderboltFilled } from "@ant-design/icons";
+
+const discount30 = (price) => {
+  const discounted = Math.round((price * 70) / 100).toFixed(2);
+  return discounted;
+}
 
 const CourseCard = ({
   course,
@@ -136,13 +142,30 @@ const CourseCard = ({
           >
             Instructor {course?.instructor?.name}
           </p>
-          <p
+          <div
             className={styles.container_body_courseprice}
           >
             {course?.paid
-              ? `${course?.price?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}`
-              : 'Miễn phí'}
-          </p>
+              ? (
+                course?.instructor?.instructor_information?.plan_type !== 'premium'
+                  ? (
+                    <p>{course?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</p>
+                  )
+                  : (
+                    <div className={styles.d_flex_row}>
+                      <p style={{ textDecoration: 'line-through' }}>
+                        {course?.price?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                      </p>
+                      <p style={{ color: '#ff5249' }}>
+                        {parseInt(discount30(course?.price))?.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                      </p>
+                      <ThunderboltFilled style={{ color: '#ff5249' }}/>
+                    </div>
+                  )
+              )
+              : 'Miễn phí'
+            }
+          </div>
         </div>
         {/* footer */}
         <div
