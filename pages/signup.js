@@ -6,6 +6,8 @@ import { Input, Button, message } from 'antd';
 import { Context } from '../context';
 import Link from 'next/link';
 import styles from '../styles/SignUp.module.scss';
+import { setDelay } from '../utils/setDelay';
+import { validateEmail } from '../utils/validateEmail';
 import { ERRORS_NAME } from '../utils/constant';
 
 const SignUp = () => {
@@ -19,22 +21,43 @@ const SignUp = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [retypePassword, setRetypePassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // functions
   const submitFormHandler = async (e) => {
-    e.preventDefault();
-
     try {
+      e.preventDefault();
+
       setLoading(true);
 
-      await axios.post(
+      await setDelay(1000);
+
+      const checkEmail = validateEmail(email);
+      if (!checkEmail) {
+        setErrorMessage((errorMessage) => errorMessage = 'Định dạng email sai, hãy thử lại');
+        setLoading(false);
+        return;
+      } else {
+        setErrorMessage((errorMessage) => errorMessage = 'Định dạng email sai, hãy thử lại');
+      }
+
+      if (password !== retypePassword) {
+        setErrorMessage((errorMessage) => errorMessage = 'Mật khẩu không khớp, vui lòng thử lại');
+        setLoading(false);
+        return;
+      } else {
+        setErrorMessage('');
+      }
+
+      const { data: dataRegister } = await axios.post(
         // `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         `/api/auth/register`,
         { name, email, password }
       );
 
-      message.success('Đăng ký thành công !');
+      message.success('Đăng ký thành công! Vui lòng truy cập hộp thư để kích hoạt tài khoản');
 
       router.push(`/signin`)
 
@@ -42,6 +65,7 @@ const SignUp = () => {
     }
     catch (error) {
       const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
+      setLoading(false);
       
       if (err_message)
         message.error(err_message.vietnamese);
@@ -93,6 +117,23 @@ const SignUp = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <label>Nhập lại mật khẩu</label>
+          <Input
+            className={styles.input}
+            allowClear={true}
+            id='retypePassword'
+            type='password'
+            placeholder='Nhập lại mật khẩu'
+            value={retypePassword}
+            onChange={(e) => setRetypePassword(e.target.value)}
+          />
+          {
+            errorMessage
+            ? (
+              <label style={{ color: 'red' }}>{errorMessage}</label>
+            )
+            : null
+          }
           <div
             style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
           >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Table, Tooltip, Space, Switch, Popconfirm, message, Checkbox } from 'antd';
+import { Table, Tooltip, Space, Switch, Popconfirm, message, Checkbox, Modal } from 'antd';
 import { PlusOutlined, EditOutlined, MinusCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import { Context } from '../../context';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import styles from '../../styles/components/tables/TableSection.module.scss';
 import ModalVideo from '../forms/ModalVideo';
 import ModalAddQuiz from '../forms/ModalAddQuiz';
 import ModalShowSelections from '../forms/ModalShowSelections';
+import ModalAddDocument from '../forms/ModalAddDocument';
 
 const TableSection = ({
   isViewing = false,
@@ -27,6 +28,7 @@ const TableSection = ({
   const [modalAddQuiz, setModalAddQuiz] = useState({ opened: false, lessonId: '' });
   const [modalEditQuiz, setModalEditQuiz] = useState({ opened: false, lessonId: '' });
   const [modalShowSelections, setModalShowSelections] = useState({ opened: false, quizId: '' });
+  const [modalAddDocument, setModalAddDocument] = useState({ opened: false, isView: false, lesson: {} });
 
   // functions
   const onEditSectionClick = (sectionId) => {
@@ -211,7 +213,13 @@ const TableSection = ({
       {
         dataIndex: 'content',
         title: 'Tóm tắt nội dung',
-        width: '832px'
+        width: '640px'
+      },
+      {
+        dataIndex: 'document_link',
+        title: 'Đính kèm',
+        width: '128px',
+        align: 'center'
       },
       {
         dataIndex: 'video_link',
@@ -246,6 +254,27 @@ const TableSection = ({
           index: item.index,
           title: <Tooltip title={item.title}>{item.title}</Tooltip>,
           content: <Tooltip title={item.content}>{item.content}</Tooltip>,
+          document_link: Object.keys(item?.document_link || {}).length
+            ? (
+              <Tooltip title='Xem file đính kèm'>
+                <EyeOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '18px' }}
+                  onClick={() => onSeeDocumentClick(item)}
+
+                />
+              </Tooltip>
+            )
+            : (
+              <Tooltip title='Thêm file đính kèm'>
+                <PlusOutlined
+                  className={styles.operation_icon}
+                  style={{ cursor: 'pointer', fontSize: '16px', color: 'green' }}
+                  // onClick={numOfQuizzes <= 0 && (() => onAddQuizClick(item?._id))}
+                  onClick={() => onAddDocumentClick(item)}
+                />
+              </Tooltip>
+            ),
           video_link: <div>
             <Tooltip title='Xem video'>
               <EyeOutlined
@@ -377,6 +406,14 @@ const TableSection = ({
   });
   dataSource.sort((a, b) => a.index - b.index);
 
+  const onAddDocumentClick = (lesson) => {
+    setModalAddDocument({ ...modalAddDocument, opened: true, lesson });
+  }
+
+  const onSeeDocumentClick = (lesson) => {
+    setModalAddDocument({ ...modalAddDocument, opened: true, lesson, isView: true });
+  }
+
   return (
     <div>
       <Table
@@ -400,6 +437,17 @@ const TableSection = ({
         modalAddSection={modalEditSection}
         setModalAddSection={setModalEditSection}
       />
+
+      {
+        modalAddDocument.opened && (
+          <ModalAddDocument
+            courseId={course?._id}
+            modalAddDocument={modalAddDocument}
+            setModalAddDocument={setModalAddDocument}
+            getCourseBySlug={getCourseBySlug}
+          />
+        )
+      }
 
       {
         modalVideo.opened && (

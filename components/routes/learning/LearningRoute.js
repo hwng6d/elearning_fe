@@ -13,6 +13,7 @@ import {
   TrophyFilled,
   LeftOutlined,
   CheckOutlined,
+  FilePdfFilled,
 } from '@ant-design/icons';
 import Image from "next/image";
 import styles from '../../../styles/components/routes/learning/LearningRoute.module.scss';
@@ -36,6 +37,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
   const [openKeys, setOpenKeys] = useState([]);
   const [activeTab, setActiveTab] = useState('tab_overview');
   const [isQuizScreen, setIsQuizScreen] = useState({ opened: false, quiz: {} });
+  const [isPdfScreen, setIsPdfScreen] = useState({ opened: false, lesson: {} });
   const [quizAnswered, setQuizAnswered] = useState(0) //index
   const [quizResult, setQuizResult] = useState({ status: 'waiting', message: '' }) //state: ['waiting', true, false]
 
@@ -119,6 +121,14 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
       const quiz = course?.quizzes?.find(quiz => quiz?._id === quizId);
       setIsQuizScreen({ ...quizId, opened: true, quiz });
     }
+  }
+
+  const onSeePdfClick = (event, lesson) => {
+    event.stopPropagation();
+
+    console.log('lesson: ', lesson);
+
+    setIsPdfScreen({ ...isPdfScreen, opened: true, lesson: isPdfScreen.opened ? {} : lesson });
   }
 
   const onSubmitQuizClick = async (event, quizId) => {
@@ -273,12 +283,27 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                       >
                         <p>{lesson.title}</p>
                         <div
-                          style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}
+                          style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <PlayCircleFilled style={{ fontSize: '16px', color: '#313131' }} />
                             <p>{secondsToHms(lesson?.duration)}</p>
                           </div>
+                          {
+                            Object.keys(lesson?.document_link || {}).length ? (
+                              <Tooltip
+                                title='Xem file đính kèm'
+                              >
+                                <div
+                                  onClick={(event) => onSeePdfClick(event, lesson)}
+                                  style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}
+                                >
+                                  <p>File</p>
+                                  <FilePdfFilled style={{ color: 'black', fontSize: '18px' }} />
+                                </div>
+                              </Tooltip>
+                            ) : null
+                          }
                           {
                             quiz && (
                               <Tooltip title={`${user?._id === course?.instructor._id ? 'Xem quiz' : 'Làm bài quiz'}`}>
@@ -287,7 +312,7 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                                   style={{ gap: '12px' }}
                                   onClick={(event) => onDoQuizClick(event, lesson._id, quiz._id)}
                                 >
-                                  <TrophyFilled style={{}} />
+                                  <TrophyFilled />
                                   <p>
                                     {`${user?._id === course?.instructor._id ? 'Xem quiz' : `Let's quiz`}`}
                                   </p>
@@ -455,33 +480,62 @@ const LearningRoute = ({ loading, course, currentLesson }) => {
                 </div>
               )
               : (
-                // video
-                <div
-                  className={styles.container_content_videosection_video}
-                >
-                  {
-                    loading
-                      ? (
-                        <Spin
-                          spinning={true}
-                          size='large'
-                          style={{
-                            height: '756px',
-                            textAlign: 'center',
-                            display: 'flex',
-                            width: 'inherit',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                        />
-                      )
-                      : (
-                        <div>
-                          {PlyrPlayer}
-                        </div>
-                      )
-                  }
-                </div>
+                isPdfScreen.opened
+                  ? (
+                    <div style={{ height: '756px' }}>
+                      <div
+                        className={styles.d_flex_row}
+                        style={{
+                          height: '40px',
+                          backgroundColor: '#cbcbcb',
+                          justifyContent: 'flex-end',
+                          padding: '0px 24px'
+                        }}
+                      >
+                        <LeftOutlined />
+                        <p
+                          style={{ cursor: 'pointer', color: '#262626' }}
+                          onClick={() => setIsPdfScreen({ ...isQuizScreen, opened: false, lesson: {} })}
+                        >
+                          <b>Quay lại bài học</b>
+                        </p>
+                      </div>
+                      <div style={{ width: '1519px', height: '716px' }}>
+                        <object data={`${isPdfScreen?.lesson?.document_link?.Location}`} type="application/pdf" width="100%" height="100%">
+                          <p><a href={`${isPdfScreen?.lesson?.document_link?.Location}`}>PDF</a></p>
+                        </object>
+                      </div>
+                    </div>
+                  )
+                  : (
+                    // video
+                    <div
+                      className={styles.container_content_videosection_video}
+                    >
+                      {
+                        loading
+                          ? (
+                            <Spin
+                              spinning={true}
+                              size='large'
+                              style={{
+                                height: '756px',
+                                textAlign: 'center',
+                                display: 'flex',
+                                width: 'inherit',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                              }}
+                            />
+                          )
+                          : (
+                            <div>
+                              {PlyrPlayer}
+                            </div>
+                          )
+                      }
+                    </div>
+                  )
               )
           }
         </div>

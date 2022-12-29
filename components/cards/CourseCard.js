@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, List, Popover, Space } from "antd";
 import Image from "next/image";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 import {secondsToHms} from '../../utils/secondsToHms';
 import styles from '../../styles/components/cards/CourseCard.module.scss';
 
@@ -11,6 +12,9 @@ const CourseCard = ({
   disable = false,
 }) => {
   const popoverBody = () => {
+    // router
+    const router = useRouter();
+
     // variables
     let totalDuration = 0;
     course?.lessons?.map(lesson => totalDuration += lesson?.duration);
@@ -82,9 +86,9 @@ const CourseCard = ({
         <Button
           className={styles.popover_container_addtocart}
           type='primary'
-          onClick={(e) => onAddWishlistClick(e)}
+          onClick={() => router.push(`course/${course?.slug}`)}
         >
-          <b>Thêm vào wishlist</b>
+          <b>Xem khóa học</b>
         </Button>
       </div>
     )
@@ -136,7 +140,7 @@ const CourseCard = ({
             className={styles.container_body_courseprice}
           >
             {course?.paid
-              ? `${course?.price} VNĐ`
+              ? `${course?.price?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}`
               : 'Miễn phí'}
           </p>
         </div>

@@ -181,7 +181,7 @@ const TopNav = () => {
               />
             </Link>
             {
-              Object.keys(course).length
+              Object.keys(course || {}).length
                 ? (
                   <div
                     style={{ fontSize: '20px', fontWeight: '700', marginTop: '4px', color: '#3a3d40' }}
