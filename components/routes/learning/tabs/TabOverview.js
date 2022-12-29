@@ -88,7 +88,7 @@ const TabOverview = ({ course, currentLesson, activeTab }) => {
               className={styles.tabs_overview_instructor_info}
               direction='horizontal'
               size='large'
-              style={{ marginTop: '4px' }}
+              style={{ marginTop: '4px', gap: '40px' }}
             >
               <div
                 className={styles.tabs_overview_instructor_info_img}
@@ -107,7 +107,9 @@ const TabOverview = ({ course, currentLesson, activeTab }) => {
                 direction='vertical'
               >
                 <p><b>{course?.instructor?.name}</b></p>
-                <p>Chức danh......(bổ sung sau trên backend)</p>
+                <p><b>Chức danh:</b> {course?.instructor?.instructor_information?.position}</p>
+                {/* <p><b>Về bản thân:</b> {course?.instructor?.instructor_information?.summary}</p> */}
+                <p><b>Kinh nghiệm:</b> {course?.instructor?.instructor_information?.yoe} năm</p>
               </Space>
             </Space>
             <Space

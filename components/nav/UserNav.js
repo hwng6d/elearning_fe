@@ -31,7 +31,7 @@ const UserNav = ({ user, hideSidebar, collapsed, setCollapsed, children }) => {
   // ];
   // #endregion
 
-  const selectedHandler = (childComponent, currentSelected) => {
+  const selectedHandler = (currentSelected) => {
     // setChild(childComponent);
     setCurrSelected(currentSelected);
   };
@@ -46,9 +46,9 @@ const UserNav = ({ user, hideSidebar, collapsed, setCollapsed, children }) => {
     // #endregion
 
     if (router.pathname === '/user')
-      selectedHandler(<CUserIndex />, '/user');
-    // else if (router.pathname === '')
-    //   selectedHandler()
+      selectedHandler('/user');
+    else if (router.pathname === '/user/information')
+      selectedHandler('/user/information');
   }, [router.pathname])
 
   return (
@@ -77,10 +77,19 @@ const UserNav = ({ user, hideSidebar, collapsed, setCollapsed, children }) => {
           <Menu.Item
             key='/user'
             icon={<UserOutlined />}
-            onClick={() => selectedHandler(<CUserIndex />, '/user')}
+            onClick={() => selectedHandler('/user')}
           >
             <Link href='/user'>
               Bảng điều khiển
+            </Link>
+          </Menu.Item>
+          <Menu.Item
+            key='/user/information'
+            icon={<UserOutlined />}
+            onClick={() => selectedHandler('/user/information')}
+          >
+            <Link href='/user/information'>
+              Thông tin tài khoản
             </Link>
           </Menu.Item>
         </Menu>
