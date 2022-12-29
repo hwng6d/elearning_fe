@@ -31,11 +31,11 @@ const TabOverview = ({ course, currentLesson, activeTab }) => {
             <Descriptions.Item
               label={<b>Bài học</b>}
               labelStyle={{ width: '108px', backgroundColor: '#e9e9e9' }}
-            >{currentLesson.title}</Descriptions.Item>
+            >{currentLesson?.title}</Descriptions.Item>
             <Descriptions.Item
               label={<b>Mô tả</b>}
               labelStyle={{ width: '108px', backgroundColor: '#e9e9e9' }}
-            >{currentLesson.content}</Descriptions.Item>
+            >{currentLesson?.content}</Descriptions.Item>
           </Descriptions>
         </div>
         <hr style={{ margin: '24px 0px', borderColor: 'white' }} />

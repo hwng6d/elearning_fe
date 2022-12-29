@@ -321,7 +321,7 @@ const SingleCourseView = ({ course }) => {
             </div>
             <div
               className={styles.container_general_wrapper_right_price}
-            >{course?.paid ? `${course?.price} vnđ` : 'Miễn phí'}</div>
+            >{course?.paid ? `${course?.price?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}` : 'Miễn phí'}</div>
           </div>
         </div>
       </div>

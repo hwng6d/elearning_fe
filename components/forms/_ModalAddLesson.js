@@ -9,6 +9,7 @@ import axios from 'axios';
 import { findMax } from '../../utils/findMax';
 import { ERRORS_NAME } from '../../utils/constant';
 import styles from '../../styles/components/forms/ModalAddLesson.module.scss';
+import { getBase64 } from '../../utils/getBase64';
 
 const _ModalAddLesson = ({
   isEdit = false, // isEdit
@@ -34,6 +35,7 @@ const _ModalAddLesson = ({
     content: '',
     duration: 0,
     video_link: {},
+    document_link: {},
     free_preview: false
   });
   const [originAtEdit, setOriginAtEdit] = useState({ section: -1, index: -1 });
@@ -82,8 +84,10 @@ const _ModalAddLesson = ({
 
   const videoRemoveHandler = () => {
     setProgressUploadVideo(0);
-    setVideosUpload([])
+    setVideosUpload([]);
   }
+
+
 
   const getLessonInfo = () => {
     const lesson = course?.lessons?.find(lesson => lesson?._id === modalEditLesson.lessonId);
@@ -95,6 +99,7 @@ const _ModalAddLesson = ({
       content: lesson?.content,
       duration: lesson?.duration,
       video_link: lesson?.video_link,
+      // document_link: lesson?.document_link,
       free_preview: lesson?.free_preview,
       section: lesson?.section?._id,
     });
@@ -104,9 +109,9 @@ const _ModalAddLesson = ({
     if (sectionId !== originAtEdit.section) {
       const lessonIndexes = course?.lessons?.filter(lesson => lesson?.section?._id === sectionId)?.map(lesson => lesson?.index);
       const maxLessonIndexes = findMax(lessonIndexes);
-      setNewLesson({...newLesson, section: sectionId, index: maxLessonIndexes + 1});
+      setNewLesson({ ...newLesson, section: sectionId, index: maxLessonIndexes + 1 });
     } else {
-      setNewLesson({...newLesson, section: sectionId, index: originAtEdit.index});
+      setNewLesson({ ...newLesson, section: sectionId, index: originAtEdit.index });
     }
   }
 
@@ -165,6 +170,8 @@ const _ModalAddLesson = ({
       message.error(`Xảy ra lỗi khi tải lên video, vui lòng thử lại.\nChi tiết: ${error.message}`)
     }
   }
+
+
 
   const addLessonHandler = async () => {
     try {
@@ -233,7 +240,7 @@ const _ModalAddLesson = ({
     }
     catch (error) {
       const err_message = ERRORS_NAME.find(_ => { if (error.response.data.message.includes(_.keyword)) return _ });
-      
+
       if (err_message)
         message.error(err_message.vietnamese);
       else
@@ -274,42 +281,49 @@ const _ModalAddLesson = ({
         className={styles.form}
       >
         <div
-          className={styles.form_section}
+          className={styles.d_flex_row}
+          style={{ gap: '12px' }}
         >
           <div
-            className={styles.d_flex_col}
+            className={styles.form_section}
+            style={{ width: '80%' }}
           >
-            <label><b>Chương *</b></label>
-            <Select
-              disabled={!isEdit}
-              options={sectionsSelectItems}
-              defaultValue={
-                newLesson.section
-              }
-              style={{ width: '100%', marginTop: '8px' }}
-              onChange={(value) => onSectionChange(value)}
-            />
+            <div
+              className={styles.d_flex_col}
+            >
+              <label><b>Chương *</b></label>
+              <Select
+                disabled={!isEdit}
+                options={sectionsSelectItems}
+                defaultValue={
+                  newLesson.section
+                }
+                style={{ width: '100%', marginTop: '8px' }}
+                onChange={(value) => onSectionChange(value)}
+              />
+            </div>
           </div>
-        </div>
-        <div
-          className={styles.form_lessonIndex}
-          style={{ marginTop: '12px' }}
-        >
           <div
-            className={styles.d_flex_col}
+            className={styles.form_lessonIndex}
+            style={{ width: '20%' }}
           >
-            <label><b>Số thứ tự bài *</b></label>
-            <InputNumber
-              placeholder='Chọn số thứ tự bài'
-              min={1}
-              value={newLesson.index}
-              onChange={(value) => {
-                setNewLesson({ ...newLesson, index: value });
-              }}
-              style={{ width: '100%', fontSize: '16px', marginTop: '8px' }}
-            />
+            <div
+              className={styles.d_flex_col}
+            >
+              <label><b>Số thứ tự bài *</b></label>
+              <InputNumber
+                placeholder='Chọn số thứ tự bài'
+                min={1}
+                value={newLesson.index}
+                onChange={(value) => {
+                  setNewLesson({ ...newLesson, index: value });
+                }}
+                style={{ width: '100%', fontSize: '16px', marginTop: '8px' }}
+              />
+            </div>
           </div>
         </div>
+
         <div
           className={styles.form_title}
           style={{ marginTop: '12px' }}
@@ -345,7 +359,7 @@ const _ModalAddLesson = ({
                 e.preventDefault();
                 setNewLesson({ ...newLesson, content: e.target.value })
               }}
-              style={{ height: '128px', width: '100%', marginTop: '8px' }}
+              style={{ height: '64px', width: '100%', marginTop: '8px' }}
             />
           </div>
         </div>
@@ -400,6 +414,7 @@ const _ModalAddLesson = ({
             </div>
           )}
         </div>
+
         {validateMessage && (
           <p style={{ color: 'red', padding: '4px 0px' }}>{validateMessage}</p>
         )}
