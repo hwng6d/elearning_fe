@@ -55,15 +55,15 @@ const MembershipPage = () => {
                   border: '10px solid #ffd247'
                 }}
               >
-                <div style={{ marginTop: '128px' }}>
+                {/* <div style={{ marginTop: '128px' }}>
                   <PlanCard type='silver' onCardClick={() => onCardClick('silver')} />
-                </div>
+                </div> */}
                 <div style={{ marginTop: '0px' }}>
                   <PlanCard type='premium' onCardClick={() => onCardClick('premium')} />
                 </div>
-                <div style={{ marginTop: '128px' }}>
+                {/* <div style={{ marginTop: '128px' }}>
                   <PlanCard type='gold' onCardClick={() => onCardClick('gold')} />
-                </div>
+                </div> */}
               </div>
 
               <ModalPaymentOption

@@ -1,0 +1,41 @@
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.h1 {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.container {
+  margin: 12px 12px;
+  padding: 16px 32px;
+  border: 2px dashed gray;
+  border-radius: 12px;
+  background-color: white;
+  height: 80%;
+  width: 50%;
+
+  &_displayname {
+    margin-top: 12px;
+
+  }
+
+  &_newpassword {
+    margin-top: 12px;
+  }
+}
