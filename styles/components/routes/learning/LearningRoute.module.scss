@@ -3,6 +3,24 @@
   font-weight: 700;
 }
 
+.d_flex {
+
+  &_col,
+  &_row {
+    display: flex;
+  }
+
+  &_col {
+    flex-direction: column;
+  }
+
+  &_row {
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
 .container {
   margin-top: 1px;
   flex-direction: row-reverse !important;

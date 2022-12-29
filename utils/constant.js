@@ -59,4 +59,14 @@ export const ERRORS_NAME = [
     vietnamese: 'Bài học hiện tại đã có quiz, hãy thử cập nhật hoặc xóa',
     err_name: 'DATA_WRONG'
   },
+  {
+    keyword: `This user hasn't been activated yet`,
+    vietnamese: 'Tài khoản này chưa được kích hoạt, vui lòng truy cập đường dẫn email để kích hoạt',
+    err_name: 'DATA_WRONG'
+  },
+  {
+    keyword: `Not found code`,
+    vietnamese: 'Không tìm thấy, lỗi!',
+    err_name: 'DATA_WRONG'
+  },
 ]
