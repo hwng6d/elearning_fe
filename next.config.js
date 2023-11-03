@@ -10,7 +10,8 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true
-  }
+  },
+  // distDir: 'dist'
 }
 
 export default nextConfig
