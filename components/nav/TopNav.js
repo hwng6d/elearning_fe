@@ -144,17 +144,22 @@ const TopNav = () => {
 
   useEffect(() => {
     ['/', '/signin', '/signup'].includes(router.pathname) && setCurrItem(router.pathname);
-  }, [router.pathname]);
-
-  useEffect(() => {
-    // console.log('router.pathname: ', router.pathname);  // /user/courses/[slug]/lesson/[lessonId]
-    // console.log(router.query);  // {slug: 'reactjs-zero-hero', lessonId: '860ba22b-30a3-4056-bb7d-8ddf891af2da'}
 
     if (router.pathname === '/user/courses/[slug]/lesson/[lessonId]')
       getCourseInfo();
     else
       getCategoriesInfo();
   }, [router.pathname]);
+
+  // useEffect(() => {
+  //   // console.log('router.pathname: ', router.pathname);  // /user/courses/[slug]/lesson/[lessonId]
+  //   // console.log(router.query);  // {slug: 'reactjs-zero-hero', lessonId: '860ba22b-30a3-4056-bb7d-8ddf891af2da'}
+
+  //   if (router.pathname === '/user/courses/[slug]/lesson/[lessonId]')
+  //     getCourseInfo();
+  //   else
+  //     getCategoriesInfo();
+  // }, [router.pathname]);
 
   // useEffect(() => {
   //   if (router.pathname !== '/user/courses/[slug]/lesson/[lessonId]')
